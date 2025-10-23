@@ -11,7 +11,7 @@
           </RouterLink>
         </template>
       </v-app-bar>
-      <div style="position:fixed; top: 50%; left: 0; width: 100%; height: 100%;"> 
+      <div style="position:absolute; top: 25%; left: 0; width: 100%; height: 100%;" > 
           <h1>LOADING...</h1>
           <v-progress-circular indeterminate color="primary" size="100" width="10" />
       </div>

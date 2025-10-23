@@ -35,12 +35,12 @@
             "layers":{
                 "main":"quality-childcare"
             },
-            "icons":{
-                "main":{
+            "icons":[
+                {
                     "name":"childcare",
                     "filename":"assets/icons/childcare.png"
                 }
-            }
+            ]
         }
     ]
 }

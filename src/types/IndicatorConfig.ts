@@ -1,4 +1,7 @@
-
+export interface Icon {
+    name: string;
+    filename?: string;
+}
 export interface IndicatorConfig {
     title: string;
     field: string;
@@ -24,10 +27,5 @@ export interface IndicatorConfig {
         };
     };
     fill_color: string[];
-    icons: {
-        main: {
-            name: string;
-            filename: string;
-        };
-    };
+    icons: Icon[];
 }

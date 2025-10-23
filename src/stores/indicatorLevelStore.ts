@@ -39,7 +39,6 @@ const indicatorLevelStore = (storeName: 'left' | 'right') => {
         if (indicator) {
             currentIndicator.value = indicator
             const worker = createDataToMapWorker(indicator, map)
-
             if (worker) {
                 await worker.setupIndicator()
             }
