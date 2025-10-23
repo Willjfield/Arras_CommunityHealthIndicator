@@ -75,7 +75,7 @@
         zoom: props._zoom,
         
       })
-      leftIndicatorLevelStore.linkMapToStore(leftMap)
+      leftIndicatorLevelStore.initializeMap(leftMap)
       leftMap.on('mousemove', (e: any) => {
         if (!leftMap) return
         const features = leftMap.queryRenderedFeatures(e.point, { })
@@ -91,7 +91,7 @@
         center: props._center,
         zoom: props._zoom,
       })
-      rightIndicatorLevelStore.linkMapToStore(rightMap)
+      rightIndicatorLevelStore.initializeMap(rightMap)
       rightMap.on('mousemove', (e: any) => {
         if (!rightMap) return
         const features = rightMap.queryRenderedFeatures(e.point, { })

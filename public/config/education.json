@@ -3,9 +3,8 @@
         {
             "title": "Percent of 3 and 4 Year Olds enrolled in Pre-K",
             "field": "Percent of 3 and 4 Year Olds enrolled in Pre-K",
-            "geolevel":"tract",
+            "geolevel":"area",
             "default": "left",
-            "timeseries": true,
             "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ1NzvNmynYUkd0j-ZsiHyjK5rlt5PDfKKrylVCUOSGNRwAAmU-RFx6EwISS1_CoyOB84XU4q99mRhS/pub?gid=1597849288&single=true&output=csv",
             "source_name": "tracts-harmonized",
             "short_name": "prek",
@@ -30,9 +29,8 @@
             "field":"Availability of quality childcare",
             "geolevel":"point",
             "default": "right",
-            "timeseries": false,
             "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRcNjaDIO_SnUq1DPNIH1Nzop4WXdlHjxvHwgd6htTWzZBoLSEGrBaFWKWqRrOu4gBjjtcm3QZ9o3Ig/pub?gid=1305246607&single=true&output=csv",
-            "source_name": "childcare",
+            "source_name": "points-source",
             "short_name": "childcare",
             "layers":{
                 "main":"quality-childcare"

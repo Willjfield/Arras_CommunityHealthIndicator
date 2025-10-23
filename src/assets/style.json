@@ -18,13 +18,7 @@
       "type": "geojson",
       "data": "/ChestLanTractsHarmonized.geojson"
     },
-    "schools":{
-      "type": "geojson", "data": {
-        "type": "FeatureCollection",
-        "features": []
-      }
-    },
-    "childcare":{
+    "points-source":{
       "type": "geojson", "data": {
         "type": "FeatureCollection",
         "features": []
@@ -858,7 +852,7 @@
     {
       "id":"quality-childcare",
       "type": "symbol",
-      "source": "childcare",
+      "source": "points-source",
       "layout": {
         "visibility": "none",
         "icon-size": 0.75,

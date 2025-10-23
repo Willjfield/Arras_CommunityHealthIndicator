@@ -3,13 +3,13 @@ import { ref } from 'vue'
 import type { IndicatorConfig } from '../types/IndicatorConfig.ts'
 import { useThemeLevelStore } from './themeLevelStore'
 import { createDataToMapWorker } from '../utils/dataToMapWorkerFactory.ts'
-//import type { DataToMap } from '../utils/dataToMap.ts'
 export interface IndicatorLevelStore {
     currentIndicator: IndicatorConfig | null
     currentIndicatorData: any
     setIndicatorFromIndicatorShortName: (indicatorShortName: string) => void
     getCurrentIndicator: () => IndicatorConfig | null
-    //currentIndicatorDataToMap: DataToMap | null
+    initializeMap: (_map: maplibregl.Map) => void
+    removeMap: () => void
 }
 
 const themeLevelStore = useThemeLevelStore()
@@ -18,22 +18,30 @@ const indicatorLevelStore = (storeName: 'left' | 'right') => {
 
     const currentThemeIndicators = themeLevelStore.getAllCurrentThemeIndicators()
     const currentIndicator = ref<IndicatorConfig | null>(null)
-    //const currentIndicatorDataToMapWorker = ref<DataToMap | null>(null)
+    let map: maplibregl.Map | null = null
 
     // Set the default indicator for the side
     const defaultForSide = currentThemeIndicators?.find((i: IndicatorConfig) => storeName.includes(i.default as string)) || null
 
-    linkMapToStore()
-    setIndicatorFromIndicatorShortName(defaultForSide?.short_name || '')
+    function initializeMap(_map: maplibregl.Map) {
+        map = _map
+        _map.on('load', async () => {
+            await setIndicatorFromIndicatorShortName(defaultForSide?.short_name || '')
+        })
+    }
+    function removeMap() {
+        map = null
+    }
 
-    function setIndicatorFromIndicatorShortName(indicatorShortName: string) {
-     
+    async function setIndicatorFromIndicatorShortName(indicatorShortName: string) {
+
         const indicator = currentThemeIndicators?.find((i: IndicatorConfig) => i.short_name === indicatorShortName) || null
         if (indicator) {
             currentIndicator.value = indicator
-            const worker = createDataToMapWorker(indicator)
+            const worker = createDataToMapWorker(indicator, map)
+
             if (worker) {
-                worker.setupIndicator()
+                await worker.setupIndicator()
             }
         } else {
             currentIndicator.value = null
@@ -45,7 +53,7 @@ const indicatorLevelStore = (storeName: 'left' | 'right') => {
         return currentIndicator.value || null
     }
 
-    return { setIndicatorFromIndicatorShortName, getCurrentIndicator }
+    return { setIndicatorFromIndicatorShortName, getCurrentIndicator, initializeMap, removeMap }
 }
 
 // This is where the difference is to make unique stores:

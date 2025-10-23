@@ -1,24 +1,16 @@
-import { TractTimeSeriesToMap } from './tractTimeSeriesToMap.ts'
-import { PointStaticTimeToMap } from './pointStaticTimeToMap.ts'
+import { AreaDataToMap } from './areaDataToMap.ts'
+import { PointDataToMap } from './pointDataToMap.ts'
 import type { IndicatorConfig } from '../types/IndicatorConfig.ts'
-import type { DataToMap } from './dataToMap.ts'
-
-export function createDataToMapWorker(indicator: IndicatorConfig) : DataToMap | null {
+import type maplibregl from 'maplibre-gl'
+export function createDataToMapWorker(indicator: IndicatorConfig, map: maplibregl.Map | null) : AreaDataToMap | PointDataToMap | null {
+    if (!map) {
+        return null
+    }
     switch (indicator?.geolevel) {
-        case 'tract':
-            if(indicator?.timeseries) {
-                return new TractTimeSeriesToMap(indicator)
-            } else {
-                //TODO return new TractStaticTimeToMap(indicator)
-                return null
-            }
+        case 'area':
+            return new AreaDataToMap(indicator, map)
         case 'point':
-            if(indicator?.timeseries) {
-                //TODO return new PointTimeSeriesToMap(indicator)
-                return null
-            } else {
-                return new PointStaticTimeToMap(indicator)
-            }
+            return new PointDataToMap(indicator, map)
         default:
             return null
     }
