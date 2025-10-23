@@ -10,6 +10,8 @@ This template should help get you started developing with Vue 3 and TypeScript i
 
 Learn more about the recommended Project Setup and IDE Support in the [Vue Docs TypeScript Guide](https://vuejs.org/guide/typescript/overview.html#project-setup).
 
-## Github for na
+## Github for na?
 ## Put in education (edit as needed)
 ## Where should config be hosted?
+
+### 10/23 - 2 hrs
