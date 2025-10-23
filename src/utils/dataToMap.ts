@@ -37,6 +37,9 @@ export class DataToMap {
             console.error(error);
         } finally {
             this.map.setLayoutProperty(this.data.layers.main, 'visibility', 'visible'); 
+            if(this.data.layers.outline){
+                this.map.setLayoutProperty(this.data.layers.outline, 'visibility', 'visible');
+            }
             return true;
         }
     }
