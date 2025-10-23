@@ -1,0 +1,48 @@
+{   
+    "indicators": [
+        {
+            "title": "Percent of 3 and 4 Year Olds enrolled in Pre-K",
+            "field": "Percent of 3 and 4 Year Olds enrolled in Pre-K",
+            "geolevel":"tract",
+            "default": "left",
+            "timeseries": true,
+            "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ1NzvNmynYUkd0j-ZsiHyjK5rlt5PDfKKrylVCUOSGNRwAAmU-RFx6EwISS1_CoyOB84XU4q99mRhS/pub?gid=1597849288&single=true&output=csv",
+            "source_name": "tracts-harmonized",
+            "short_name": "prek",
+            "layers":{
+                "main":"tracts-harmonized-fill",
+                "outline":"tracts-harmonized-outline"
+            },
+            "style":{
+                "min":{
+                    "color":"hsla(90, 100%, 98%, 1)",
+                    "value":0
+                },
+                "max":{
+                    "color":"hsla(90, 100%, 40%, 1)",
+                    "value":100
+                }
+            },
+            "fill_color": ["interpolate", ["linear"], ["to-number", ["get", "1990"]]]
+        },
+        {
+            "title":"Availability of quality childcare",
+            "field":"Availability of quality childcare",
+            "geolevel":"point",
+            "default": "right",
+            "timeseries": false,
+            "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRcNjaDIO_SnUq1DPNIH1Nzop4WXdlHjxvHwgd6htTWzZBoLSEGrBaFWKWqRrOu4gBjjtcm3QZ9o3Ig/pub?gid=1305246607&single=true&output=csv",
+            "source_name": "childcare",
+            "short_name": "childcare",
+            "layers":{
+                "main":"quality-childcare"
+            },
+            "icons":{
+                "main":{
+                    "name":"childcare",
+                    "filename":"assets/icons/childcare.png"
+                }
+            }
+        }
+    ]
+}
