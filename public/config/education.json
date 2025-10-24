@@ -37,10 +37,18 @@
             },
             "icons":[
                 {
-                    "name":"childcare",
+                    "name":"icon-childcare",
                     "filename":"assets/icons/childcare.png"
                 }
-            ]
+            ],
+            "style":{
+                "selected":{
+                    "color":"hsla(200, 100%, 60%, 1)"
+                },
+                "unselected":{
+                    "color":"#888"
+                }
+            }
         }
     ]
 }

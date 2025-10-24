@@ -3,9 +3,15 @@ import type { Map } from 'maplibre-gl'
 export class DataToMap {
     private readonly data: IndicatorConfig;
     private readonly map: Map;
+    events: { click: any; mousemove: any; mouseleave: any; };
     constructor(_data: IndicatorConfig, _map: Map) {
         this.data = _data;
         this.map = _map;
+        this.events = {
+            "click":null,
+            "mousemove":null,
+            "mouseleave":null,
+        }
     }
 
     setupIndicator() {
@@ -28,9 +34,22 @@ export class DataToMap {
         return false;
     }
 
-    removeOldEvents(){}
+    //This may be getting called too much but not a huge problem. Better than not enough.
+    removeOldEvents(){
+        if(this.events.click){
+            this.map.off('click', this.events.click);
+        }
+        if(this.events.mousemove){
+            this.map.off('mousemove', this.events.mousemove);
+        }
+        if(this.events.mouseleave){
+            this.map.off('mouseleave', this.events.mouseleave);
+        }
+    }
     addNewEvents(){}
-    async setPaintAndLayoutProperties(){
+    async setPaintAndLayoutProperties(year:number | null){
+        //TODO get year and save it in object so that it can be used to set fill color
+
         try {
             await this.addIconsToMap(); //Add the icon to the map
         } catch (error) {

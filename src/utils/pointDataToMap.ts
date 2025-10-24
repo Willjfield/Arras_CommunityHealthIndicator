@@ -7,17 +7,17 @@ export class PointDataToMap extends DataToMap {
         super(data, map);
     }
 
-    async setupIndicator(){
+    async setupIndicator() {
         super.setupIndicator();
         this.removeOldEvents();
         const geojson = this.generateGeojson();
         const map: Map = (this as any).map;
         const data: IndicatorConfig = (this as any).data;
         const source: any = await map.getSource(data.source_name);
-        
+
         if (source && typeof source.setData === "function") {
             source.setData(geojson);
-        }else{
+        } else {
             console.error(`Source ${data.source_name} not found`);
         }
         this.setPaintAndLayoutProperties();
@@ -25,21 +25,53 @@ export class PointDataToMap extends DataToMap {
         return true;
     }
 
-    removeOldEvents(){
+    removeOldEvents() {
         super.removeOldEvents();
     }
 
-    addNewEvents(){
+    addNewEvents() {
         super.addNewEvents();
+        const map = (this as any).map;
+        const mainLayer = (this as any).data.layers.main;
+        if (!map) return
+        this.events.mousemove = (event: any) => {
+            const features = map.queryRenderedFeatures(event.point, {
+                layers: [mainLayer]
+            })
+
+            if (features.length === 0) {
+                map.setLayoutProperty(mainLayer, 'icon-size', .75)
+                map.setPaintProperty(mainLayer, 'icon-color', '#888')
+
+                //emitter.emit(`tract-${side}-hovered`, null)
+                return
+            }else{
+                map.setLayoutProperty(mainLayer, 'icon-size', [
+                    'case',
+                    ['==', ['to-number', ['get', 'geoid']], ['to-number', features[0].properties.geoid]],
+                    1,
+                    0.75
+                ])
+                map.setPaintProperty(mainLayer, 'icon-color', [
+                    'case',
+                    ['==', ['to-number', ['get', 'geoid']], ['to-number', features[0].properties.geoid]],
+                    ['literal', (this as any).data.style.selected.color],
+                    ['literal', (this as any).data.style.unselected.color]
+                ])
+            }
+        }
+        map.on('mousemove', this.events.mousemove);
     }
 
-    setPaintAndLayoutProperties(){
-        super.setPaintAndLayoutProperties();
-        console.log((this as any).map.getStyle());
-        (this as any).map.setLayoutProperty((this as any).data.layers.main, 'visibility', 'visible');
+    async setPaintAndLayoutProperties() {
+        await super.setPaintAndLayoutProperties();
+        const map = (this as any).map;
+        if (!map) return false;
+        map.setLayoutProperty((this as any).data.layers.main, 'visibility', 'visible');
+        return true;
     }
-    
-    generateGeojson(){
+
+    generateGeojson() {
         super.generateGeojson();
         // Fix: Access private 'data' property through 'as any'
         const rawGoogleData = (this as any).data.google_sheets_data.data;
