@@ -68,9 +68,7 @@ import type { Emitter } from 'mitt'
     if (_compare) _compare.switchType(newType)
   })
 
-  onBeforeMount(() => {
-    console.log('onBeforeMount')
-  })
+  onBeforeMount(() => {})
   onMounted(() => {
     console.log('mnt')
     const emitter = inject('mitt') as Emitter<any>
@@ -89,7 +87,6 @@ import type { Emitter } from 'mitt'
         if (!leftMap) return
         const features = leftMap.queryRenderedFeatures(e.point, { })
         if (features.length === 0) return
-        //console.log(features[0]?.properties)
       })
     }
 
@@ -105,7 +102,6 @@ import type { Emitter } from 'mitt'
         if (!rightMap) return
         const features = rightMap.queryRenderedFeatures(e.point, { })
         if (features.length === 0) return
-        //console.log(features[0]?.properties)
       })
     }
 

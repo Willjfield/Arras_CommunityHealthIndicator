@@ -6,7 +6,9 @@ import type { Emitter } from "mitt";
 export class AreaDataToMap extends DataToMap {
     constructor(data: IndicatorConfig, map: Map, side: 'left' | 'right' | null = null, emitter?: Emitter<any>) {
         super(data, map, side, emitter);
+        this.selectedGeography = null;
     }
+    selectedGeography: string | null;
 
     async setupIndicator(year: number | null): Promise<boolean> {
         await super.setupIndicator?.(year);
@@ -48,39 +50,76 @@ export class AreaDataToMap extends DataToMap {
         const mainLayer = (this as any).data.layers.main;
         if (!map) return
         const data = (this as any).data;
-        const layerFillStyle = data.style;
-        const year = (this as any).year || -1;
+
         this.events.mousemove = (event: any) => {
             const features = map.queryRenderedFeatures(event.point, {
                 layers: [mainLayer]
             })
-            //console.log(mainLayer)
+            const harmonizedOutlineLayer = data.layers.outline;
             if (features.length === 0) {
-                console.log('no features found')
                 this.emitter?.emit(`tract-${this.side || 'left'}-hovered`, null as any)
-
-                //map.setLayoutProperty(mainLayer, 'fill-color', '#888')
-                //map.setLayoutProperty(mainLayer, 'visibility', 'visible');
+                if (harmonizedOutlineLayer) {
+                    map.setPaintProperty(harmonizedOutlineLayer,
+                        'line-color',
+                        [
+                            'case',
+                            ['==', ['get', 'geoid'],
+                                '' + this.selectedGeography
+                            ],
+                            ['literal', '#08ff'],
+                            '#0000'])
+                }
                 return;
             }
             const feature = features[0];
             const properties = feature.properties;
-            const harmonizedOutlineLayer = (this as any).data.layers.outline;
             if (harmonizedOutlineLayer) {
                 map.setPaintProperty(harmonizedOutlineLayer,
                     'line-color',
                     [
-                        'case', 
+                        'case',
                         ['==', ['get', 'geoid'],
-                            ''+properties.geoid
+                            '' + properties.geoid
                         ],
                         ['literal', '#000f'],
+                        ['==', ['get', 'geoid'],
+                            '' + this.selectedGeography
+                        ],
+                        ['literal', '#08ff'],
                         '#0000'])
             }
-      
+
             this.emitter?.emit(`tract-${this.side || 'left'}-hovered`, feature.properties.geoid)
         }
+
         map.on('mousemove', this.events.mousemove);
+
+        this.events.click = (event: any) => {
+
+            if (!map) return
+            const features = map.queryRenderedFeatures(event.point, {
+                layers: [mainLayer]
+            })
+
+            if (features.length === 0) {
+                this.emitter?.emit(`tract-${this.side || 'left'}-clicked`, null as any)
+                this.selectedGeography = null;
+                if (data.layers.outline) {
+                    map.setPaintProperty(data.layers.outline, 'line-color', '#0000')
+                }
+                return;
+            }
+
+            map.setPaintProperty(data.layers.outline, 'line-color', [
+                'case',
+                ['==', ['get', 'geoid'], features[0].properties.geoid],
+                ['literal', '#08ff'],
+                '#0000'
+            ])
+            this.emitter?.emit(`tract-${this.side || 'left'}-clicked`, features[0].properties.geoid)
+            this.selectedGeography = features[0].properties.geoid;
+        }
+        map.on('click', this.events.click);
     }
 
     async setPaintAndLayoutProperties(year: number | null) {
