@@ -22,6 +22,7 @@ const indicatorLevelStore = (storeName: 'left' | 'right') => {
 
     const currentThemeIndicators = themeLevelStore.getAllCurrentThemeIndicators()
     const currentIndicator = ref<IndicatorConfig | null>(null)
+    const currentGeoSelection = ref<string | null>(null)
     let map: maplibregl.Map | null = null
     const currentYear = ref<number | null>(null)
     currentYear.value = 2023; //TODO get year from google sheets
@@ -49,6 +50,12 @@ const indicatorLevelStore = (storeName: 'left' | 'right') => {
     function getCurrentYear(): number | null {
         return currentYear.value
     }
+    function getCurrentGeoSelection(): string | null {
+        return currentGeoSelection.value
+    }
+    function setCurrentGeoSelection(geoSelection: string) {
+        currentGeoSelection.value = geoSelection
+    }
     async function setIndicatorFromIndicatorShortName(indicatorShortName: string) {
         const indicator = currentThemeIndicators?.find((i: IndicatorConfig) => i.short_name === indicatorShortName) || null
         if (indicator) {
@@ -65,6 +72,7 @@ const indicatorLevelStore = (storeName: 'left' | 'right') => {
                 await worker.setupIndicator()
                 const defaultYear = indicator.google_sheets_data.headerShortNames[ indicator.google_sheets_data.headerShortNames.length - 1];
                 await setCurrentYear(defaultYear)
+                setCurrentGeoSelection('Overall')
             }
         } else {
             currentIndicator.value = null
@@ -76,7 +84,7 @@ const indicatorLevelStore = (storeName: 'left' | 'right') => {
         return currentIndicator.value || null
     }
 
-    return { setIndicatorFromIndicatorShortName, getCurrentIndicator, initializeMap, removeMap, setCurrentYear, getCurrentYear }
+    return { setIndicatorFromIndicatorShortName, getCurrentIndicator, initializeMap, removeMap, setCurrentYear, getCurrentYear, getCurrentGeoSelection, setCurrentGeoSelection }
 }
 
 // This is where the difference is to make unique stores:

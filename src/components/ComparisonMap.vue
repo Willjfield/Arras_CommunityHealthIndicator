@@ -1,7 +1,13 @@
 <template>
   <div id="comparison-container">
-    <div ref="mapContainerLeft" class="map-container"/>
-    <div ref="mapContainerRight" class="map-container"/>
+    <div ref="mapContainerLeft" class="map-container">
+      <TimelineVisualization 
+        side="left" />
+      <!-- <ColorLegend
+        v-if="indicatorData.left && availableIndicators.length > 0 && categoryStore.selectedIndicators.left.geolevel === 'tract'"
+        :selected-indicator="categoryStore.selectedIndicators.left" side="left" /> -->
+    </div>
+    <div ref="mapContainerRight" class="map-container"></div>
   </div>
 </template>
 
@@ -12,6 +18,7 @@
   import * as mapStyle from '../assets/style.json'
   //import { indicators } from '../assets/indicators.json'
   import Compare from '../assets/maplibre-gl-compare.js'
+  import TimelineVisualization from './TimelineVisualization.vue'
   import '../assets/maplibre-gl-compare.css'
   import { useIndicatorLevelStore } from '../stores/indicatorLevelStore'
   const mapContainerLeft = ref<HTMLElement>()
