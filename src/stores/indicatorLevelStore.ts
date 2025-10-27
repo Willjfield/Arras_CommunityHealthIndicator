@@ -5,11 +5,12 @@ import { useThemeLevelStore } from './themeLevelStore'
 import { createDataToMapWorker } from '../utils/dataToMapWorkerFactory.ts'
 import type { PointDataToMap } from '../utils/pointDataToMap.ts'
 import type { AreaDataToMap } from '../utils/areaDataToMap.ts'
+import type { Emitter } from 'mitt'
 export interface IndicatorLevelStore {
     currentIndicator: IndicatorConfig | null
     currentIndicatorData: any
     currentYear: number | null
-    setIndicatorFromIndicatorShortName: (indicatorShortName: string) => void
+    setIndicatorFromIndicatorShortName: (indicatorShortName: string, emitter?: Emitter<any>) => void
     getCurrentIndicator: () => IndicatorConfig | null
     initializeMap: (_map: maplibregl.Map) => void
     removeMap: () => void
@@ -29,10 +30,11 @@ const indicatorLevelStore = (storeName: 'left' | 'right') => {
     // Set the default indicator for the side
     const defaultForSide = currentThemeIndicators?.find((i: IndicatorConfig) => storeName.includes(i.default as string)) || null
 
-    function initializeMap(_map: maplibregl.Map) {
+    function initializeMap(_map: maplibregl.Map, emitter?: Emitter<any>) {
+        console.log('initializeMap', emitter)
         map = _map
         _map.on('load', async () => {
-            await setIndicatorFromIndicatorShortName(defaultForSide?.short_name || '')
+            await setIndicatorFromIndicatorShortName(defaultForSide?.short_name || '', emitter)
         })
     }
 
@@ -56,7 +58,7 @@ const indicatorLevelStore = (storeName: 'left' | 'right') => {
     function setCurrentGeoSelection(geoSelection: string) {
         currentGeoSelection.value = geoSelection
     }
-    async function setIndicatorFromIndicatorShortName(indicatorShortName: string) {
+    async function setIndicatorFromIndicatorShortName(indicatorShortName: string, emitter?: Emitter<any>) {
         const indicator = currentThemeIndicators?.find((i: IndicatorConfig) => i.short_name === indicatorShortName) || null
         if (indicator) {
             currentIndicator.value = indicator
@@ -66,11 +68,18 @@ const indicatorLevelStore = (storeName: 'left' | 'right') => {
                 worker=null;
             }
 
-            worker = createDataToMapWorker(indicator, map);
-
+            // Pass storeName only as 'left' or 'right'
+            console.log(emitter)
+            worker = createDataToMapWorker(indicator, map, storeName as 'left' | 'right' | null, emitter);
+            console.log('worker', worker)
             if (worker) {
-                await worker.setupIndicator()
-                const defaultYear = indicator.google_sheets_data.headerShortNames[ indicator.google_sheets_data.headerShortNames.length - 1];
+                const headerShortNames = indicator.google_sheets_data.headerShortNames;
+                const defaultYear = headerShortNames && headerShortNames.length > 0 
+                    ? headerShortNames[headerShortNames.length - 1]
+                    : null;
+                if (defaultYear !== null) {
+                    await worker.setupIndicator(defaultYear);
+                }
                 await setCurrentYear(defaultYear)
                 setCurrentGeoSelection('Overall')
             }

@@ -14,13 +14,14 @@
 <script lang="ts" setup>
   import maplibregl from 'maplibre-gl'
 
-  import { onBeforeMount, onMounted, onUnmounted, ref, watch } from 'vue'
+  import { inject, onBeforeMount, onMounted, onUnmounted, ref, watch } from 'vue'
   import * as mapStyle from '../assets/style.json'
   //import { indicators } from '../assets/indicators.json'
   import Compare from '../assets/maplibre-gl-compare.js'
   import TimelineVisualization from './TimelineVisualization.vue'
   import '../assets/maplibre-gl-compare.css'
   import { useIndicatorLevelStore } from '../stores/indicatorLevelStore'
+import type { Emitter } from 'mitt'
   const mapContainerLeft = ref<HTMLElement>()
   let leftMap: maplibregl.Map | null = null
 
@@ -72,6 +73,7 @@
   })
   onMounted(() => {
     console.log('mnt')
+    const emitter = inject('mitt') as Emitter<any>
     // Ensure the container is properly initialized
     if (mapContainerLeft.value) {
       
@@ -82,7 +84,7 @@
         zoom: props._zoom,
         
       })
-      leftIndicatorLevelStore.initializeMap(leftMap)
+      leftIndicatorLevelStore.initializeMap(leftMap, emitter)
       leftMap.on('mousemove', (e: any) => {
         if (!leftMap) return
         const features = leftMap.queryRenderedFeatures(e.point, { })
@@ -98,7 +100,7 @@
         center: props._center,
         zoom: props._zoom,
       })
-      rightIndicatorLevelStore.initializeMap(rightMap)
+      rightIndicatorLevelStore.initializeMap(rightMap, emitter)
       rightMap.on('mousemove', (e: any) => {
         if (!rightMap) return
         const features = rightMap.queryRenderedFeatures(e.point, { })

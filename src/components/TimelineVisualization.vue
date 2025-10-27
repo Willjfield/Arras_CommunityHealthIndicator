@@ -8,7 +8,7 @@
 
     </div> -->
     <div class="chart-label">
-      <span class="selected-geo">{{'fill in label here'}}<span class="selected-color" :style="{ border: `1px solid ${selectedColorRef}` }"></span></span>
+      <span class="selected-geo">{{ `${indicatorStore?.getCurrentIndicator()?.title || ''} (${indicatorStore.getCurrentGeoSelection()})` }}<span class="selected-color" :style="{ border: `1px solid ${selectedColorRef}` }"></span></span>
       <span v-show="hoveredGeo" class="hovered-geo mx-2">Tract: {{ hoveredGeo }}<span class="hovered-color" :style="{ border: `1px solid ${hoveredColorRef}` }"></span></span>
     </div>
     <svg ref="svg" class="timeline-chart"></svg>
@@ -26,7 +26,7 @@ interface Props {
 
 const props = defineProps<Props>()
 const indicatorStore = useIndicatorLevelStore(props.side)
-const currentIndicator = indicatorStore.getCurrentIndicator()
+
 const emit = defineEmits<{
   yearSelected: [year: number]
   indicatorChanged: [indicator: any, side: 'left' | 'right']
@@ -60,6 +60,7 @@ const processData = (_tract: string | number | null) => {
     /^\d{4}$/.test(header) && !isNaN(Number(header))
   ).map((year: string) => Number(year)).sort((a: number, b: number) => a - b)
 
+  //SET CURRENTGEO SELECTION TO HOVERED
   const currentGeoSelection = indicatorStore.getCurrentGeoSelection() 
 
   // Find the row that matches both geography and indicator
@@ -199,6 +200,7 @@ const addTractLine = (tract: string) => {
   hoveredGeo.value = tract;
   if (!svg.value) return
   const data = processData(tract)
+  console.log('data', data)
   if (data.length === 0) return
   //console.log(svg.value)
   svgElement = d3.select(svg.value)
@@ -207,7 +209,7 @@ const addTractLine = (tract: string) => {
 
   // Filter out null values for line chart
   const validData = data.filter(d => d.value !== null && d.value > -1)
-
+  console.log('validData', validData)
   // Calculate scales
   const xScale = createXScale(data)
   const yScale = createYScale(validData)
@@ -351,13 +353,16 @@ onMounted(() => {
     createChart()
   })
    emitter.on('tract-left-hovered', (tract: string | null) => {
+    console.log('tract-left-hovered', tract)
      if (props.side === 'left') {
+      d3.selectAll('.timeline-tract-line').remove()
+      d3.selectAll('.data-tract-point').remove()
        if (tract === null) {
          // Remove tract line when no tract is selected
-         d3.selectAll('.timeline-tract-line').remove()
-         d3.selectAll('.data-tract-point').remove()
+        
          hoveredGeo.value = ''
        } else {
+        console.log('addTractLine', tract)
          addTractLine(tract)
        }
      }

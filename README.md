@@ -14,4 +14,5 @@ Learn more about the recommended Project Setup and IDE Support in the [Vue Docs 
 ## Put in education (edit as needed)
 ## Where should config be hosted?
 
-### 10/23 - 2 hrs
+### 10/23 - 2
+### 10/24 - 1.5

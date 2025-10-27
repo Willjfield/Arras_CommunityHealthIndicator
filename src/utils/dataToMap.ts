@@ -1,22 +1,32 @@
 import type { Icon, IndicatorConfig } from '../types/IndicatorConfig'
 import type { Map } from 'maplibre-gl'
+import type { Emitter } from 'mitt'
+
 export class DataToMap {
     private readonly data: IndicatorConfig;
     private readonly map: Map;
+    protected readonly emitter?: Emitter<any>;
     events: { click: any; mousemove: any; mouseleave: any; };
-    constructor(_data: IndicatorConfig, _map: Map) {
+    year: number | null;
+    side: 'left' | 'right' | null;
+    constructor(_data: IndicatorConfig, _map: Map, side: 'left' | 'right' | null = null, _emitter?: Emitter<any>) {
         this.data = _data;
         this.map = _map;
+        this.emitter = _emitter;
         this.events = {
             "click":null,
             "mousemove":null,
             "mouseleave":null,
         }
+        this.year = null;
+        this.side = side;
     }
 
-    setupIndicator() {
-       
+    async setupIndicator(year: number | null): Promise<boolean> {
+        this.year = year || this.year || null;
+        return true;
     }
+
     generateGeojson() { }
 
     async addIconsToMap() {
@@ -48,8 +58,7 @@ export class DataToMap {
     }
     addNewEvents(){}
     async setPaintAndLayoutProperties(year:number | null){
-        //TODO get year and save it in object so that it can be used to set fill color
-
+        this.year = year || this.year || null;
         try {
             await this.addIconsToMap(); //Add the icon to the map
         } catch (error) {

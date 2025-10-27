@@ -1,14 +1,14 @@
 import type { IndicatorConfig } from "../types/IndicatorConfig";
 import { DataToMap } from "./dataToMap";
 import type { Map } from "maplibre-gl";
-
+import type { Emitter } from 'mitt'
 export class PointDataToMap extends DataToMap {
-    constructor(data: IndicatorConfig, map: Map) {
-        super(data, map);
+    constructor(data: IndicatorConfig, map: Map, side: 'left' | 'right' | null = null, emitter?: Emitter<any>) {  
+        super(data, map, side, emitter);
     }
 
-    async setupIndicator() {
-        super.setupIndicator();
+    async setupIndicator(year: number | null): Promise<boolean> {
+        await super.setupIndicator?.(year);
         this.removeOldEvents();
         const geojson = this.generateGeojson();
         const map: Map = (this as any).map;
@@ -20,7 +20,7 @@ export class PointDataToMap extends DataToMap {
         } else {
             console.error(`Source ${data.source_name} not found`);
         }
-        this.setPaintAndLayoutProperties();
+        await this.setPaintAndLayoutProperties(year);
         this.addNewEvents();
         return true;
     }
@@ -43,7 +43,7 @@ export class PointDataToMap extends DataToMap {
                 map.setLayoutProperty(mainLayer, 'icon-size', .75)
                 map.setPaintProperty(mainLayer, 'icon-color', '#888')
 
-                //emitter.emit(`tract-${side}-hovered`, null)
+                this.emitter?.emit(`tract-${this.side || 'left'}-hovered`, null)
                 return
             }else{
                 map.setLayoutProperty(mainLayer, 'icon-size', [
@@ -58,13 +58,14 @@ export class PointDataToMap extends DataToMap {
                     ['literal', (this as any).data.style.selected.color],
                     ['literal', (this as any).data.style.unselected.color]
                 ])
+                this.emitter?.emit(`tract-${this.side || 'left'}-hovered`, features[0].properties.geoid)
             }
         }
         map.on('mousemove', this.events.mousemove);
     }
 
-    async setPaintAndLayoutProperties() {
-        await super.setPaintAndLayoutProperties();
+    async setPaintAndLayoutProperties(year:number | null) {
+        await super.setPaintAndLayoutProperties(year);
         const map = (this as any).map;
         if (!map) return false;
         map.setLayoutProperty((this as any).data.layers.main, 'visibility', 'visible');
