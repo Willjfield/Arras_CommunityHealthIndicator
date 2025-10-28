@@ -1,6 +1,5 @@
 <template>
-  <div ref="container" class="timeline-visualization"
-    style="height: 180px; bottom:20px;">
+  <div ref="container" class="timeline-visualization" style="height: 180px; bottom:20px;">
     <!-- <div class="timeline-header">
       <v-select :model-value="selectedIndicator" :items="availableIndicators" item-title="title" item-value="value"
         return-object density="compact" variant="outlined" hide-details class="indicator-select"
@@ -8,8 +7,11 @@
 
     </div> -->
     <div class="chart-label">
-      <span class="selected-geo">{{ `${indicatorStore?.getCurrentIndicator()?.title || ''} (${indicatorStore.getCurrentGeoSelection()})` }}<span class="selected-color" :style="{ border: `1px solid ${selectedColorRef}` }"></span></span>
-      <span v-show="hoveredGeo" class="hovered-geo mx-2"><br/>Tract: {{ hoveredGeo }}<span class="hovered-color" :style="{ border: `1px solid ${hoveredColorRef}` }"></span></span>
+      <span class="selected-geo">{{ `${indicatorStore?.getCurrentIndicator()?.title || ''}
+        (${indicatorStore.getCurrentGeoSelection()})` }}<span class="selected-color"
+          :style="{ border: `1px solid ${selectedColorRef}` }"></span></span>
+      <span v-show="hoveredGeo" class="hovered-geo mx-2"><br />Tract: {{ hoveredGeo }}<span class="hovered-color"
+          :style="{ border: `1px solid ${hoveredColorRef}` }"></span></span>
     </div>
     <svg ref="svg" class="timeline-chart"></svg>
   </div>
@@ -45,7 +47,7 @@ let width = 450
 let height = 100
 let margin = { top: 0, right: 5, bottom: 5, left: 20 }
 
-const processData = (_tract: string | number | null) => {
+const processData = (_feature: string | number | null) => {
 
   const indicator = indicatorStore.getCurrentIndicator()
   const raw_data = indicator?.google_sheets_data
@@ -54,31 +56,56 @@ const processData = (_tract: string | number | null) => {
   const headerLabels = raw_data.headerLabels
   const rows = raw_data.data
 
-  // Find year columns (numeric strings)
-  const yearColumns = headerShortNames.filter((header: string) =>
-    /^\d{4}$/.test(header) && !isNaN(Number(header))
-  ).map((year: string) => Number(year)).sort((a: number, b: number) => a - b)
 
   //SET CURRENTGEO SELECTION TO HOVERED
-  const currentGeoSelection = _tract || indicatorStore.getCurrentGeoSelection() 
+  const currentGeoSelection = _feature || indicatorStore.getCurrentGeoSelection()
 
-  // Find the row that matches both geography and indicator
-  const matchingRow = rows.find((_row: Record<string, any>) =>
-    '' + _row.geoid === '' + currentGeoSelection 
-  )
-
-  if (!matchingRow) return []
-
-  // Extract data for this indicator
+  let matchingRow: Record<string, any> | undefined = undefined;
   const data: Array<{ year: number; value: number | null }> = []
 
-  yearColumns.forEach((year: number) => {
-    const yearValue = matchingRow[year.toString()]
-    data.push({
-      year,
-      value: yearValue ? Number(yearValue) : null
+  if (indicator.geolevel === 'area') {
+    // Find year columns (numeric strings)
+    const yearColumns = headerShortNames.filter((header: string) =>
+      /^\d{4}$/.test(header) && !isNaN(Number(header))
+    ).map((year: string) => Number(year)).sort((a: number, b: number) => a - b)
+
+    matchingRow = rows.find((_row: Record<string, any>) =>
+      '' + _row.geoid === '' + currentGeoSelection
+    )
+    if (!matchingRow) return []
+    // Extract data for this indicator
+
+    yearColumns.forEach((year: number) => {
+      const yearValue = matchingRow?.[year.toString()]
+      data.push({
+        year,
+        value: yearValue != null && yearValue !== "" ? Number(yearValue) : null
+      })
     })
-  })
+  } else {
+    const yearColumns = headerShortNames
+      .filter((header: string) => header.startsWith('Count_'))
+      .sort((a: string, b: string) => a.replace('Count_', '').localeCompare(b.replace('Count_', '')));
+
+
+    yearColumns.forEach((year: string) => {
+    //const yearValue = matchingRow?.[year];
+      data.push({
+        year: Number(year.replace('Count_', '')),
+        value: rows.reduce((acc: number, row: any) => acc + Number(row[year]), 0)
+      });
+    });
+    // rows.forEach((row: any) => {
+    //   yearColumns.forEach((year: string) => {
+    //     const yearValue = row?.[year];
+    //     data.push({
+    //       year: Number(year.replace('Count_', '')),
+    //       value: yearValue != null && yearValue !== "" ? yearValue : null,
+    //     });
+    //   });
+    // });
+
+  }
   return data
 }
 
@@ -86,6 +113,8 @@ const createChart = () => {
   if (!svg.value) return
 
   const data = processData(null)
+  console.log(props.side)
+  console.log(data)
   if (data.length === 0) return
 
   // Clear previous chart
@@ -311,7 +340,7 @@ const createXScale = (data: Array<{ year: number; value: number | null }>) => {
       const gap = nextYear - currentYear
 
       // Larger spacing for decade gaps, smaller for consecutive years
-      const spacing = Math.sqrt(gap)*25 //<= 1 ? 25 : gap <= 10 ? 50 : 90
+      const spacing = Math.sqrt(gap) * 25 //<= 1 ? 25 : gap <= 10 ? 50 : 90
       currentPos += spacing
     }
   }
@@ -349,21 +378,22 @@ watch([() => indicatorStore.getCurrentIndicator(), () => indicatorStore.getCurre
 )
 
 onMounted(() => {
-  
+
   nextTick(() => {
     createChart()
   })
-   emitter.on('feature-left-hovered', (tract: string | null) => {
-     if (props.side === 'left') {
+  emitter.on('feature-left-hovered', (tract: string | null) => {
+    if (props.side === 'left') {
       d3.selectAll('.timeline-feature-line').remove()
       d3.selectAll('.data-feature-point').remove()
-       if (tract === null) { hoveredGeo.value = ''
-       } else {
-         addTractLine(tract)
-       }
-     }
-   })
-   emitter.on('feature-right-hovered', (tract: string | null) => {
+      if (tract === null) {
+        hoveredGeo.value = ''
+      } else {
+        addTractLine(tract)
+      }
+    }
+  })
+  emitter.on('feature-right-hovered', (tract: string | null) => {
     if (props.side === 'right') {
       d3.selectAll('.timeline-feature-line').remove()
       d3.selectAll('.data-feature-point').remove()
@@ -373,7 +403,7 @@ onMounted(() => {
         addTractLine(tract)
       }
     }
-   })
+  })
 })
 
 onUnmounted(() => {
@@ -387,7 +417,7 @@ onUnmounted(() => {
   position: absolute;
   left: 20px;
   width: 450px;
-  
+
   background: rgba(255, 255, 255, 0.95);
   border: 1px solid #e5e7eb;
   border-radius: 5px;
@@ -512,10 +542,10 @@ onUnmounted(() => {
 
 .selected-color {
   display: inline-block;
-    width: 20px;
-    height: 0;
-    margin-bottom: 2.5px;
-    margin-left: 5px;
+  width: 20px;
+  height: 0;
+  margin-bottom: 2.5px;
+  margin-left: 5px;
 }
 
 /* .hovered-geo {
@@ -528,13 +558,13 @@ onUnmounted(() => {
 
 .hovered-color {
   display: inline-block;
-    width: 20px;
-    height: 0;
-    margin-bottom: 2.5px;
-    margin-left: 5px;
+  width: 20px;
+  height: 0;
+  margin-bottom: 2.5px;
+  margin-left: 5px;
 }
+
 .left {
   left: 20px;
 }
-
 </style>

@@ -7,7 +7,10 @@
         v-if="indicatorData.left && availableIndicators.length > 0 && categoryStore.selectedIndicators.left.geolevel === 'tract'"
         :selected-indicator="categoryStore.selectedIndicators.left" side="left" /> -->
     </div>
-    <div ref="mapContainerRight" class="map-container"></div>
+    <div ref="mapContainerRight" class="map-container">
+      <TimelineVisualization 
+      side="right" />
+    </div>
   </div>
 </template>
 
