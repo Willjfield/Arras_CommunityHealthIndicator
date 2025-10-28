@@ -29,7 +29,7 @@
             "field":"Availability of quality childcare",
             "geolevel":"point",
             "default": "right",
-            "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRcNjaDIO_SnUq1DPNIH1Nzop4WXdlHjxvHwgd6htTWzZBoLSEGrBaFWKWqRrOu4gBjjtcm3QZ9o3Ig/pub?gid=1305246607&single=true&output=csv",
+            "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vSMz-sXo5YL08yptNOf64atoW_IT7F1ATHxMAQSWLHkmBZ7_60Fdf7wTGMYrDS-p_YlHsFwy9PZMwKQ/pub?gid=1305246607&single=true&output=csv",
             "source_name": "points-source",
             "short_name": "childcare",
             "layers":{

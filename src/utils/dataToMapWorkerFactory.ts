@@ -8,7 +8,6 @@ export function createDataToMapWorker(indicator: IndicatorConfig, map: maplibreg
     if (!map) {
         return null
     }
-   // console.log('createDataToMapWorker', indicator, map, side, emitter)
     switch (indicator?.geolevel) {
         case 'area':
                 return new AreaDataToMap(indicator, map, side, emitter)

@@ -57,7 +57,7 @@ export class AreaDataToMap extends DataToMap {
             })
             const harmonizedOutlineLayer = data.layers.outline;
             if (features.length === 0) {
-                this.emitter?.emit(`tract-${this.side || 'left'}-hovered`, null as any)
+                this.emitter?.emit(`feature-${this.side || 'left'}-hovered`, null as any)
                 if (harmonizedOutlineLayer) {
                     map.setPaintProperty(harmonizedOutlineLayer,
                         'line-color',
@@ -89,7 +89,7 @@ export class AreaDataToMap extends DataToMap {
                         '#0000'])
             }
 
-            this.emitter?.emit(`tract-${this.side || 'left'}-hovered`, feature.properties.geoid)
+            this.emitter?.emit(`feature-${this.side || 'left'}-hovered`, feature.properties.geoid)
         }
 
         map.on('mousemove', this.events.mousemove);
@@ -102,7 +102,7 @@ export class AreaDataToMap extends DataToMap {
             })
 
             if (features.length === 0) {
-                this.emitter?.emit(`tract-${this.side || 'left'}-clicked`, null as any)
+                this.emitter?.emit(`feature-${this.side || 'left'}-clicked`, null as any)
                 this.selectedGeography = null;
                 if (data.layers.outline) {
                     map.setPaintProperty(data.layers.outline, 'line-color', '#0000')
@@ -116,7 +116,7 @@ export class AreaDataToMap extends DataToMap {
                 ['literal', '#08ff'],
                 '#0000'
             ])
-            this.emitter?.emit(`tract-${this.side || 'left'}-clicked`, features[0].properties.geoid)
+            this.emitter?.emit(`feature-${this.side || 'left'}-clicked`, features[0].properties.geoid)
             this.selectedGeography = features[0].properties.geoid;
         }
         map.on('click', this.events.click);

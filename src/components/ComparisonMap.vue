@@ -13,7 +13,7 @@
 
 <script lang="ts" setup>
   import maplibregl from 'maplibre-gl'
-
+  import 'maplibre-gl/dist/maplibre-gl.css';
   import { inject, onBeforeMount, onMounted, onUnmounted, ref, watch } from 'vue'
   import * as mapStyle from '../assets/style.json'
   //import { indicators } from '../assets/indicators.json'

@@ -1,8 +1,14 @@
 import type { IndicatorConfig } from "../types/IndicatorConfig";
 import { DataToMap } from "./dataToMap";
-import type { Map } from "maplibre-gl";
+import maplibregl, { type Map } from "maplibre-gl";
 import type { Emitter } from 'mitt'
+import { createApp } from 'vue'
+import Popup from '../components/Popup.vue'
+import vuetify from '../plugins/vuetify.js'
+
 export class PointDataToMap extends DataToMap {
+    private popup: any = null;
+    private frozenPopup: boolean = false;
     constructor(data: IndicatorConfig, map: Map, side: 'left' | 'right' | null = null, emitter?: Emitter<any>) {  
         super(data, map, side, emitter);
     }
@@ -27,6 +33,9 @@ export class PointDataToMap extends DataToMap {
 
     removeOldEvents() {
         super.removeOldEvents();
+        if (this.popup) {
+            this.popup.remove();
+        }
     }
 
     addNewEvents() {
@@ -34,7 +43,18 @@ export class PointDataToMap extends DataToMap {
         const map = (this as any).map;
         const mainLayer = (this as any).data.layers.main;
         if (!map) return
+        
+        // Create popup once
+        if (!this.popup) {
+            this.popup = new maplibregl.Popup({
+                closeButton: true,
+                closeOnClick: false,
+                closeOnMove: false
+            });
+        }
+        
         this.events.mousemove = (event: any) => {
+            if (this.frozenPopup) return;
             const features = map.queryRenderedFeatures(event.point, {
                 layers: [mainLayer]
             })
@@ -42,8 +62,9 @@ export class PointDataToMap extends DataToMap {
             if (features.length === 0) {
                 map.setLayoutProperty(mainLayer, 'icon-size', .75)
                 map.setPaintProperty(mainLayer, 'icon-color', '#888')
+                this.popup.remove();
 
-                this.emitter?.emit(`tract-${this.side || 'left'}-hovered`, null)
+                this.emitter?.emit(`feature-${this.side || 'left'}-hovered`, null)
                 return
             }else{
                 map.setLayoutProperty(mainLayer, 'icon-size', [
@@ -58,10 +79,27 @@ export class PointDataToMap extends DataToMap {
                     ['literal', (this as any).data.style.selected.color],
                     ['literal', (this as any).data.style.unselected.color]
                 ])
-                this.emitter?.emit(`tract-${this.side || 'left'}-hovered`, features[0].properties.geoid)
+                
+                // Show popup with Vue component
+                this.showPopup(event.lngLat, features[0].properties);
+                
+                this.emitter?.emit(`feature-${this.side || 'left'}-hovered`, features[0].properties.geoid)
             }
         }
         map.on('mousemove', this.events.mousemove);
+        this.events.click = (event: any) => {
+            this.frozenPopup = !this.frozenPopup;
+        }
+        map.on('click', this.events.click);
+    }
+    
+    private showPopup(lngLat: any, properties: any) {
+        const map = (this as any).map;
+        this.popup.setLngLat(lngLat).setHTML('<div id="popup-container"></div>').addTo(map);
+        const popupContainer = document.getElementById('popup-container');
+        if (popupContainer) {
+            createApp(Popup, { properties }).use(vuetify).mount(popupContainer);
+        }
     }
 
     async setPaintAndLayoutProperties(year:number | null) {

@@ -31,7 +31,6 @@ const indicatorLevelStore = (storeName: 'left' | 'right') => {
     const defaultForSide = currentThemeIndicators?.find((i: IndicatorConfig) => storeName.includes(i.default as string)) || null
 
     function initializeMap(_map: maplibregl.Map, emitter?: Emitter<any>) {
-        console.log('initializeMap', emitter)
         map = _map
         _map.on('load', async () => {
             await setIndicatorFromIndicatorShortName(defaultForSide?.short_name || '', emitter)
@@ -68,10 +67,8 @@ const indicatorLevelStore = (storeName: 'left' | 'right') => {
                 worker=null;
             }
 
-            // Pass storeName only as 'left' or 'right'
-            console.log(emitter)
             worker = createDataToMapWorker(indicator, map, storeName as 'left' | 'right' | null, emitter);
-            console.log('worker', worker)
+
             if (worker) {
                 const headerShortNames = indicator.google_sheets_data.headerShortNames;
                 const defaultYear = headerShortNames && headerShortNames.length > 0 
@@ -82,6 +79,9 @@ const indicatorLevelStore = (storeName: 'left' | 'right') => {
                 }
                 await setCurrentYear(defaultYear)
                 setCurrentGeoSelection('Overall')
+                emitter?.on(`feature-${storeName}-clicked`, (tract: string | null) => {
+                    setCurrentGeoSelection(tract || 'Overall')
+                })
             }
         } else {
             currentIndicator.value = null

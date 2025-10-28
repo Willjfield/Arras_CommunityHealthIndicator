@@ -28,7 +28,6 @@ const props = defineProps<Props>()
 const indicatorStore = useIndicatorLevelStore(props.side)
 
 const emit = defineEmits<{
-  yearSelected: [year: number]
   indicatorChanged: [indicator: any, side: 'left' | 'right']
   close: []
 }>()
@@ -170,7 +169,8 @@ const createChart = () => {
     .style('stroke-width', 2)
     .style('cursor', 'pointer')
     .on('click', (_, d) => {
-      emit('yearSelected', d.year)
+      //emit('yearSelected', d.year)
+      indicatorStore.setCurrentYear(d.year)
     })
     .on('mouseover', function (_, d) {
       if (d.year !== indicatorStore.getCurrentYear()) {
@@ -220,23 +220,23 @@ const addTractLine = (tract: string) => {
     .y(d => yScale(d.value!))
     .curve(d3.curveMonotoneX)
 
-  d3.selectAll('.timeline-tract-line').remove()
-  d3.selectAll('.data-tract-point').remove()
+  d3.selectAll('.timeline-feature-line').remove()
+  d3.selectAll('.data-feature-point').remove()
   // Add line
   svgElement.append('path')
     .datum(validData)
-    .attr('class', 'timeline-tract-line')
+    .attr('class', 'timeline-feature-line')
     .attr('d', line)
     .style('fill', 'none')
     .style('stroke', hoveredColor)
     .style('stroke-width', 1)
 
   // Add data points
-  const circles = svgElement.selectAll('.data-tract-point')
+  const circles = svgElement.selectAll('.data-feature-point')
     .data(validData)
     .enter()
     .append('circle')
-    .attr('class', 'data-tract-point')
+    .attr('class', 'data-feature-point')
     .attr('cx', d => xScale(d.year))
     .attr('cy', d => yScale(d.value!))
     .attr('r', 4)
@@ -245,7 +245,8 @@ const addTractLine = (tract: string) => {
     .style('stroke-width', 1)
     .style('cursor', 'pointer')
     .on('click', (_, d) => {
-      emit('yearSelected', d.year)
+      //emit('yearSelected', d.year)
+      indicatorStore.setCurrentYear(d.year)
     })
     .on('mouseover', function (_, d) {
       if (d.year !== indicatorStore.getCurrentYear()) {
@@ -352,20 +353,20 @@ onMounted(() => {
   nextTick(() => {
     createChart()
   })
-   emitter.on('tract-left-hovered', (tract: string | null) => {
+   emitter.on('feature-left-hovered', (tract: string | null) => {
      if (props.side === 'left') {
-      d3.selectAll('.timeline-tract-line').remove()
-      d3.selectAll('.data-tract-point').remove()
+      d3.selectAll('.timeline-feature-line').remove()
+      d3.selectAll('.data-feature-point').remove()
        if (tract === null) { hoveredGeo.value = ''
        } else {
          addTractLine(tract)
        }
      }
    })
-   emitter.on('tract-right-hovered', (tract: string | null) => {
+   emitter.on('feature-right-hovered', (tract: string | null) => {
     if (props.side === 'right') {
-      d3.selectAll('.timeline-tract-line').remove()
-      d3.selectAll('.data-tract-point').remove()
+      d3.selectAll('.timeline-feature-line').remove()
+      d3.selectAll('.data-feature-point').remove()
       if (tract === null) {
         hoveredGeo.value = ''
       } else {
@@ -376,8 +377,8 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
-  emitter.off('tract-left-hovered', addTractLine)
-  emitter.off('tract-right-hovered', addTractLine)
+  emitter.off('feature-left-hovered', addTractLine)
+  emitter.off('feature-right-hovered', addTractLine)
 })
 </script>
 
@@ -481,7 +482,7 @@ onUnmounted(() => {
   stroke-width: 2;
 }
 
-:deep(.timeline-tract-line) {
+:deep(.timeline-feature-line) {
   fill: none;
   stroke: #7d7d7d;
   stroke-width: 2;
@@ -494,7 +495,7 @@ onUnmounted(() => {
   cursor: pointer;
 }
 
-:deep(.data-tract-point) {
+:deep(.data-feature-point) {
   fill: #7d7d7d;
   stroke: #fff;
   stroke-width: 2;
@@ -505,7 +506,7 @@ onUnmounted(() => {
   fill: #1d4ed8;
 }
 
-:deep(.data-tract-point:hover) {
+:deep(.data-feature-point:hover) {
   fill: #d1d1d1;
 }
 
