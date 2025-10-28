@@ -44,6 +44,15 @@ export class DataToMap {
         return false;
     }
 
+    hideLayers(){
+        if(this.data.layers.main){
+            this.map.setLayoutProperty(this.data.layers.main, 'visibility', 'none');
+        }
+        if(this.data.layers.outline){
+            this.map.setLayoutProperty(this.data.layers.outline, 'visibility', 'none');
+        }
+    }
+
     //This may be getting called too much but not a huge problem. Better than not enough.
     removeOldEvents(){
         if(this.events.click){

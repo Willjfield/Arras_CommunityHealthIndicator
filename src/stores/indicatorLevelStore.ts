@@ -64,6 +64,7 @@ const indicatorLevelStore = (storeName: 'left' | 'right') => {
 
             if(worker) {
                 worker.removeOldEvents();
+                worker.hideLayers();
                 worker=null;
             }
 

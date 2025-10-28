@@ -52,6 +52,9 @@ const props = defineProps<{
 </script>
 
 <style scoped>
+.maplibregl-popup {
+   z-index: 1000;
+}
 .popup-content {
 line-height: 1.1em;
 text-align: left;

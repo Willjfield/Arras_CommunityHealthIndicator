@@ -1,16 +1,20 @@
 <template>
-  <div ref="container" class="timeline-visualization" style="height: 180px; bottom:20px;">
-    <!-- <div class="timeline-header">
-      <v-select :model-value="selectedIndicator" :items="availableIndicators" item-title="title" item-value="value"
-        return-object density="compact" variant="outlined" hide-details class="indicator-select"
+    <div class="timeline-header">
+      <v-select :model-value="indicatorStore?.getCurrentIndicator()"
+        :items="themeLevelStore?.getAllCurrentThemeIndicators() || []" item-title="title" item-value="value" return-object
+        density="compact" variant="outlined" hide-details class="indicator-select"
         @update:model-value="handleIndicatorChange" />
 
-    </div> -->
+    </div>
+  <div ref="container" class="timeline-visualization" style="height: 180px; bottom:20px;">
+  
     <div class="chart-label">
       <span class="selected-geo">{{ `${indicatorStore?.getCurrentIndicator()?.title || ''}
         (${indicatorStore.getCurrentGeoSelection()})` }}<span class="selected-color"
           :style="{ border: `1px solid ${selectedColorRef}` }"></span></span>
-      <span v-show="hoveredGeo" class="hovered-geo mx-2"><br />Tract: {{ hoveredGeo }}<span class="hovered-color"
+          <br />
+          <span v-show="!hoveredGeo" class="hovered-geo mx-2 font-italic font-weight-medium">Hover over a feature to see the timeline</span>
+          <span v-show="hoveredGeo" class="hovered-geo mx-2">Feature: {{ hoveredGeo }}<span class="hovered-color"
           :style="{ border: `1px solid ${hoveredColorRef}` }"></span></span>
     </div>
     <svg ref="svg" class="timeline-chart"></svg>
@@ -21,6 +25,7 @@
 import * as d3 from 'd3'
 import { ref, onMounted, onUnmounted, watch, nextTick, inject } from 'vue'
 import useIndicatorLevelStore from '../stores/indicatorLevelStore';
+import { useThemeLevelStore } from '../stores/themeLevelStore';
 const emitter = inject('mitt') as any
 interface Props {
   side: 'left' | 'right'
@@ -28,7 +33,7 @@ interface Props {
 
 const props = defineProps<Props>()
 const indicatorStore = useIndicatorLevelStore(props.side)
-
+const themeLevelStore = useThemeLevelStore()
 const emit = defineEmits<{
   indicatorChanged: [indicator: any, side: 'left' | 'right']
   close: []
@@ -45,12 +50,13 @@ const svg = ref<SVGElement>()
 let svgElement: d3.Selection<SVGElement, unknown, null, undefined>
 let width = 450
 let height = 100
-let margin = { top: 0, right: 5, bottom: 5, left: 20 }
+let margin = { top: 0, right: 5, bottom: 25, left: 30 }
 
 const processData = (_feature: string | number | null) => {
 
   const indicator = indicatorStore.getCurrentIndicator()
   const raw_data = indicator?.google_sheets_data
+
   if (!raw_data) return []
   const headerShortNames = raw_data.headerShortNames
   const headerLabels = raw_data.headerLabels
@@ -87,24 +93,14 @@ const processData = (_feature: string | number | null) => {
       .filter((header: string) => header.startsWith('Count_'))
       .sort((a: string, b: string) => a.replace('Count_', '').localeCompare(b.replace('Count_', '')));
 
-
     yearColumns.forEach((year: string) => {
-    //const yearValue = matchingRow?.[year];
+      const totalValue = rows.reduce((acc: number, row: any) => acc + Math.round(Number(row[year])), 0) || null
+
       data.push({
         year: Number(year.replace('Count_', '')),
-        value: rows.reduce((acc: number, row: any) => acc + Number(row[year]), 0)
+        value: totalValue
       });
     });
-    // rows.forEach((row: any) => {
-    //   yearColumns.forEach((year: string) => {
-    //     const yearValue = row?.[year];
-    //     data.push({
-    //       year: Number(year.replace('Count_', '')),
-    //       value: yearValue != null && yearValue !== "" ? yearValue : null,
-    //     });
-    //   });
-    // });
-
   }
   return data
 }
@@ -113,8 +109,6 @@ const createChart = () => {
   if (!svg.value) return
 
   const data = processData(null)
-  console.log(props.side)
-  console.log(data)
   if (data.length === 0) return
 
   // Clear previous chart
@@ -125,7 +119,10 @@ const createChart = () => {
     .attr('height', height)
 
   // Filter out null values for line chart
-  const validData = data.filter(d => d.value !== null && d.value > -1)
+  const validData = data.filter(d => d.value !== null && d.value > -1).map(d => ({
+    year: d.year,
+    value: Math.round(d.value!)
+  }))
 
   if (validData.length === 0) {
     // Just show x-axis with years
@@ -144,13 +141,15 @@ const createChart = () => {
     .tickPadding(8)
 
   const yAxis = d3.axisLeft(yScale)
+    .tickFormat(d => d.toLocaleString())
     .tickSize(-width + margin.left + margin.right)
-    .tickPadding(5)
+    .tickPadding(2)
+    .ticks(5)
 
   // Add axes
   svgElement.append('g')
     .attr('class', 'x-axis')
-    .attr('transform', `translate(0, ${height - margin.bottom})`)
+    .attr('transform', `translate(0, ${height + margin.bottom})`)
     .call(xAxis)
     .selectAll('text')
     .style('font-size', '10px')
@@ -308,7 +307,7 @@ const createAxisOnly = (data: Array<{ year: number; value: number | null }>) => 
 
   svgElement.append('g')
     .attr('class', 'x-axis')
-    .attr('transform', `translate(0, ${height - margin.bottom})`)
+    .attr('transform', `translate(0, ${height + margin.bottom})`)
     .call(xAxis)
     .selectAll('text')
     .style('font-size', '10px')
@@ -354,17 +353,21 @@ const createYScale = (data: Array<{ year: number; value: number | null }>) => {
   const values = data.map(d => d.value!).filter(v => v !== null && !isNaN(v))
   if (values.length === 0) return d3.scaleLinear().domain([0, 100]).range([height - margin.bottom, margin.top])
 
-  const min = Math.min(...values)
-  const max = Math.max(...values)
-  const padding = (max - min) * 0.1 || 1
+  const min = Math.min(...values)-(10 * (indicatorStore.getCurrentIndicator()?.geolevel === 'area' ? 0 : 1))
+  const max = Math.max(...values)+(10 * (indicatorStore.getCurrentIndicator()?.geolevel === 'area' ? 0 : 1))
+  const padding = (max - min) || 1 
 
   return d3.scaleLinear()
-    .domain([min - padding, max + padding])
-    .range([height - margin.bottom, margin.top])
+    .domain([Math.max(min - padding,0), max + padding])
+    .range([height + margin.bottom, margin.top])
 }
 
-const handleIndicatorChange = (indicator: any) => {
-  emit('indicatorChanged', indicator, props.side)
+const handleIndicatorChange = async (indicator: any) => {
+  await indicatorStore.setIndicatorFromIndicatorShortName(indicator.short_name, emitter)
+
+  nextTick(() => {
+    createChart()
+  })
 }
 
 // Watch for data changes
@@ -378,7 +381,6 @@ watch([() => indicatorStore.getCurrentIndicator(), () => indicatorStore.getCurre
 )
 
 onMounted(() => {
-
   nextTick(() => {
     createChart()
   })
@@ -428,6 +430,10 @@ onUnmounted(() => {
 }
 
 .timeline-header {
+  position: absolute;
+    top: 70px;
+    left: 5px;
+    z-index: 1;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -487,7 +493,11 @@ onUnmounted(() => {
 
 .timeline-chart {
   width: 100%;
-  height: calc(100% - 40px);
+    height: 100%;
+    /* bottom: 0; */
+    position: absolute;
+    left: 0;
+
 }
 
 /* D3 styles */

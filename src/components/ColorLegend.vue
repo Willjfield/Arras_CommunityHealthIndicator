@@ -50,7 +50,8 @@ const maxColor = computed(() => {
 <style scoped>
 .color-legend {
   position: absolute;
-  top: 64px;
+  top: 115px;
+  left: 5px;
   width: 200px;
   height: 80px;
   background: rgba(255, 255, 255, 0.95);

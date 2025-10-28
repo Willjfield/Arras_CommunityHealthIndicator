@@ -3,13 +3,16 @@
     <div ref="mapContainerLeft" class="map-container">
       <TimelineVisualization 
         side="left" />
-      <!-- <ColorLegend
-        v-if="indicatorData.left && availableIndicators.length > 0 && categoryStore.selectedIndicators.left.geolevel === 'tract'"
-        :selected-indicator="categoryStore.selectedIndicators.left" side="left" /> -->
+     <ColorLegend
+     v-if="leftIndicatorLevelStore.getCurrentIndicator().geolevel === 'area'"
+        :selected-indicator="leftIndicatorLevelStore.getCurrentIndicator()" side="left" />
     </div>
     <div ref="mapContainerRight" class="map-container">
       <TimelineVisualization 
       side="right" />
+      <ColorLegend
+      v-if="rightIndicatorLevelStore.getCurrentIndicator().geolevel === 'area'"
+        :selected-indicator="rightIndicatorLevelStore.getCurrentIndicator()" side="right" />
     </div>
   </div>
 </template>
@@ -24,7 +27,8 @@
   import TimelineVisualization from './TimelineVisualization.vue'
   import '../assets/maplibre-gl-compare.css'
   import { useIndicatorLevelStore } from '../stores/indicatorLevelStore'
-import type { Emitter } from 'mitt'
+  import ColorLegend from './ColorLegend.vue'
+  import type { Emitter } from 'mitt'
   const mapContainerLeft = ref<HTMLElement>()
   let leftMap: maplibregl.Map | null = null
 
