@@ -850,7 +850,7 @@
       }
     },
     {
-      "id":"quality-childcare",
+      "id":"point-data",
       "type": "symbol",
       "source": "points-source",
       "layout": {

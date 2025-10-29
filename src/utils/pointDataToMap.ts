@@ -20,7 +20,7 @@ export class PointDataToMap extends DataToMap {
         const map: Map = (this as any).map;
         const data: IndicatorConfig = (this as any).data;
         const source: any = await map.getSource(data.source_name);
-
+        console.log(geojson);
         if (source && typeof source.setData === "function") {
             source.setData(geojson);
         } else {
@@ -78,6 +78,13 @@ export class PointDataToMap extends DataToMap {
                     ['==', ['to-number', ['get', 'geoid']], ['to-number', features[0].properties.geoid]],
                     ['literal', (this as any).data.style.selected.color],
                     ['literal', (this as any).data.style.unselected.color]
+                ])
+                //TODO: Scale icons according to property in year
+                map.setPaintProperty(mainLayer, 'icon-size', [
+                    'case',
+                    ['==', ['to-number', ['get', 'geoid']], ['to-number', features[0].properties.geoid]],
+                    ['literal', (this as any).data.style.selected['icon-size']],
+                    ['literal', (this as any).data.style.unselected['icon-size']]
                 ])
                 
                 // Show popup with Vue component

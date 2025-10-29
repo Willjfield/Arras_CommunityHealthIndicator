@@ -3,16 +3,20 @@
     <div ref="mapContainerLeft" class="map-container">
       <TimelineVisualization 
         side="left" />
-     <ColorLegend
-     v-if="leftIndicatorLevelStore.getCurrentIndicator().geolevel === 'area'"
-        :selected-indicator="leftIndicatorLevelStore.getCurrentIndicator()" side="left" />
+        <ColorLegend
+          v-if="leftIndicatorLevelStore.getCurrentIndicator() && leftIndicatorLevelStore.getCurrentIndicator()?.geolevel === 'area'"
+          :selected-indicator="leftIndicatorLevelStore.getCurrentIndicator()"
+          side="left"
+        />
     </div>
     <div ref="mapContainerRight" class="map-container">
       <TimelineVisualization 
       side="right" />
       <ColorLegend
-      v-if="rightIndicatorLevelStore.getCurrentIndicator().geolevel === 'area'"
-        :selected-indicator="rightIndicatorLevelStore.getCurrentIndicator()" side="right" />
+        v-if="rightIndicatorLevelStore.getCurrentIndicator() && rightIndicatorLevelStore.getCurrentIndicator()?.geolevel === 'area'"
+        :selected-indicator="rightIndicatorLevelStore.getCurrentIndicator()"
+        side="right"
+      />
     </div>
   </div>
 </template>
