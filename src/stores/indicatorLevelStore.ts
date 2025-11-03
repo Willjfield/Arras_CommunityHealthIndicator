@@ -43,8 +43,9 @@ const indicatorLevelStore = (storeName: 'left' | 'right') => {
     }
 
     async function setCurrentYear(year: number) {
-        currentYear.value = year
+        currentYear.value = +year
         if(worker) {
+           // console.log('setting year', year);
             await worker.setPaintAndLayoutProperties(year)
         }
     }
@@ -73,15 +74,15 @@ const indicatorLevelStore = (storeName: 'left' | 'right') => {
             if (worker) {
                 const headerShortNames = indicator.google_sheets_data.headerShortNames;
                 const defaultYear = headerShortNames && headerShortNames.length > 0 
-                    ? headerShortNames[headerShortNames.length - 1]
+                    ? headerShortNames.filter((year: string) => /^\d{4}$/.test(year)).sort((a: string, b: string) => Number(a) - Number(b))[0]
                     : null;
                 if (defaultYear !== null) {
                     await worker.setupIndicator(defaultYear);
                 }
                 await setCurrentYear(defaultYear)
-                setCurrentGeoSelection('Overall')
-                emitter?.on(`feature-${storeName}-clicked`, (tract: string | null) => {
-                    setCurrentGeoSelection(tract || 'Overall')
+                setCurrentGeoSelection('overall')
+                emitter?.on(`feature-${storeName}-clicked`, (feature: string | null) => {
+                    setCurrentGeoSelection(feature || 'overall')
                 })
             }
         } else {

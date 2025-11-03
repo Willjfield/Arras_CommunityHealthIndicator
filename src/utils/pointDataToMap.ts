@@ -20,7 +20,7 @@ export class PointDataToMap extends DataToMap {
         const map: Map = (this as any).map;
         const data: IndicatorConfig = (this as any).data;
         const source: any = await map.getSource(data.source_name);
-        console.log(geojson);
+        //console.log(geojson);
         if (source && typeof source.setData === "function") {
             source.setData(geojson);
         } else {
@@ -60,7 +60,7 @@ export class PointDataToMap extends DataToMap {
             const features = map.queryRenderedFeatures(event.point, {
                 layers: [mainLayer]
             })
-
+            
             if (features.length === 0) {
                 map.setLayoutProperty(mainLayer, 'icon-size', .75)
                 map.setPaintProperty(mainLayer, 'icon-color', '#888')
@@ -73,6 +73,7 @@ export class PointDataToMap extends DataToMap {
                 this.emitter?.emit(`feature-${this.side || 'left'}-hovered`, null)
                 return
             } else {
+                //const iconSize = (this as any).data.style.selected['icon-size'] * (features[0].properties[this.year || -1] / 100);
                 map.setLayoutProperty(mainLayer, 'icon-size', [
                     'case',
                     ['==', ['to-number', ['get', 'geoid']], ['to-number', features[0].properties.geoid]],
@@ -92,14 +93,8 @@ export class PointDataToMap extends DataToMap {
                         ['literal', 12],
                         ['literal', 8]
                     ])
-                    // map.setPaintProperty(circleLayer, 'circle-color', [
-                    //     'case',
-                    //     ['==', ['to-number', ['get', 'geoid']], ['to-number', features[0].properties.geoid]],
-                    //     ['literal', (this as any).data.style.unselected.color],
-                    //     ['literal', '#fff']
-                    // ])
                 }
-                //TODO: Scale icons according to property in year
+                
                 map.setLayoutProperty(mainLayer, 'icon-size', [
                     'case',
                     ['==', ['to-number', ['get', 'geoid']], ['to-number', features[0].properties.geoid]],
@@ -133,7 +128,11 @@ export class PointDataToMap extends DataToMap {
         await super.setPaintAndLayoutProperties(year);
         const map = (this as any).map;
         if (!map) return false;
+        
         map.setLayoutProperty((this as any).data.layers.main, 'visibility', 'visible');
+       // const iconSize = ['*',['to-number', ['get', year || 0]],0.001]
+
+        //map.setLayoutProperty((this as any).data.layers.main, 'icon-size', iconSize);
         let circleLayer = (this as any).data.layers.circle;
         if (circleLayer) {
             map.setLayoutProperty(circleLayer, 'visibility', 'visible');

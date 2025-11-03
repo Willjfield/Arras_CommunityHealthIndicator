@@ -5,22 +5,31 @@
             {{ decodeURIComponent(properties.address) }}
         </div>
         <div class="mb-2">
-            
-            <b>{{ currentIndicator?.title }}</b> 
+
+            <b>{{ currentIndicator?.title }}</b>
             <v-divider></v-divider>
+            <div v-if="currentIndicator?.has_pct">
+                <div class="capacity-container" v-for="pct in pcts" :key="pct.key">
+                    {{ pct.key }} : {{ pct.value }}{{ pct.value > 0 ? '%' : '(no data)' }}
+                    <br /><br />
+                </div>
+            </div>
             <div class="capacity-container" v-for="count in counts" :key="count.key">
-                {{ count.key.split('_')[1] }} : {{ count.value }}
-                <br/><br/>
-                <span class="dot-container" v-for="(n, c) in Number(count.value)" :key="c">
-                    <span class="dot"></span>
+                <span v-if="count.value > 0 && !currentIndicator?.has_pct">
+                    {{ count.key.split('_')[1] }} : {{ count.value }}
+                    <br /><br />
+                    <span class="dot-container" v-for="(n, c) in Number(count.value)" :key="c">
+                        <span class="dot"></span>
+                    </span>
+                    <v-divider></v-divider>
                 </span>
-                <v-divider></v-divider>
             </div>
         </div>
-        <v-expansion-panels density="compact">
+        <v-expansion-panels v-if="moreInfo.length > 0" density="compact">
             <v-expansion-panel variant="flat" density="compact">
                 <v-expansion-panel-title class="py-0" density="compact">
-                    <div class="text-small">More Info <br/><span class="text-extra-small">(Click to select)</span></div>
+                    <div class="text-small">More Info <br /><span class="text-extra-small">(Click to select)</span>
+                    </div>
                 </v-expansion-panel-title>
                 <v-expansion-panel-text class="pa-0" density="compact">
                     <div v-html="moreInfo"></div>
@@ -56,15 +65,24 @@ const counts = computed(() => {
     })
 })
 
+const pcts = computed(() => {
+    return Object.keys(props.properties).filter(key => !isNaN(+key) && +key > 1900 && +key < 2050).map(key => {
+        return {
+            key: key,
+            value: props.properties[key]
+        }
+    })
+})
 </script>
 
 <style scoped>
 .maplibregl-popup {
-   z-index: 1000;
+    z-index: 1000;
 }
+
 .popup-content {
-line-height: 1.1em;
-text-align: left;
+    line-height: 1.1em;
+    text-align: left;
 }
 
 .text-small {

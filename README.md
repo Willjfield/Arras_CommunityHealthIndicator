@@ -21,5 +21,5 @@ Learn more about the recommended Project Setup and IDE Support in the [Vue Docs 
 ### 10/29 - 2 - data cleaning
 ### 10/30 - 
 
- //Capacity the only one with no pcts? Everything else pct in popup?
- //Minor: popup on mouse or locked on item?
+
+ //Sharepoint

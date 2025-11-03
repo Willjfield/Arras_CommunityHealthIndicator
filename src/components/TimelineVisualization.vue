@@ -51,7 +51,8 @@ const svg = ref<SVGElement>()
 let svgElement: d3.Selection<SVGElement, unknown, null, undefined>
 let width = 450
 let height = 100
-let margin = { top: 0, right: 5, bottom: 25, left: 30 }
+let margin = { top: 15, right: 5, bottom: 15, left: 30 }
+let yScale: d3.ScaleLinear<number, number> = d3.scaleLinear().domain([0, 100]).range([height - margin.bottom, margin.top])
 
 const processData = (_feature: string | number | null) => {
 
@@ -71,7 +72,7 @@ const processData = (_feature: string | number | null) => {
   const data: Array<{ year: number; value: number | null }> = []
   let yearColumns: number[] = []
   //actual difference is totals or pcts. Is this always area vs point?
-  if (indicator.geolevel === 'area') {
+  if (indicator.has_pct) {
     // Find year columns (numeric strings)
     yearColumns = headerShortNames.filter((header: string) =>
       /^\d{4}$/.test(header) && !isNaN(Number(header))
@@ -84,17 +85,15 @@ const processData = (_feature: string | number | null) => {
       .map((year: string) => Number(year.replace('Count_', '')))
       .sort((a: number, b: number) => a - b)
   }
-  console.log(currentGeoSelection)
   matchingRow = rows.find((_row: Record<string, any>) =>
     '' + _row.geoid === '' + currentGeoSelection
   )
-  console.log(matchingRow)
   if (!matchingRow) return []
-  // Extract data for this indicator
+  // Exfeature data for this indicator
 
   yearColumns.forEach((year: number) => {
     let yearValue = matchingRow?.[year.toString()]
-    if(indicatorStore.getCurrentIndicator()?.count_only) {
+    if(indicator?.has_count && !indicator?.has_pct) {
       yearValue = matchingRow?.['Count_' + year.toString()]
     }
     data.push({
@@ -133,7 +132,7 @@ const createChart = () => {
 
   // Calculate scales
   const xScale = createXScale(data)
-  const yScale = createYScale(validData)
+  yScale = createYScale(validData)
 
   // Create axes
   const xAxis = d3.axisBottom(xScale)
@@ -225,10 +224,10 @@ const createChart = () => {
     .attr('r', 5)
 }
 const hoveredGeo = ref('');
-const addTractLine = (tract: string) => {
-  hoveredGeo.value = tract;
+const addFeatureLine = (feature: string) => {
+  hoveredGeo.value = feature;
   if (!svg.value) return
-  const data = processData(tract)
+  const data = processData(feature)
 
   if (data.length === 0) return
 
@@ -241,7 +240,8 @@ const addTractLine = (tract: string) => {
 
   // Calculate scales
   const xScale = createXScale(data)
-  const yScale = createYScale(validData)
+  //const yScale = createYScale(validData)
+  //console.log(yScale)
 
   // Create line generator
   const line = d3.line<{ year: number; value: number | null }>()
@@ -354,12 +354,13 @@ const createYScale = (data: Array<{ year: number; value: number | null }>) => {
   const values = data.map(d => d.value!).filter(v => v !== null && !isNaN(v))
   if (values.length === 0) return d3.scaleLinear().domain([0, 100]).range([height - margin.bottom, margin.top])
 
-  const min = Math.min(...values) - (10 * (indicatorStore.getCurrentIndicator()?.geolevel === 'area' ? 0 : 1))
-  const max = Math.max(...values) + (10 * (indicatorStore.getCurrentIndicator()?.geolevel === 'area' ? 0 : 1))
+  const min = 0//Math.min(...values) - (10 * (indicatorStore.getCurrentIndicator()?.geolevel === 'area' ? 0 : 1))
+  const max = Math.max(100,Math.max(...values)) || 100;
+   //+ (10 * (indicatorStore.getCurrentIndicator()?.geolevel === 'area' ? 0 : 1))
   const padding = (max - min) || 1
 
   return d3.scaleLinear()
-    .domain([Math.max(min - padding, 0), max + padding])
+    .domain([Math.max(min - padding, 0), max])
     .range([height + margin.bottom, margin.top])
 }
 
@@ -385,33 +386,33 @@ onMounted(() => {
   nextTick(() => {
     createChart()
   })
-  emitter.on('feature-left-hovered', (tract: string | null) => {
+  emitter.on('feature-left-hovered', (feature: string | null) => {
     if (props.side === 'left') {
       d3.selectAll('.timeline-feature-line').remove()
       d3.selectAll('.data-feature-point').remove()
-      if (tract === null) {
+      if (feature === null) {
         hoveredGeo.value = ''
       } else {
-        addTractLine(tract)
+        addFeatureLine(feature)
       }
     }
   })
-  emitter.on('feature-right-hovered', (tract: string | null) => {
+  emitter.on('feature-right-hovered', (feature: string | null) => {
     if (props.side === 'right') {
       d3.selectAll('.timeline-feature-line').remove()
       d3.selectAll('.data-feature-point').remove()
-      if (tract === null) {
+      if (feature === null) {
         hoveredGeo.value = ''
       } else {
-        addTractLine(tract)
+        addFeatureLine(feature)
       }
     }
   })
 })
 
 onUnmounted(() => {
-  emitter.off('feature-left-hovered', addTractLine)
-  emitter.off('feature-right-hovered', addTractLine)
+  emitter.off('feature-left-hovered', addFeatureLine)
+  emitter.off('feature-right-hovered', addFeatureLine)
 })
 </script>
 
@@ -498,7 +499,7 @@ onUnmounted(() => {
   /* bottom: 0; */
   position: absolute;
   left: 0;
-
+  top: 35px;
 }
 
 /* D3 styles */

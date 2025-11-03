@@ -9,7 +9,8 @@ export interface IndicatorConfig {
     geolevel: string;
     default: 'left' | 'right' | false;
     timeseries: boolean;
-    count_only: boolean;
+    has_pct: boolean;
+    has_count: boolean;
     google_sheets_url: string;
     google_sheets_data: any;
     source_name: string;
