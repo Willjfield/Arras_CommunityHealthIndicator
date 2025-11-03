@@ -57,7 +57,7 @@ const $route = useRoute()
   display: flex;
   flex-direction: column;
   gap: 1em;
-  border-radius: 1em;
+
   padding: 1em;
   border: 1px solid gray;
   padding-top: 15%;

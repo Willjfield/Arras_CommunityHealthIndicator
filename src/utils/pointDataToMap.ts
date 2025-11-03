@@ -51,7 +51,9 @@ export class PointDataToMap extends DataToMap {
                 closeButton: true,
                 closeOnClick: false,
                 closeOnMove: false,
-                offset: [0, -10]
+                offset: this.side === 'left' ? [-10, 0] : [10, 0],
+                anchor: this.side === 'left' ? 'right' : 'left',
+                focusAfterOpen: false,
             });
         }
 
@@ -60,7 +62,7 @@ export class PointDataToMap extends DataToMap {
             const features = map.queryRenderedFeatures(event.point, {
                 layers: [mainLayer]
             })
-            
+
             if (features.length === 0) {
                 map.setLayoutProperty(mainLayer, 'icon-size', .75)
                 map.setPaintProperty(mainLayer, 'icon-color', '#888')
@@ -72,6 +74,16 @@ export class PointDataToMap extends DataToMap {
 
                 this.emitter?.emit(`feature-${this.side || 'left'}-hovered`, null)
                 return
+            } else if (features[0].properties.cluster) {
+                map.setLayoutProperty(mainLayer, 'icon-size', .75)
+                map.setPaintProperty(mainLayer, 'icon-color', '#888')
+                if (circleLayer) {
+                    map.setPaintProperty(circleLayer, 'circle-radius', 8)
+                    map.setPaintProperty(circleLayer, 'circle-color', '#fff')
+                }
+                this.popup.remove();
+
+                this.showPopup(event.lngLat, features[0].properties, this.side as 'left' | 'right');
             } else {
                 //const iconSize = (this as any).data.style.selected['icon-size'] * (features[0].properties[this.year || -1] / 100);
                 map.setLayoutProperty(mainLayer, 'icon-size', [
@@ -117,6 +129,7 @@ export class PointDataToMap extends DataToMap {
 
     private showPopup(lngLat: any, properties: any, side: 'left' | 'right') {
         const map = (this as any).map;
+        
         this.popup.setLngLat(lngLat).setHTML('<div id="popup-container"></div>').addTo(map);
         const popupContainer = document.getElementById('popup-container');
         if (popupContainer) {
