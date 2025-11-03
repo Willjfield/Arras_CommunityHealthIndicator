@@ -30,10 +30,13 @@ export default {
     },
     watch: {},
     async beforeRouteEnter(to, from, next) {
+        document.getElementById('loading').style.display = 'block'
        await useThemeLevelStore().setCurrentTheme(to.query.theme)
         next()
     },
-    mounted() { },
+    mounted() {
+        document.getElementById('loading').style.display = 'none'
+    },
     methods: {}
 }
 </script>

@@ -14,5 +14,12 @@ Learn more about the recommended Project Setup and IDE Support in the [Vue Docs 
 ## Put in education (edit as needed)
 ## Where should config be hosted?
 
-### 10/23 - 2
-### 10/24 - 1.5
+### 10/23 - 2 - refactoring
+### 10/24 - 1.5 - refactoring
+### 10/27 - 2 - refactoring
+### 10/28 - 2 - refactoring
+### 10/29 - 2 - data cleaning
+### 10/30 - 
+
+ //Capacity the only one with no pcts? Everything else pct in popup?
+ //Minor: popup on mouse or locked on item?

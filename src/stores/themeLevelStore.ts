@@ -25,7 +25,7 @@ export const useThemeLevelStore = defineStore('themeLevel', () => {
             await Promise.all(currentIndicatorConfigs.map(async (indicator: IndicatorConfig) => {
                 indicator.google_sheets_data = formatGoogleSheetData((await axios.get(indicator.google_sheets_url)).data as any)
             }));
-            
+            console.log(currentIndicatorConfigs)
         }
     }
 

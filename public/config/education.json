@@ -1,82 +1,213 @@
-{   
+{
     "indicators": [
         {
             "title": "Percent of 3 and 4 Year Olds enrolled in Pre-K",
             "field": "Percent of 3 and 4 Year Olds enrolled in Pre-K",
-            "geolevel":"area",
+            "geolevel": "area",
             "default": "left",
             "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ1NzvNmynYUkd0j-ZsiHyjK5rlt5PDfKKrylVCUOSGNRwAAmU-RFx6EwISS1_CoyOB84XU4q99mRhS/pub?gid=1597849288&single=true&output=csv",
             "source_name": "tracts-harmonized",
             "short_name": "prek",
-            "layers":{
-                "main":"tracts-harmonized-fill",
-                "outline":"tracts-harmonized-outline"
+            "layers": {
+                "main": "tracts-harmonized-fill",
+                "outline": "tracts-harmonized-outline"
             },
-            "style":{
-                "min":{
-                    "color":"hsla(90, 100%, 98%, 1)",
-                    "value":0
+            "style": {
+                "min": {
+                    "color": "hsla(90, 100%, 98%, 1)",
+                    "value": 0
                 },
-                "max":{
-                    "color":"hsla(90, 100%, 40%, 1)",
-                    "value":100
+                "max": {
+                    "color": "hsla(90, 100%, 40%, 1)",
+                    "value": 100
                 }
             },
-            "fill_color": ["interpolate", ["linear"], ["to-number", ["get", "1990"]]]
+            "fill_color": [
+                "interpolate",
+                [
+                    "linear"
+                ],
+                [
+                    "to-number",
+                    [
+                        "get",
+                        "1990"
+                    ]
+                ]
+            ]
         },
         {
-            "title":"Availability of quality childcare",
-            "field":"Availability of quality childcare",
-            "geolevel":"point",
+            "title": "Availability of quality childcare",
+            "field": "Availability of quality childcare",
+            "geolevel": "point",
             "default": "right",
+            "count_only": true,
             "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vSMz-sXo5YL08yptNOf64atoW_IT7F1ATHxMAQSWLHkmBZ7_60Fdf7wTGMYrDS-p_YlHsFwy9PZMwKQ/pub?gid=1305246607&single=true&output=csv",
             "source_name": "points-source",
             "short_name": "childcare",
-            "layers":{
-                "main":"point-data"
+            "layers": {
+                "main": "point-data",
+                "circle": "point-data-circle"
             },
-            "icons":[
+            "icons": [
                 {
-                    "name":"icon-childcare",
-                    "filename":"assets/icons/childcare.png"
+                    "name": "icon-childcare",
+                    "filename": "assets/icons/childcare.png"
                 }
             ],
-            "style":{
-                "selected":{
-                    "color":"hsla(200, 100%, 60%, 1)",
-                    "icon-size":1
+            "style": {
+                "selected": {
+                    "color": "hsla(200, 100%, 60%, 1)",
+                    "icon-size": 1
                 },
-                "unselected":{
-                    "color":"#888",
-                    "icon-size":0.75
+                "unselected": {
+                    "color": "#888",
+                    "icon-size": 0.75
                 }
             }
         },
         {
-            "title":"3rd Grade Math Readiness",
-            "field":"3rd Grade Math Readiness",
-            "geolevel":"point",
+            "title": "3rd Grade Math Readiness",
+            "field": "3rd Grade Math Readiness",
+            "geolevel": "point",
             "default": false,
             "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vSCu5kjxric5yfSKfHIDWjgb5-aYVInFA6Dxb09sf59l7dEvI3EETNvW_jEbjBp9Zmvzfe0Ba79UN-e/pub?gid=1083324309&single=true&output=csv",
             "source_name": "points-source",
             "short_name": "3rdGradeMathReadiness",
-            "layers":{
-                "main":"point-data"
+            "layers": {
+                "main": "point-data",
+                "circle": "point-data-circle"
             },
-            "icons":[
+            "icons": [
                 {
-                    "name":"icon-childcare",
-                    "filename":"assets/icons/childcare.png"
+                    "name": "icon-school",
+                    "filename": "assets/icons/school.png"
                 }
             ],
-            "style":{
-                "selected":{
-                    "color":"hsla(200, 100%, 60%, 1)",
-                    "icon-size":1
+            "style": {
+                "selected": {
+                    "color": "hsla(200, 100%, 60%, 1)",
+                    "icon-size": 1
                 },
-                "unselected":{
-                    "color":"#888",
-                    "icon-size":0.75
+                "unselected": {
+                    "color": "#888",
+                    "icon-size": 0.75
+                }
+            }
+        },
+        {
+            "title": "3rd Grade ELA Readiness",
+            "field": "3rd Grade ELA Readiness",
+            "geolevel": "point",
+            "default": false,
+            "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRf32BM5HywH4IqtpbBCPy1SlDBIkuTVDfjY82kLHmqWVelJ3a7QpIz9gJ3z3TLR-wTh2O0ILkfNFJw/pub?gid=519161792&single=true&output=csv",
+            "source_name": "points-source",
+            "short_name": "3rdGradeELAReadiness",
+            "layers": {
+                "main": "point-data",
+                "circle": "point-data-circle"
+            },
+            "icons": [
+                {
+                    "name": "icon-school",
+                    "filename": "assets/icons/school.png"
+                }
+            ],
+            "style": {
+                "selected": {
+                    "color": "hsla(200, 100%, 60%, 1)",
+                    "icon-size": 1
+                },
+                "unselected": {
+                    "color": "#888",
+                    "icon-size": 0.75
+                }
+            }
+        },
+        {
+            "title": "Kindergarten Readiness",
+            "field": "Kindergarten Readiness",
+            "geolevel": "point",
+            "default": false,
+            "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vTDAYHOcGSybhfAirkRiKEyW7vgIj4aomJt_pNCcxAASGSwwNwtO5h7oPx6BVxyiN1Uij5nj7xdVDsU/pub?gid=1682018538&single=true&output=csv",
+            "source_name": "points-source",
+            "short_name": "KindergartenReadiness",
+            "layers": {
+                "main": "point-data",
+                "circle": "point-data-circle"
+            },
+            "icons": [
+                {
+                    "name": "icon-school",
+                    "filename": "assets/icons/school.png"
+                }
+            ],
+            "style": {
+                "selected": {
+                    "color": "hsla(200, 100%, 60%, 1)",
+                    "icon-size": 1
+                },
+                "unselected": {
+                    "color": "#888",
+                    "icon-size": 0.75
+                }
+            }
+        },
+        {
+            "title": "8th Grade Math Readiness",
+            "field": "8th Grade Math Readiness",
+            "geolevel": "point",
+            "default": false,
+            "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vTHeife7ClQQFcuKRP9n0fBNGs58kcP6_AflLZO03xwvmKo1r5WGL-OuhbVA52xjAhu5xeGdlzjJbN7/pub?gid=513352825&single=true&output=csv",
+            "source_name": "points-source",
+            "short_name": "8thGradeMathReadiness",
+            "layers": {
+                "main": "point-data",
+                "circle": "point-data-circle"
+            },
+            "icons": [
+                {
+                    "name": "icon-school",
+                    "filename": "assets/icons/school.png"
+                }
+            ],
+            "style": {
+                "selected": {
+                    "color": "hsla(200, 100%, 60%, 1)",
+                    "icon-size": 1
+                },
+                "unselected": {
+                    "color": "#888",
+                    "icon-size": 0.75
+                }
+            }
+        },
+        {
+            "title": "8th Grade ELA Readiness",
+            "field": "8th Grade ELA Readiness",
+            "geolevel": "point",
+            "default": false,
+            "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vS6FPF6zgHXWsooV1Nt7NjbywhsspWKDoGaRBj9Z6urjVm_7eszcS-lKdX7lNnE827V7ENLF4BFhtNG/pub?gid=646730336&single=true&output=csv",
+            "source_name": "points-source",
+            "short_name": "8thGradeELAReadiness",
+            "layers": {
+                "main": "point-data",
+                "circle": "point-data-circle"
+            },
+            "icons": [
+                {
+                    "name": "icon-school",
+                    "filename": "assets/icons/school.png"
+                }
+            ],
+            "style": {
+                "selected": {
+                    "color": "hsla(200, 100%, 60%, 1)",
+                    "icon-size": 1
+                },
+                "unselected": {
+                    "color": "#888",
+                    "icon-size": 0.75
                 }
             }
         }

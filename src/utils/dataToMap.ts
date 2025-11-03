@@ -51,6 +51,9 @@ export class DataToMap {
         if(this.data.layers.outline){
             this.map.setLayoutProperty(this.data.layers.outline, 'visibility', 'none');
         }
+        if(this.data.layers.circle){
+            this.map.setLayoutProperty(this.data.layers.circle, 'visibility', 'none');
+        }
     }
 
     //This may be getting called too much but not a huge problem. Better than not enough.

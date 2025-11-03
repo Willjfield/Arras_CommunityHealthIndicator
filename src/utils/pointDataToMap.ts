@@ -9,7 +9,7 @@ import vuetify from '../plugins/vuetify.js'
 export class PointDataToMap extends DataToMap {
     private popup: any = null;
     private frozenPopup: boolean = false;
-    constructor(data: IndicatorConfig, map: Map, side: 'left' | 'right' | null = null, emitter?: Emitter<any>) {  
+    constructor(data: IndicatorConfig, map: Map, side: 'left' | 'right' | null = null, emitter?: Emitter<any>) {
         super(data, map, side, emitter);
     }
 
@@ -42,17 +42,19 @@ export class PointDataToMap extends DataToMap {
         super.addNewEvents();
         const map = (this as any).map;
         const mainLayer = (this as any).data.layers.main;
+        const circleLayer = (this as any).data.layers.circle;
         if (!map) return
-        
+
         // Create popup once
         if (!this.popup) {
             this.popup = new maplibregl.Popup({
                 closeButton: true,
                 closeOnClick: false,
-                closeOnMove: false
+                closeOnMove: false,
+                offset: [0, -10]
             });
         }
-        
+
         this.events.mousemove = (event: any) => {
             if (this.frozenPopup) return;
             const features = map.queryRenderedFeatures(event.point, {
@@ -62,11 +64,15 @@ export class PointDataToMap extends DataToMap {
             if (features.length === 0) {
                 map.setLayoutProperty(mainLayer, 'icon-size', .75)
                 map.setPaintProperty(mainLayer, 'icon-color', '#888')
+                if (circleLayer) {
+                    map.setPaintProperty(circleLayer, 'circle-radius', 8)
+                    map.setPaintProperty(circleLayer, 'circle-color', '#fff')
+                }
                 this.popup.remove();
 
                 this.emitter?.emit(`feature-${this.side || 'left'}-hovered`, null)
                 return
-            }else{
+            } else {
                 map.setLayoutProperty(mainLayer, 'icon-size', [
                     'case',
                     ['==', ['to-number', ['get', 'geoid']], ['to-number', features[0].properties.geoid]],
@@ -79,17 +85,31 @@ export class PointDataToMap extends DataToMap {
                     ['literal', (this as any).data.style.selected.color],
                     ['literal', (this as any).data.style.unselected.color]
                 ])
+                if (circleLayer) {
+                    map.setPaintProperty(circleLayer, 'circle-radius', [
+                        'case',
+                        ['==', ['to-number', ['get', 'geoid']], ['to-number', features[0].properties.geoid]],
+                        ['literal', 12],
+                        ['literal', 8]
+                    ])
+                    // map.setPaintProperty(circleLayer, 'circle-color', [
+                    //     'case',
+                    //     ['==', ['to-number', ['get', 'geoid']], ['to-number', features[0].properties.geoid]],
+                    //     ['literal', (this as any).data.style.unselected.color],
+                    //     ['literal', '#fff']
+                    // ])
+                }
                 //TODO: Scale icons according to property in year
-                map.setPaintProperty(mainLayer, 'icon-size', [
+                map.setLayoutProperty(mainLayer, 'icon-size', [
                     'case',
                     ['==', ['to-number', ['get', 'geoid']], ['to-number', features[0].properties.geoid]],
-                    ['literal', (this as any).data.style.selected['icon-size']],
-                    ['literal', (this as any).data.style.unselected['icon-size']]
+                    (this as any).data.style.selected['icon-size'],
+                    (this as any).data.style.unselected['icon-size']
                 ])
-                
+
                 // Show popup with Vue component
-                this.showPopup(event.lngLat, features[0].properties);
-                
+                this.showPopup(event.lngLat, features[0].properties, this.side as 'left' | 'right');
+
                 this.emitter?.emit(`feature-${this.side || 'left'}-hovered`, features[0].properties.geoid)
             }
         }
@@ -99,21 +119,28 @@ export class PointDataToMap extends DataToMap {
         }
         map.on('click', this.events.click);
     }
-    
-    private showPopup(lngLat: any, properties: any) {
+
+    private showPopup(lngLat: any, properties: any, side: 'left' | 'right') {
         const map = (this as any).map;
         this.popup.setLngLat(lngLat).setHTML('<div id="popup-container"></div>').addTo(map);
         const popupContainer = document.getElementById('popup-container');
         if (popupContainer) {
-            createApp(Popup, { properties }).use(vuetify).mount(popupContainer);
+            createApp(Popup, { properties, side }).use(vuetify).mount(popupContainer);
         }
     }
 
-    async setPaintAndLayoutProperties(year:number | null) {
+    async setPaintAndLayoutProperties(year: number | null) {
         await super.setPaintAndLayoutProperties(year);
         const map = (this as any).map;
         if (!map) return false;
         map.setLayoutProperty((this as any).data.layers.main, 'visibility', 'visible');
+        let circleLayer = (this as any).data.layers.circle;
+        if (circleLayer) {
+            map.setLayoutProperty(circleLayer, 'visibility', 'visible');
+        }
+        if (!circleLayer) {
+            map.setLayoutProperty(circleLayer, 'visibility', 'none');
+        }
         return true;
     }
 

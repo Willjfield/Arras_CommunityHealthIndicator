@@ -52,10 +52,10 @@ const indicatorLevelStore = (storeName: 'left' | 'right') => {
         return currentYear.value
     }
     function getCurrentGeoSelection(): string | null {
-        return currentGeoSelection.value
+        return currentGeoSelection.value?.toLowerCase() || 'overall' //overall is default
     }
     function setCurrentGeoSelection(geoSelection: string) {
-        currentGeoSelection.value = geoSelection
+        currentGeoSelection.value = geoSelection?.toLowerCase() || null
     }
     async function setIndicatorFromIndicatorShortName(indicatorShortName: string, emitter?: Emitter<any>) {
         const indicator = currentThemeIndicators?.find((i: IndicatorConfig) => i.short_name === indicatorShortName) || null

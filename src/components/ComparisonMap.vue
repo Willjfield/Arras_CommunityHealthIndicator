@@ -58,20 +58,8 @@
   if (layer2022 && layer2022.layout) {
     layer2022.layout.visibility = 'none'
   }
-  // leftStyle.layers = leftStyle.layers.map(l => {
-  //   if (choroplethIDs.has(l.id)) {
-  //     l.paint['fill-color'] = indicators.find(i => i.field === defaultLeftIndicator)['fill-color']
-  //   }
-  //   return l
-  // })
 
   const rightStyle: any = JSON.parse(JSON.stringify(mapStyle))
-  // rightStyle.layers = rightStyle.layers.map(l => {
-  //   if (choroplethIDs.has(l.id)) {
-  //     l.paint['fill-color'] = indicators.find(i => i.field === defaultRightIndicator)['fill-color']
-  //   }
-  //   return l
-  // })
 
   let _compare: Compare | null = null
   // Watch for changes in props._type and execute function based on value

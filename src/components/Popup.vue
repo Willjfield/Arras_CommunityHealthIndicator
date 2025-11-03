@@ -6,7 +6,7 @@
         </div>
         <div class="mb-2">
             
-            <b>Capacity:</b> 
+            <b>{{ currentIndicator?.title }}</b> 
             <v-divider></v-divider>
             <div class="capacity-container" v-for="count in counts" :key="count.key">
                 {{ count.key.split('_')[1] }} : {{ count.value }}
@@ -32,6 +32,15 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue'
+import { useIndicatorLevelStore } from '../stores/indicatorLevelStore'
+
+const props = defineProps<{
+    properties: any
+    side: 'left' | 'right'
+}>()
+
+const indicatorStore = useIndicatorLevelStore(props.side)
+const currentIndicator = computed(() => indicatorStore.getCurrentIndicator())
 const moreInfo = computed(() => {
     if (!props.properties.more_info) return '';
     const splits = props.properties.more_info.split('\\n');
@@ -46,9 +55,7 @@ const counts = computed(() => {
         }
     })
 })
-const props = defineProps<{
-    properties: any
-}>()
+
 </script>
 
 <style scoped>

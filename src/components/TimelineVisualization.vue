@@ -1,20 +1,21 @@
 <template>
-    <div class="timeline-header">
-      <v-select :model-value="indicatorStore?.getCurrentIndicator()"
-        :items="themeLevelStore?.getAllCurrentThemeIndicators() || []" item-title="title" item-value="value" return-object
-        density="compact" variant="outlined" hide-details class="indicator-select"
-        @update:model-value="handleIndicatorChange" />
+  <div class="timeline-header">
+    <v-select :model-value="indicatorStore?.getCurrentIndicator()"
+      :items="themeLevelStore?.getAllCurrentThemeIndicators() || []" item-title="title" item-value="value" return-object
+      density="compact" variant="outlined" hide-details class="indicator-select"
+      @update:model-value="handleIndicatorChange" />
 
-    </div>
+  </div>
   <div ref="container" class="timeline-visualization" style="height: 180px; bottom:20px;">
-  
+
     <div class="chart-label">
       <span class="selected-geo">{{ `${indicatorStore?.getCurrentIndicator()?.title || ''}
         (${indicatorStore.getCurrentGeoSelection()})` }}<span class="selected-color"
           :style="{ border: `1px solid ${selectedColorRef}` }"></span></span>
-          <br />
-          <span v-show="!hoveredGeo" class="hovered-geo mx-2 font-italic font-weight-medium">Hover over a feature to see the timeline</span>
-          <span v-show="hoveredGeo" class="hovered-geo mx-2">Feature: {{ hoveredGeo }}<span class="hovered-color"
+      <br />
+      <span v-show="!hoveredGeo" class="hovered-geo mx-2 font-italic font-weight-medium">Hover over a feature to see the
+        timeline</span>
+      <span v-show="hoveredGeo" class="hovered-geo mx-2">Feature: {{ hoveredGeo }}<span class="hovered-color"
           :style="{ border: `1px solid ${hoveredColorRef}` }"></span></span>
     </div>
     <svg ref="svg" class="timeline-chart"></svg>
@@ -65,43 +66,43 @@ const processData = (_feature: string | number | null) => {
 
   //SET CURRENTGEO SELECTION TO HOVERED
   const currentGeoSelection = _feature || indicatorStore.getCurrentGeoSelection()
-
+ 
   let matchingRow: Record<string, any> | undefined = undefined;
   const data: Array<{ year: number; value: number | null }> = []
-
+  let yearColumns: number[] = []
+  //actual difference is totals or pcts. Is this always area vs point?
   if (indicator.geolevel === 'area') {
     // Find year columns (numeric strings)
-    const yearColumns = headerShortNames.filter((header: string) =>
+    yearColumns = headerShortNames.filter((header: string) =>
       /^\d{4}$/.test(header) && !isNaN(Number(header))
     ).map((year: string) => Number(year)).sort((a: number, b: number) => a - b)
-
-    matchingRow = rows.find((_row: Record<string, any>) =>
-      '' + _row.geoid === '' + currentGeoSelection
-    )
-    if (!matchingRow) return []
-    // Extract data for this indicator
-
-    yearColumns.forEach((year: number) => {
-      const yearValue = matchingRow?.[year.toString()]
-      data.push({
-        year,
-        value: yearValue != null && yearValue !== "" ? Number(yearValue) : null
-      })
-    })
   } else {
-    const yearColumns = headerShortNames
-      .filter((header: string) => header.startsWith('Count_'))
-      .sort((a: string, b: string) => a.replace('Count_', '').localeCompare(b.replace('Count_', '')));
-
-    yearColumns.forEach((year: string) => {
-      const totalValue = rows.reduce((acc: number, row: any) => acc + Math.round(Number(row[year])), 0) || null
-
-      data.push({
-        year: Number(year.replace('Count_', '')),
-        value: totalValue
-      });
-    });
+    yearColumns = headerShortNames
+      .filter((header: string) =>
+        header.startsWith('Count_')
+      )
+      .map((year: string) => Number(year.replace('Count_', '')))
+      .sort((a: number, b: number) => a - b)
   }
+  console.log(currentGeoSelection)
+  matchingRow = rows.find((_row: Record<string, any>) =>
+    '' + _row.geoid === '' + currentGeoSelection
+  )
+  console.log(matchingRow)
+  if (!matchingRow) return []
+  // Extract data for this indicator
+
+  yearColumns.forEach((year: number) => {
+    let yearValue = matchingRow?.[year.toString()]
+    if(indicatorStore.getCurrentIndicator()?.count_only) {
+      yearValue = matchingRow?.['Count_' + year.toString()]
+    }
+    data.push({
+      year,
+      value: yearValue != null && yearValue !== "" ? Number(yearValue) : null
+    })
+  })
+
   return data
 }
 
@@ -353,12 +354,12 @@ const createYScale = (data: Array<{ year: number; value: number | null }>) => {
   const values = data.map(d => d.value!).filter(v => v !== null && !isNaN(v))
   if (values.length === 0) return d3.scaleLinear().domain([0, 100]).range([height - margin.bottom, margin.top])
 
-  const min = Math.min(...values)-(10 * (indicatorStore.getCurrentIndicator()?.geolevel === 'area' ? 0 : 1))
-  const max = Math.max(...values)+(10 * (indicatorStore.getCurrentIndicator()?.geolevel === 'area' ? 0 : 1))
-  const padding = (max - min) || 1 
+  const min = Math.min(...values) - (10 * (indicatorStore.getCurrentIndicator()?.geolevel === 'area' ? 0 : 1))
+  const max = Math.max(...values) + (10 * (indicatorStore.getCurrentIndicator()?.geolevel === 'area' ? 0 : 1))
+  const padding = (max - min) || 1
 
   return d3.scaleLinear()
-    .domain([Math.max(min - padding,0), max + padding])
+    .domain([Math.max(min - padding, 0), max + padding])
     .range([height + margin.bottom, margin.top])
 }
 
@@ -431,9 +432,9 @@ onUnmounted(() => {
 
 .timeline-header {
   position: absolute;
-    top: 70px;
-    left: 5px;
-    z-index: 1;
+  top: 70px;
+  left: 5px;
+  z-index: 1;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -493,10 +494,10 @@ onUnmounted(() => {
 
 .timeline-chart {
   width: 100%;
-    height: 100%;
-    /* bottom: 0; */
-    position: absolute;
-    left: 0;
+  height: 100%;
+  /* bottom: 0; */
+  position: absolute;
+  left: 0;
 
 }
 

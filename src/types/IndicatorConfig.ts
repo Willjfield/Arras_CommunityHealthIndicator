@@ -9,12 +9,15 @@ export interface IndicatorConfig {
     geolevel: string;
     default: 'left' | 'right' | false;
     timeseries: boolean;
+    count_only: boolean;
     google_sheets_url: string;
     google_sheets_data: any;
     source_name: string;
     layers: {
+        [x: string]: any;
         main: string;
         outline: string;
+        circle: string | null;
     };
     style: {
         min: {
