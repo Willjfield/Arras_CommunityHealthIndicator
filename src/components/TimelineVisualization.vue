@@ -35,7 +35,7 @@ interface Props {
 const props = defineProps<Props>()
 const indicatorStore = useIndicatorLevelStore(props.side)
 const themeLevelStore = useThemeLevelStore()
-const emit = defineEmits<{
+defineEmits<{
   indicatorChanged: [indicator: any, side: 'left' | 'right']
   close: []
 }>()
@@ -61,7 +61,6 @@ const processData = (_feature: string | number | null) => {
 
   if (!raw_data) return []
   const headerShortNames = raw_data.headerShortNames
-  const headerLabels = raw_data.headerLabels
   const rows = raw_data.data
 
 

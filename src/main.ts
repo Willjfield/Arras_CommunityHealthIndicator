@@ -12,9 +12,7 @@ const app = createApp(App)
 const pinia = createPinia()
 app.provide('mitt', emitter)
 
-//console.log('process.env.NODE_ENV', process?.env?.NODE_ENV, isProduction);
-const isProduction = typeof process !== 'undefined' && typeof process?.env !== 'undefined' && process?.env?.NODE_ENV === 'production';
-const historyString = ''//isProduction ? '/Arras_Prototype/' : '';
+const historyString = ''
 
 const mainConfig = (await axios.get('/config/main.json')).data;
 

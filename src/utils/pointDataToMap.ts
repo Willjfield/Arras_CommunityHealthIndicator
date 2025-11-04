@@ -121,7 +121,7 @@ export class PointDataToMap extends DataToMap {
             }
         }
         map.on('mousemove', this.events.mousemove);
-        this.events.click = (event: any) => {
+        this.events.click = (_event: any) => {
             this.frozenPopup = !this.frozenPopup;
         }
         map.on('click', this.events.click);

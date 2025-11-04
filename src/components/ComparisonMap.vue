@@ -50,8 +50,6 @@
 
   const leftIndicatorLevelStore = useIndicatorLevelStore('left')
   const rightIndicatorLevelStore = useIndicatorLevelStore('right')
-  const leftIndicator = leftIndicatorLevelStore.getCurrentIndicator()
-  const rightIndicator = rightIndicatorLevelStore.getCurrentIndicator()
 
   const leftStyle: any = JSON.parse(JSON.stringify(mapStyle))
   const layer2022 = leftStyle.layers.find((f: any) => f.id === 'tracts-2022-fill')
@@ -63,7 +61,7 @@
 
   let _compare: Compare | null = null
   // Watch for changes in props._type and execute function based on value
-  watch(() => props._type, (newType, oldType) => {
+  watch(() => props._type, (newType) => {
     if (_compare) _compare.switchType(newType)
   })
 

@@ -8,17 +8,17 @@
             <strong>{{ fieldLabel }}</strong>
           </v-expansion-panel-title>
           <v-expansion-panel-text>
-            <div v-for="(value, key) in modelValue" :key="key" class="mb-4">
-              <JsonFormField v-model="modelValue[key]" :field-name="key" :parent-path="path" :is-nested="true"
-                @update:model-value="(val) => updateNestedValue(key, val)" />
+            <div v-for="(_value, key) in modelValue" :key="key" class="mb-4">
+              <JsonFormField v-model="modelValue[key]" :field-name="String(key)" :parent-path="path" :is-nested="true"
+                @update:model-value="(val) => updateNestedValue(String(key), val)" />
             </div>
           </v-expansion-panel-text>
         </v-expansion-panel>
       </v-expansion-panels>
       <div v-else>
-        <div v-for="(value, key) in modelValue" :key="key" class="mb-4">
-          <JsonFormField v-model="modelValue[key]" :field-name="key" :parent-path="path" :is-nested="true"
-            @update:model-value="(val) => updateNestedValue(key, val)" />
+        <div v-for="(_value, key) in modelValue" :key="key" class="mb-4">
+          <JsonFormField v-model="modelValue[key]" :field-name="String(key)" :parent-path="path" :is-nested="true"
+            @update:model-value="(val) => updateNestedValue(String(key), val)" />
         </div>
       </div>
     </template>
@@ -278,12 +278,6 @@ function parseColorToHex(colorStr: string): string {
   return '#000000';
 }
 
-function hexToColorString(colorValue: any): string {
-  // Handle both object format { hex: '#fff' } and string format
-  const hex = typeof colorValue === 'string' ? colorValue : colorValue?.hex || '#000000';
-  // Preserve original format if possible, otherwise use hex
-  return hex;
-}
 
 function onColorPickerChange(value: any) {
   colorPickerValue.value = typeof value === 'string' ? value : value?.hex || '#000000';
