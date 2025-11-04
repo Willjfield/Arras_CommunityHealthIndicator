@@ -77,6 +77,20 @@ onMounted(() => {
             url: sitePath + url
           }
         }
+        // If this is an absolute URL on the same origin, insert the base path
+        if (sitePath && typeof window !== 'undefined') {
+          const origin = window.location.origin;
+          if (url.startsWith(origin + '/') && !url.includes(sitePath)) {
+            // Insert the base path after the origin
+            const path = url.substring(origin.length);
+            // Ensure proper path joining (avoid double slashes)
+            const basePath = sitePath.endsWith('/') ? sitePath.slice(0, -1) : sitePath;
+            const cleanPath = path.startsWith('/') ? path : '/' + path;
+            return {
+              url: origin + basePath + cleanPath
+            }
+          }
+        }
         return { url }
       }
     })
@@ -101,6 +115,20 @@ onMounted(() => {
         if (url.startsWith('/')) {
           return {
             url: sitePath + url
+          }
+        }
+        // If this is an absolute URL on the same origin, insert the base path
+        if (sitePath && typeof window !== 'undefined') {
+          const origin = window.location.origin;
+          if (url.startsWith(origin + '/') && !url.includes(sitePath)) {
+            // Insert the base path after the origin
+            const path = url.substring(origin.length);
+            // Ensure proper path joining (avoid double slashes)
+            const basePath = sitePath.endsWith('/') ? sitePath.slice(0, -1) : sitePath;
+            const cleanPath = path.startsWith('/') ? path : '/' + path;
+            return {
+              url: origin + basePath + cleanPath
+            }
           }
         }
         return { url }
