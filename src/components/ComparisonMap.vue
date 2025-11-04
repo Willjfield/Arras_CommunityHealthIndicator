@@ -52,10 +52,6 @@
   const rightIndicatorLevelStore = useIndicatorLevelStore('right')
 
   const leftStyle: any = JSON.parse(JSON.stringify(mapStyle))
-  const layer2022 = leftStyle.layers.find((f: any) => f.id === 'tracts-2022-fill')
-  if (layer2022 && layer2022.layout) {
-    layer2022.layout.visibility = 'none'
-  }
 
   const rightStyle: any = JSON.parse(JSON.stringify(mapStyle))
 
@@ -77,8 +73,20 @@
         style: leftStyle,
         center: props._center,
         zoom: props._zoom,
-        
+        hash: true,
+        transformRequest: (url: string) => {
+          if (url.charAt(0) === '/') {
+          const sitePath = inject('sitePath') as string;
+            return {
+              url: `${sitePath}${url}`,
+            }
+          }
+          return {
+            url: url,
+          }
+        }
       })
+      
       leftIndicatorLevelStore.initializeMap(leftMap, emitter)
       leftMap.on('mousemove', (e: any) => {
         if (!leftMap) return
@@ -93,6 +101,18 @@
         style: rightStyle,
         center: props._center,
         zoom: props._zoom,
+        hash: true,
+        transformRequest: (url: string) => {
+          if (url.charAt(0) === '/') {
+          const sitePath = inject('sitePath') as string;
+            return {
+              url: `${sitePath}${url}`,
+            }
+          }
+          return {
+            url: url,
+          }
+        }
       })
       rightIndicatorLevelStore.initializeMap(rightMap, emitter)
       rightMap.on('mousemove', (e: any) => {
