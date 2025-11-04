@@ -39,6 +39,43 @@
             ]
         },
         {
+            "title": "Percent of Children (under 18 years) whose income in the past 12 months is below poverty level",
+            "field": "Percent of Children (under 18 years) whose income in the past 12 months is below poverty level",
+            "geolevel": "area",
+            "has_pct": true,
+            "has_count": false,
+            "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRT9sRzNbN3RA9jfOSwV8VWN8-QCyd60ejnfQhNSS8MQkGn8u-BSXbIxkzwAFtE6CzVfv5Jr8nzMs7T/pub?gid=622872564&single=true&output=csv",
+            "source_name": "tracts-harmonized",
+            "short_name": "poverty",
+            "layers": {
+                "main": "tracts-harmonized-fill",
+                "outline": "tracts-harmonized-outline"
+            },
+            "style": {
+                "min": {
+                    "color": "hsla(90, 100%, 98%, 1)",
+                    "value": 0
+                },
+                "max": {
+                    "color": "hsla(90, 100%, 40%, 1)",
+                    "value": 100
+                }
+            },
+            "fill_color": [
+                "interpolate",
+                [
+                    "linear"
+                ],
+                [
+                    "to-number",
+                    [
+                        "get",
+                        "1990"
+                    ]
+                ]
+            ]
+        },
+        {
             "title": "Availability of quality childcare",
             "field": "Availability of quality childcare",
             "geolevel": "point",
@@ -132,37 +169,6 @@
             }
         },
         {
-            "title": "Kindergarten Readiness",
-            "field": "Kindergarten Readiness",
-            "geolevel": "point",
-            "default": false,
-            "has_pct": true,
-            "has_count": true,
-            "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vTDAYHOcGSybhfAirkRiKEyW7vgIj4aomJt_pNCcxAASGSwwNwtO5h7oPx6BVxyiN1Uij5nj7xdVDsU/pub?gid=1682018538&single=true&output=csv",
-            "source_name": "points-source",
-            "short_name": "KindergartenReadiness",
-            "layers": {
-                "main": "point-data",
-                "circle": "point-data-circle"
-            },
-            "icons": [
-                {
-                    "name": "icon-school",
-                    "filename": "assets/icons/school.png"
-                }
-            ],
-            "style": {
-                "selected": {
-                    "color": "hsla(200, 100%, 60%, 1)",
-                    "icon-size": 1
-                },
-                "unselected": {
-                    "color": "#888",
-                    "icon-size": 0.75
-                }
-            }
-        },
-        {
             "title": "8th Grade Math Readiness",
             "field": "8th Grade Math Readiness",
             "geolevel": "point",
@@ -203,6 +209,37 @@
             "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vS6FPF6zgHXWsooV1Nt7NjbywhsspWKDoGaRBj9Z6urjVm_7eszcS-lKdX7lNnE827V7ENLF4BFhtNG/pub?gid=646730336&single=true&output=csv",
             "source_name": "points-source",
             "short_name": "8thGradeELAReadiness",
+            "layers": {
+                "main": "point-data",
+                "circle": "point-data-circle"
+            },
+            "icons": [
+                {
+                    "name": "icon-school",
+                    "filename": "assets/icons/school.png"
+                }
+            ],
+            "style": {
+                "selected": {
+                    "color": "hsla(200, 100%, 60%, 1)",
+                    "icon-size": 1
+                },
+                "unselected": {
+                    "color": "#888",
+                    "icon-size": 0.75
+                }
+            }
+        },
+        {
+            "title": "High School Completion Rate",
+            "field": "High School Completion Rate",
+            "geolevel": "point",
+            "default": false,
+            "has_pct": true,
+            "has_count": false,
+            "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vQRMExRmu74MTZeJpvkmWPtITx0-Dgb3T6PF2ZtWGrQBcH2bd0GM89lkbPPW-xfRT59ThohYoNdWTD3/pub?gid=54733314&single=true&output=csv",
+            "source_name": "points-source",
+            "short_name": "highSchoolCompletion",
             "layers": {
                 "main": "point-data",
                 "circle": "point-data-circle"

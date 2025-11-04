@@ -106,7 +106,7 @@ export class PointDataToMap extends DataToMap {
                         ['literal', 8]
                     ])
                 }
-                
+                console.log(features[0].properties);
                 map.setLayoutProperty(mainLayer, 'icon-size', [
                     'case',
                     ['==', ['to-number', ['get', 'geoid']], ['to-number', features[0].properties.geoid]],
@@ -160,6 +160,7 @@ export class PointDataToMap extends DataToMap {
         super.generateGeojson();
         // Fix: Access private 'data' property through 'as any'
         const rawGoogleData = (this as any).data.google_sheets_data.data;
+        //console.log(rawGoogleData);
         const geojson = {
             type: 'FeatureCollection',
             features: rawGoogleData.map((row: any) => {
