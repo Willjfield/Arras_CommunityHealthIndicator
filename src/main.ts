@@ -12,8 +12,8 @@ const app = createApp(App)
 const pinia = createPinia()
 app.provide('mitt', emitter)
 
-const historyString = ''
 const sitePath = process.env.NODE_ENV === 'production' ? '/Arras_CommunityHealthIndicator/' : ''
+const historyBase = sitePath
 app.provide('sitePath', sitePath);
 const mainConfig = (await axios.get(sitePath+'/config/main.json')).data;
 
@@ -31,7 +31,7 @@ app.provide('categoryConfigs', categoryConfigs);
 app.provide('mainConfig', mainConfig);
 
 const router = createRouter({
-    history: createWebHistory(historyString),
+    history: createWebHistory(historyBase),
     routes: [
         {
             path: '/',
@@ -40,7 +40,7 @@ const router = createRouter({
             meta: { title: 'Landing' }
         },
         {
-            path: '/Map',
+            path: '/map',
             name: 'map',
             component: () => import('./views/MapPage.vue'),
             meta: { title: 'Map' }
