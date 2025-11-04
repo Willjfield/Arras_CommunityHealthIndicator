@@ -45,6 +45,12 @@ const router = createRouter({
             name: 'map',
             component: () => import('./views/MapPage.vue'),
             meta: { title: 'Map' }
+        },
+        {
+            path: '/config-editor',
+            name: 'config-editor',
+            component: () => import('./views/ConfigEditor.vue'),
+            meta: { title: 'Config Editor' }
         }
     ]
 })
