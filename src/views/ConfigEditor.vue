@@ -160,7 +160,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, inject } from 'vue';
 import axios from 'axios';
 import JsonFormField from '../components/JsonFormField.vue';
 const mainConfigJson = ref<string>('');
@@ -181,7 +181,8 @@ onMounted(async () => {
 async function loadConfigs() {
   try {
     // Load main config
-    const mainConfigDataResponse = await axios.get('/config/main.json');
+    const sitePath = inject('sitePath') as string;
+    const mainConfigDataResponse = await axios.get(`${sitePath}/config/main.json`);
     mainConfigData.value = mainConfigDataResponse.data;
     mainConfigJson.value = JSON.stringify(mainConfigData.value, null, 2);
 
@@ -192,7 +193,7 @@ async function loadConfigs() {
     // Load all category configs
     for (const category of categoriesWithConfigs.value) {
       try {
-        const configData = await axios.get(category.config);
+        const configData = await axios.get(`${sitePath}${category.config}`);
         categoryConfigsData.value[category.query_str] = configData.data;
         categoryConfigs.value[category.query_str] = JSON.stringify(configData.data, null, 2);
         categoryErrors.value[category.query_str] = null;

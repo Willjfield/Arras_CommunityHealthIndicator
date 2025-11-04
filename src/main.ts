@@ -13,8 +13,9 @@ const pinia = createPinia()
 app.provide('mitt', emitter)
 
 const historyString = ''
-
-const mainConfig = (await axios.get('/config/main.json')).data;
+const sitePath = process.env.NODE_ENV === 'production' ? '/Arras_CommunityHealthIndicator/' : ''
+app.provide('sitePath', sitePath);
+const mainConfig = (await axios.get(sitePath+'/config/main.json')).data;
 
 const activeCategories = mainConfig.categories
     .filter((category: any) => category.enabled && category.config)
@@ -23,7 +24,7 @@ const categoryConfigs: Record<string, any> = {};
 
 await Promise.all(activeCategories.map(async (config: any) => {
     const key = config.query_str as string;
-    categoryConfigs[key] = (await axios.get(config.config)).data
+    categoryConfigs[key] = (await axios.get(`${sitePath}${config.config}`)).data
 }));
 
 app.provide('categoryConfigs', categoryConfigs);
