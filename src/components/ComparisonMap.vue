@@ -148,6 +148,8 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
+  leftIndicatorLevelStore.removeMap()
+  rightIndicatorLevelStore.removeMap()
   if (leftMap) {
     leftMap.remove()
   }

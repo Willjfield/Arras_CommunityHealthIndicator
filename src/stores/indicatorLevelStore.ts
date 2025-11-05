@@ -39,6 +39,11 @@ const indicatorLevelStore = (storeName: 'left' | 'right') => {
 
     let worker: AreaDataToMap | PointDataToMap | null = null;
     function removeMap() {
+        if(worker) {
+            worker.removeOldEvents();
+            worker.hideLayers();
+            worker = null;
+        }
         map = null
     }
 
