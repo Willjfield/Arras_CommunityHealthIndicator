@@ -7,18 +7,19 @@
             </h4>
         </div>
         <div v-else>
-            <h3>{{ properties.name }} </h3>
-            <div class="mb-2 popup-content-inner">
+            <h3 v-if="properties.name">{{ properties.name }} </h3>
+            <h3 v-else-if="properties.geoid">{{ properties.geoid }} </h3>
+            <div v-if="properties.address" class="mb-2 popup-content-inner">
                 {{ decodeURIComponent(properties.address) }}
             </div>
             <div class="mb-2">
 
                 <b>{{ currentIndicator?.title }}</b>
-                <v-divider></v-divider>
-                <div v-if="properties.has_pct" v-for="stat in stats" :key="stat.key">
-                    <div v-if="!stat.key.startsWith('Count_')">{{ stat.key }} : {{ stat.value }}%, ({{ props.properties[`Count_${stat.key}`] }} total)</div>
+                <v-divider></v-divider>     
+                <div v-if="currentIndicator?.has_pct" v-for="stat in stats" :key="stat.key">
+                    <div v-if="!stat.key.startsWith('Count_')">{{ stat.key }} : {{ stat.value }}%<span v-if="props.properties[`Count_${stat.key}`]">, ({{ props.properties[`Count_${stat.key}`] }} total)</span></div>
                 </div>
-                <div v-else>
+                <div v-else-if="currentIndicator?.has_count">
                     <div v-for="stat in stats" :key="stat.key">
                         <div v-if="stat.key.startsWith('Count_') && stat.value > 0">{{ stat.key.split('_')[1] }} : {{ stat.value }} total</div>
                         <div v-else-if="stat.key.startsWith('Count_') && (stat.value == 0 || !stat.value)">{{ stat.key.split('_')[1] }} : No data</div>

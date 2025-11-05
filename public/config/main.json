@@ -1,61 +1,31 @@
 {
     "categories": [
         {
-            "title": "ARTS & CIVIC ENGAGEMENT",
-            "query_str": "arts_civics",
+            "title": "Economic Vitality",
+            "query_str": "econ",
             "description": "We envision residents and community partners convening together to address shared values for the purposes of good governance, community development, and artistic expression."
         },
         {
-            "title": "K12 SCHOOLS & EDUCATION",
+            "title": "Education",
             "query_str":"edu",
             "enabled": true,
             "description": "We envision communities that offer quality elementary, secondary, post-secondary educational opportunities and academic achievement.",
             "config": "/config/education.json"
         },
         {
-            "title": "TRANSITIONS TO ADULTHOOD",
-            "query_str":"adult",
+            "title": "Health",
+            "query_str":"health",
             "description": "We envision communities where young adults have access to education and job opportunities."
         },
         {
-            "title": "HEALTHY ECONOMY",
-            "query_str":"health_econ",
+            "title": "Natural Environment",
+            "query_str":"nat_env",
             "description": "We envision communities where people are able and willing to work, spend, earn, and invest."
         },
         {
-            "title": "STRENGTHENING & SUPPORTING FAMILIES",
-            "query_str":"family",
+            "title": "Social & Cultural Wellbeing",
+            "query_str":"social_cultural",
             "description": "We envision communities that offer empowering supports for family wellbeing, safe neighborhoods, and community trust."
-        },
-        {
-            "title": "ACCESS TO HEALTHCARE",
-            "query_str":"health_access",
-            "description": "We envision communities where residents can easily access quality medical services and support."
-        },
-        {
-            "title": "EARLY CHILDHOOD EDUCATION",
-            "query_str":"early_childhood_edu",
-            "description": "We envision communities that offer health and educational supports for early learning and positive development of young children."
-        },
-        {
-            "title": "HEALTHY LIVING",
-            "query_str":"health_living",
-            "description": "We envision communities where residents can easily make healthy lifestyle decisions, like eating fresh and nutritious food."
-        },
-        {
-            "title": "GREEN SPACE, CLEAN AIR & WATER",
-            "query_str":"enviro",
-            "description": "We envision communities that offer parks, green spaces, and a clean environment that help increase outdoor recreation and overall well-being."
-        },
-        {
-            "title": "TRANSPORTATION ACCESS",
-            "query_str":"transport_access",
-            "description": "We envision communities where residents have a variety of safe transportation and commuting options."
-        },
-        {
-            "title": "FAITH COMMUNITY",
-            "query_str":"faith",
-            "description": "We envision communities where residents can participate in and support faith-based groups and organizations."
         }
     ]
 }

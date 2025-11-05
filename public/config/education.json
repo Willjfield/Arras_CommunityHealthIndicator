@@ -42,6 +42,7 @@
             "title": "Percent of Children (under 18 years) whose income in the past 12 months is below poverty level",
             "field": "Percent of Children (under 18 years) whose income in the past 12 months is below poverty level",
             "geolevel": "area",
+            "default": false,
             "has_pct": true,
             "has_count": false,
             "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRT9sRzNbN3RA9jfOSwV8VWN8-QCyd60ejnfQhNSS8MQkGn8u-BSXbIxkzwAFtE6CzVfv5Jr8nzMs7T/pub?gid=622872564&single=true&output=csv",
@@ -240,6 +241,68 @@
             "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vQRMExRmu74MTZeJpvkmWPtITx0-Dgb3T6PF2ZtWGrQBcH2bd0GM89lkbPPW-xfRT59ThohYoNdWTD3/pub?gid=54733314&single=true&output=csv",
             "source_name": "points-source",
             "short_name": "highSchoolCompletion",
+            "layers": {
+                "main": "point-data",
+                "circle": "point-data-circle"
+            },
+            "icons": [
+                {
+                    "name": "icon-school",
+                    "filename": "assets/icons/school.png"
+                }
+            ],
+            "style": {
+                "selected": {
+                    "color": "hsla(200, 100%, 60%, 1)",
+                    "icon-size": 1
+                },
+                "unselected": {
+                    "color": "#888",
+                    "icon-size": 0.75
+                }
+            }
+        },
+        {
+            "title": "High School Career Readiness",
+            "field": "High School Career Readiness",
+            "geolevel": "point",
+            "default": false,
+            "has_pct": true,
+            "has_count": true,
+            "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ8jPJ9dEnqbCW0PWrpRaDMCgrVUQcTnOPOzxtfPin1iEOIZAVDBNf3PWJskRJtI67fVPfm905vGUz1/pub?gid=633516775&single=true&output=csv",
+            "source_name": "points-source",
+            "short_name": "highSchoolCareerReadiness",
+            "layers": {
+                "main": "point-data",
+                "circle": "point-data-circle"
+            },
+            "icons": [
+                {
+                    "name": "icon-school",
+                    "filename": "assets/icons/school.png"
+                }
+            ],
+            "style": {
+                "selected": {
+                    "color": "hsla(200, 100%, 60%, 1)",
+                    "icon-size": 1
+                },
+                "unselected": {
+                    "color": "#888",
+                    "icon-size": 0.75
+                }
+            }
+        },
+        {
+            "title": "High School College Readiness",
+            "field": "High School College Readiness",
+            "geolevel": "point",
+            "default": false,
+            "has_pct": true,
+            "has_count": true,
+            "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRmSnL3B1lHsHv5wWwDDCQ7B8Cf7hF7xLGhT907Gik-xZc0x4FBX-JqvV9OWCUYMagfj-hzvdWLT793/pub?gid=1658262532&single=true&output=csv",
+            "source_name": "points-source",
+            "short_name": "highSchoolCollegeReadiness",
             "layers": {
                 "main": "point-data",
                 "circle": "point-data-circle"

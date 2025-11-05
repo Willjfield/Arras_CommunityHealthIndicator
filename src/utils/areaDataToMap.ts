@@ -2,6 +2,7 @@ import type { IndicatorConfig } from "../types/IndicatorConfig";
 import { DataToMap } from "./dataToMap";
 import type { Map } from "maplibre-gl";
 import type { Emitter } from "mitt";
+
 //import { toRaw } from "vue";
 export class AreaDataToMap extends DataToMap {
     constructor(data: IndicatorConfig, map: Map, side: 'left' | 'right' | null = null, emitter?: Emitter<any>) {
@@ -50,8 +51,10 @@ export class AreaDataToMap extends DataToMap {
         const mainLayer = (this as any).data.layers.main;
         if (!map) return
         const data = (this as any).data;
-
+   
         this.events.mousemove = (event: any) => {
+                  // Create popup once
+         this.createPopupIfNeeded();
             const features = map.queryRenderedFeatures(event.point, {
                 layers: [mainLayer]
             })
@@ -69,6 +72,7 @@ export class AreaDataToMap extends DataToMap {
                             ['literal', '#08ff'],
                             '#0000'])
                 }
+                this.removePopup();
                 return;
             }
             const feature = features[0];
@@ -88,7 +92,8 @@ export class AreaDataToMap extends DataToMap {
                         ['literal', '#08ff'],
                         '#0000'])
             }
-
+            // Show popup with Vue component
+            this.showPopup(event.lngLat,feature.properties, this.side as 'left' | 'right');
             this.emitter?.emit(`feature-${this.side || 'left'}-hovered`, feature.properties.geoid)
         }
 

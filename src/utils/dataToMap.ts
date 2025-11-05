@@ -1,6 +1,10 @@
 import type { Icon, IndicatorConfig } from '../types/IndicatorConfig'
 import type { Map } from 'maplibre-gl'
 import type { Emitter } from 'mitt'
+import maplibregl from 'maplibre-gl'
+import { createApp, type App } from 'vue'
+import Popup from '../components/Popup.vue'
+import vuetify from '../plugins/vuetify.js'
 
 export class DataToMap {
     private readonly data: IndicatorConfig;
@@ -9,6 +13,9 @@ export class DataToMap {
     events: { click: any; mousemove: any; mouseleave: any; };
     year: number | null;
     side: 'left' | 'right' | null;
+    protected popup: any = null;
+    protected frozenPopup: boolean = false;
+    protected popupApp: App | null = null;
     constructor(_data: IndicatorConfig, _map: Map, side: 'left' | 'right' | null = null, _emitter?: Emitter<any>) {
         this.data = _data;
         this.map = _map;
@@ -67,8 +74,59 @@ export class DataToMap {
         if(this.events.mouseleave){
             this.map.off('mouseleave', this.events.mouseleave);
         }
+        if (this.popupApp) {
+            this.popupApp.unmount();
+            this.popupApp = null;
+        }
+        if(this.popup){
+            this.popup.remove();
+            this.popup = null;
+        }
     }
     addNewEvents(){}
+    
+    protected createPopupIfNeeded() {
+        if (!this.popup) {
+            this.popup = new maplibregl.Popup({
+                closeButton: true,
+                closeOnClick: false,
+                closeOnMove: false,
+                offset: this.side === 'left' ? [-10, 0] : [10, 0],
+                anchor: this.side === 'left' ? 'right' : 'left',
+                focusAfterOpen: false,
+            });
+        }
+    }
+
+    protected showPopup(lngLat: any, properties: any, side: 'left' | 'right') {
+        // Unmount existing app if it exists
+        if (this.popupApp) {
+            this.popupApp.unmount();
+            this.popupApp = null;
+        }
+        
+        // Use unique container ID based on side to avoid conflicts between left and right popups
+        const containerId = `popup-container-${side}`;
+        this.createPopupIfNeeded();
+        this.popup.setLngLat(lngLat).setHTML(`<div id="${containerId}"></div>`).addTo(this.map);
+        const popupContainer = document.getElementById(containerId);
+        if (popupContainer) {
+            this.popupApp = createApp(Popup, { properties, side }).use(vuetify);
+            this.popupApp.mount(popupContainer);
+        }
+    }
+
+    protected removePopup() {
+        if (this.popupApp) {
+            this.popupApp.unmount();
+            this.popupApp = null;
+        }
+        if (this.popup) {
+            this.popup.remove();
+            this.popup = null;
+        }
+    }
+
     async setPaintAndLayoutProperties(year:number | null){
         this.year = year || this.year || null;
         try {

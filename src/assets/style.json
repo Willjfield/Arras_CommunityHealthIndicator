@@ -26,7 +26,7 @@
       },
       "cluster": true,
       "clusterMaxZoom": 14,
-      "clusterRadius": 8
+      "clusterRadius": 10
     }
   },
   "glyphs": "https://api.maptiler.com/fonts/{fontstack}/{range}.pbf?key=7SGo3nVkTl7JQ90xmJ0i\t",

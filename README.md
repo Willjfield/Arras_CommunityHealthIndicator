@@ -20,6 +20,21 @@ Learn more about the recommended Project Setup and IDE Support in the [Vue Docs 
 ### 10/28 - 2 - refactoring
 ### 10/29 - 2 - data cleaning
 ### 10/30 - 
+### 11/3
+### 11/4
+### 11/5
 
+x 3-4 year olds enrolled in preschool
+x 3rd grade ELA standards 
+x 3rd grade math standards
+x 8th grade ELA standards
+x 8th grade math standards 
+x Availability of quality childcare
+Children failing 1st, 2nd, or 3rd grade (look to proxy)
+x Children living poverty
+x High school graduation rates 
+x 11th grade career readiness
+x 11th grade college readiness
+Young people not in school nor employed
 
  //Sharepoint

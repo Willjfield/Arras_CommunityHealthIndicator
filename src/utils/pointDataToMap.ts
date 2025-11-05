@@ -1,16 +1,16 @@
 import type { IndicatorConfig } from "../types/IndicatorConfig";
 import { DataToMap } from "./dataToMap";
-import maplibregl, { type Map } from "maplibre-gl";
+import { type Map } from "maplibre-gl";
 import type { Emitter } from 'mitt'
-import { createApp } from 'vue'
-import Popup from '../components/Popup.vue'
-import vuetify from '../plugins/vuetify.js'
 
 export class PointDataToMap extends DataToMap {
-    private popup: any = null;
-    private frozenPopup: boolean = false;
+    private clusterIconMultiplier: number;
+    private circleRadius: number;
     constructor(data: IndicatorConfig, map: Map, side: 'left' | 'right' | null = null, emitter?: Emitter<any>) {
         super(data, map, side, emitter);
+        this.circleRadius = 8;
+        this.clusterIconMultiplier = (this as any).data.style.selected['icon-size'] / (this as any).data.style.unselected['icon-size'];
+  
     }
 
     async setupIndicator(year: number | null): Promise<boolean> {
@@ -20,6 +20,7 @@ export class PointDataToMap extends DataToMap {
         const map: Map = (this as any).map;
         const data: IndicatorConfig = (this as any).data;
         const source: any = await map.getSource(data.source_name);
+      
         //console.log(geojson);
         if (source && typeof source.setData === "function") {
             source.setData(geojson);
@@ -33,9 +34,6 @@ export class PointDataToMap extends DataToMap {
 
     removeOldEvents() {
         super.removeOldEvents();
-        if (this.popup) {
-            this.popup.remove();
-        }
     }
 
     addNewEvents() {
@@ -43,76 +41,80 @@ export class PointDataToMap extends DataToMap {
         const map = (this as any).map;
         const mainLayer = (this as any).data.layers.main;
         const circleLayer = (this as any).data.layers.circle;
+
         if (!map) return
 
         // Create popup once
-        if (!this.popup) {
-            this.popup = new maplibregl.Popup({
-                closeButton: true,
-                closeOnClick: false,
-                closeOnMove: false,
-                offset: this.side === 'left' ? [-10, 0] : [10, 0],
-                anchor: this.side === 'left' ? 'right' : 'left',
-                focusAfterOpen: false,
-            });
-        }
+        //this.createPopupIfNeeded();
 
         this.events.mousemove = (event: any) => {
             if (this.frozenPopup) return;
+            this.createPopupIfNeeded();
             const features = map.queryRenderedFeatures(event.point, {
                 layers: [mainLayer]
             })
 
             if (features.length === 0) {
-                map.setLayoutProperty(mainLayer, 'icon-size', .75)
+                map.setLayoutProperty(mainLayer, 'icon-size', ['case',
+                    ['==', ['get', 'cluster'], true],
+                    ['literal', (this as any).data.style.unselected['icon-size'] * this.clusterIconMultiplier],
+                    ['literal', (this as any).data.style.unselected['icon-size']]
+                ])
                 map.setPaintProperty(mainLayer, 'icon-color', '#888')
                 if (circleLayer) {
-                    map.setPaintProperty(circleLayer, 'circle-radius', 8)
+                    map.setPaintProperty(circleLayer, 'circle-radius', ['case',
+                        ['==', ['get', 'cluster'], true],
+                        ['literal', this.circleRadius * this.clusterIconMultiplier],
+                        ['literal', this.circleRadius]
+                    ])
                     map.setPaintProperty(circleLayer, 'circle-color', '#fff')
                 }
-                this.popup.remove();
+                this.removePopup();
 
                 this.emitter?.emit(`feature-${this.side || 'left'}-hovered`, null)
                 return
             } else if (features[0].properties.cluster) {
-                map.setLayoutProperty(mainLayer, 'icon-size', .75)
-                map.setPaintProperty(mainLayer, 'icon-color', '#888')
-                if (circleLayer) {
-                    map.setPaintProperty(circleLayer, 'circle-radius', 8)
-                    map.setPaintProperty(circleLayer, 'circle-color', '#fff')
-                }
-                this.popup.remove();
-
-                this.showPopup(event.lngLat, features[0].properties, this.side as 'left' | 'right');
-            } else {
-                //const iconSize = (this as any).data.style.selected['icon-size'] * (features[0].properties[this.year || -1] / 100);
-                map.setLayoutProperty(mainLayer, 'icon-size', [
-                    'case',
-                    ['==', ['to-number', ['get', 'geoid']], ['to-number', features[0].properties.geoid]],
-                    1,
-                    0.75
+                console.log(features[0].properties);
+                map.setLayoutProperty(mainLayer, 'icon-size', ['case',
+                    ['==', ['get', 'cluster'], true],
+                    ['literal', (this as any).data.style.unselected['icon-size'] * this.clusterIconMultiplier],
+                    ['literal', (this as any).data.style.unselected['icon-size']]
                 ])
-                map.setPaintProperty(mainLayer, 'icon-color', [
-                    'case',
-                    ['==', ['to-number', ['get', 'geoid']], ['to-number', features[0].properties.geoid]],
+                map.setPaintProperty(mainLayer, 'icon-color', ['case',
+                    ['==', ['get', 'cluster_id'], features[0].properties.cluster_id || 0],
                     ['literal', (this as any).data.style.selected.color],
                     ['literal', (this as any).data.style.unselected.color]
                 ])
                 if (circleLayer) {
-                    map.setPaintProperty(circleLayer, 'circle-radius', [
-                        'case',
-                        ['==', ['to-number', ['get', 'geoid']], ['to-number', features[0].properties.geoid]],
-                        ['literal', 12],
-                        ['literal', 8]
+                    map.setPaintProperty(circleLayer, 'circle-radius', ['case',
+                        ['==', ['get', 'cluster'], true],
+                        ['literal', this.circleRadius * this.clusterIconMultiplier],
+                        ['literal', this.circleRadius]
                     ])
+                    map.setPaintProperty(circleLayer, 'circle-color', '#fff')
                 }
-                console.log(features[0].properties);
-                map.setLayoutProperty(mainLayer, 'icon-size', [
-                    'case',
-                    ['==', ['to-number', ['get', 'geoid']], ['to-number', features[0].properties.geoid]],
-                    (this as any).data.style.selected['icon-size'],
-                    (this as any).data.style.unselected['icon-size']
+                this.removePopup();
+
+                this.showPopup(event.lngLat, features[0].properties, this.side as 'left' | 'right');
+            } else {
+                map.setLayoutProperty(mainLayer, 'icon-size', ['case',
+                    ['==', ['get', 'cluster'], true],
+                    ['literal', (this as any).data.style.unselected['icon-size'] * this.clusterIconMultiplier],
+                    ['literal', (this as any).data.style.unselected['icon-size']]
                 ])
+                map.setPaintProperty(mainLayer, 'icon-color', ['case',
+                    ['==', ['get', 'geoid'], features[0].properties.geoid],
+                    ['literal', (this as any).data.style.selected.color],
+                    ['literal', (this as any).data.style.unselected.color]
+                ])
+                if (circleLayer) {
+                    map.setPaintProperty(circleLayer, 'circle-radius', ['case',
+                        ['==', ['get', 'cluster'], true],
+                        ['literal', this.circleRadius * this.clusterIconMultiplier],
+                        ['literal', this.circleRadius]
+                    ])
+                    map.setPaintProperty(circleLayer, 'circle-color', '#fff')
+                }
 
                 // Show popup with Vue component
                 this.showPopup(event.lngLat, features[0].properties, this.side as 'left' | 'right');
@@ -127,28 +129,28 @@ export class PointDataToMap extends DataToMap {
         map.on('click', this.events.click);
     }
 
-    private showPopup(lngLat: any, properties: any, side: 'left' | 'right') {
-        const map = (this as any).map;
-        
-        this.popup.setLngLat(lngLat).setHTML('<div id="popup-container"></div>').addTo(map);
-        const popupContainer = document.getElementById('popup-container');
-        if (popupContainer) {
-            createApp(Popup, { properties, side }).use(vuetify).mount(popupContainer);
-        }
-    }
-
     async setPaintAndLayoutProperties(year: number | null) {
         await super.setPaintAndLayoutProperties(year);
         const map = (this as any).map;
         if (!map) return false;
-        
+
         map.setLayoutProperty((this as any).data.layers.main, 'visibility', 'visible');
-       // const iconSize = ['*',['to-number', ['get', year || 0]],0.001]
+        // const iconSize = ['*',['to-number', ['get', year || 0]],0.001]
 
         //map.setLayoutProperty((this as any).data.layers.main, 'icon-size', iconSize);
+        map.setLayoutProperty((this as any).data.layers.main, 'icon-size', ['case',
+            ['==', ['get', 'cluster'], true],
+            ['literal', (this as any).data.style.unselected['icon-size'] * this.clusterIconMultiplier],
+            ['literal', (this as any).data.style.unselected['icon-size']]
+        ])
         let circleLayer = (this as any).data.layers.circle;
         if (circleLayer) {
             map.setLayoutProperty(circleLayer, 'visibility', 'visible');
+            map.setPaintProperty(circleLayer, 'circle-radius', ['case',
+                ['==', ['get', 'cluster'], true],
+                ['literal', this.circleRadius * this.clusterIconMultiplier],
+                ['literal', this.circleRadius]
+            ])
         }
         if (!circleLayer) {
             map.setLayoutProperty(circleLayer, 'visibility', 'none');
