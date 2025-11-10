@@ -120,7 +120,7 @@
                           variant="outlined"
                           :error="categoryErrors[category.query_str] !== null"
                           :error-messages="categoryErrors[category.query_str]"
-                          @update:model-value="(val) => onCategoryJsonChange(category.query_str, val)"
+                          @update:model-value="(val: any) => onCategoryJsonChange(category.query_str, val)"
                         ></v-textarea>
                       </div>
                       <div class="mt-4">
