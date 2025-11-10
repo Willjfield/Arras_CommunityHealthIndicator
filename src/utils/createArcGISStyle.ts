@@ -6,7 +6,7 @@ export default async function createArcGISStyle(sitePath: string) {
         ...style.sources, ...{
             'tracts-harmonized': {
                 type: 'geojson',
-                data: sitePath + '/ChestLanTractsHarmonized.geojson'
+                data: sitePath + 'ChestLanTractsHarmonized.geojson'
             },
             'points-source': {
                 type: 'geojson',
