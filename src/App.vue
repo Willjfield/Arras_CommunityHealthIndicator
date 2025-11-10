@@ -27,7 +27,7 @@
           <div class="progress-container">
             <v-progress-circular 
               indeterminate 
-              color="primary" 
+              color="white" 
               size="80" 
               width="8"
               class="loading-spinner"
