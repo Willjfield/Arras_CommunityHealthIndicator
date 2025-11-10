@@ -11,9 +11,34 @@
           </RouterLink>
         </template>
       </v-app-bar>
-      <div id="loading" style="position:absolute; left: 0; width: 100%; height: 100%;" > 
-          <h1>LOADING...</h1>
-          <v-progress-circular indeterminate color="primary" size="100" width="10" />
+      <div id="loading" class="loading-screen">
+        <div class="loading-content">
+          <div class="logo-container">
+            <v-img 
+              src="ArrasFoundation.png" 
+              max-width="300px"
+              class="loading-logo"
+            />
+          </div>
+          <div class="loading-text">
+            <h2 class="loading-title">Loading Community Health Data</h2>
+            <p class="loading-subtitle">Please wait while we prepare your map...</p>
+          </div>
+          <div class="progress-container">
+            <v-progress-circular 
+              indeterminate 
+              color="primary" 
+              size="80" 
+              width="8"
+              class="loading-spinner"
+            />
+          </div>
+          <div class="loading-dots">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+          </div>
+        </div>
       </div>
       <router-view></router-view>
     </v-app>
@@ -40,30 +65,159 @@ const $route = useRoute()
 .logo.vue:hover {
   filter: drop-shadow(0 0 2em #42b883aa);
 }
-
-#loading {
-  z-index: 1000;
+.full-screen-main{
+  width: 100%;
+  height: 100%;
   position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  background-color: white;
+}
+.loading-screen {
+  z-index: 10000;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: white;
-  color: gray;
-  font-size: 2em;
-  text-align: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: none;
   justify-content: center;
   align-items: center;
-  display: flex;
-  flex-direction: column;
-  gap: 1em;
+  transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+  visibility: visible;
+  opacity: 1;
+}
 
-  padding: 1em;
-  border: 1px solid gray;
-  padding-top: 15%;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  display: none;
-  transition: opacity 0.3s ease-in-out;
+.loading-screen[style*="display: none"] {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.loading-content {
+  text-align: center;
+  color: white;
+  max-width: 500px;
+  padding: 2rem;
+  animation: fadeInUp 0.8s ease-out;
+}
+
+.logo-container {
+  margin-bottom: 2rem;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.loading-logo {
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+  margin: 0 auto;
+}
+
+.loading-text {
+  margin-bottom: 2rem;
+}
+
+.loading-title {
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: white;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  letter-spacing: 0.5px;
+}
+
+.loading-subtitle {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0;
+  font-weight: 300;
+}
+
+.progress-container {
+  margin: 2rem 0;
+  display: flex;
+  justify-content: center;
+}
+
+.loading-spinner {
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.2));
+}
+
+.loading-dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+.loading-dots .dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: white;
+  animation: bounce 1.4s ease-in-out infinite both;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.loading-dots .dot:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.loading-dots .dot:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+.loading-dots .dot:nth-child(3) {
+  animation-delay: 0;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.9;
+  }
+}
+
+@keyframes bounce {
+  0%, 80%, 100% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .loading-title {
+    font-size: 1.5rem;
+  }
+  
+  .loading-subtitle {
+    font-size: 0.9rem;
+  }
+  
+  .loading-logo {
+    max-width: 200px !important;
+  }
 }
 </style>

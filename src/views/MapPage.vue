@@ -30,7 +30,7 @@ export default {
     },
     watch: {},
     async beforeRouteEnter(to, from, next) {
-        document.getElementById('loading').style.display = 'block'
+        document.getElementById('loading').style.display = 'flex'
        await useThemeLevelStore().setCurrentTheme(to.query.theme)
         next()
     },
