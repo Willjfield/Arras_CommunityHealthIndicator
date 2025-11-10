@@ -105,8 +105,8 @@ export class DataToMap {
                 closeButton: true,
                 closeOnClick: false,
                 closeOnMove: false,
-                offset: this.side === 'left' ? [-10, 0] : [10, 0],
-                anchor: this.side === 'left' ? 'right' : 'left',
+               // offset: this.side === 'right' ? [-10, 0] : [10, 0],
+               // anchor: this.side as 'left' | 'right' | undefined,
                 focusAfterOpen: false,
             });
         }
