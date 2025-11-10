@@ -19,7 +19,6 @@
 import maplibregl from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { inject, onBeforeMount, onMounted, onUnmounted, ref, watch } from 'vue'
-import * as mapStyle from '../assets/style.json'
 //import { indicators } from '../assets/indicators.json'
 import Compare from '../assets/maplibre-gl-compare.js'
 import TimelineVisualization from './TimelineVisualization.vue'
@@ -27,6 +26,8 @@ import '../assets/maplibre-gl-compare.css'
 import { useIndicatorLevelStore } from '../stores/indicatorLevelStore'
 import ColorLegend from './ColorLegend.vue'
 import type { Emitter } from 'mitt'
+import createArcGISStyle from '../utils/createArcGISStyle'
+
 const mapContainerLeft = ref<HTMLElement>()
 let leftMap: maplibregl.Map | null = null
 
@@ -45,9 +46,7 @@ const props = defineProps<{
 const leftIndicatorLevelStore = useIndicatorLevelStore('left')
 const rightIndicatorLevelStore = useIndicatorLevelStore('right')
 
-const leftStyle: any = JSON.parse(JSON.stringify(mapStyle))
 
-const rightStyle: any = JSON.parse(JSON.stringify(mapStyle))
 
 let _compare: Compare | null = null
 // Watch for changes in props._type and execute function based on value
@@ -56,11 +55,14 @@ watch(() => props._type, (newType) => {
 })
 
 onBeforeMount(() => { })
-onMounted(() => {
+onMounted(async () => {
   console.log('mnt')
   const emitter = inject('mitt') as Emitter<any>
   // Ensure the container is properly initialized
   const sitePath = inject('sitePath') as string;
+
+  const leftStyle = await createArcGISStyle(sitePath) as any
+  const rightStyle = await createArcGISStyle(sitePath) as any
 
   if (mapContainerLeft.value) {
 
@@ -71,6 +73,10 @@ onMounted(() => {
       zoom: props._zoom,
       hash: true,
       transformRequest: (url: string) => {
+        // Handle ArcGIS tile requests (no modification needed)
+        if (url.includes('arcgisonline.com') || url.includes('arcgis.com')) {
+          return { url }
+        }
         // If this is a local resource (starts with '/'), prepend sitePath
         if (url.startsWith('/')) {
           return {
@@ -111,6 +117,10 @@ onMounted(() => {
       zoom: props._zoom,
       hash: true,
       transformRequest: (url: string) => {
+        // Handle ArcGIS tile requests (no modification needed)
+        if (url.includes('arcgisonline.com') || url.includes('arcgis.com')) {
+          return { url }
+        }
         // If this is a local resource (starts with '/'), prepend sitePath
         if (url.startsWith('/')) {
           return {
