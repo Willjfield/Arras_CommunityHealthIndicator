@@ -177,6 +177,7 @@ onUnmounted(() => {
   width: 100%;
   transition: width .3s ease-in-out;
   border-left: 1px solid black;
+  overflow: visible;
 }
 
 .map-container.collapsed {

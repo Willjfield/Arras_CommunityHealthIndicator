@@ -156,7 +156,7 @@ const stats = computed(() => {
 .maplibregl-popup{
     max-width: none !important;
     pointer-events: none !important;
-   
+   z-index: 999999 !important;
 }
 
 .maplibregl-popup-content{
