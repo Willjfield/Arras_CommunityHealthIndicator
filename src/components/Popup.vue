@@ -100,7 +100,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useIndicatorLevelStore } from '../stores/indicatorLevelStore'
 
 const props = defineProps<{
