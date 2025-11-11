@@ -1,15 +1,46 @@
 <template>
   <main id="main" class="full-screen-main" tabindex="-1">
     <v-app>
-      <v-app-bar :elevation="2">
+      <v-navigation-drawer v-model="drawer" temporary>
+        <v-list>
+          <v-list-item>
+            <v-list-item-title class="text-h6 font-weight-bold">
+              Health Indicators
+            </v-list-item-title>
+          </v-list-item>
+          <v-divider></v-divider>
+          <v-list-item
+            v-for="category in categories"
+            :key="category.title"
+            :to="`/map?theme=${category.query_str}`"
+            :disabled="!category.enabled"
+            @click="drawer = false"
+          >
+            <template v-slot:prepend>
+              <v-icon :icon="category.icon || 'mdi-chart-line'"></v-icon>
+            </template>
+            <v-list-item-title>{{ category.title }}</v-list-item-title>
+          </v-list-item>
+          <v-divider class="my-2"></v-divider>
+          <v-list-item to="/" @click="drawer = false">
+            <template v-slot:prepend>
+              <v-icon icon="mdi-home"></v-icon>
+            </template>
+            <v-list-item-title>Home</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-navigation-drawer>
+      <v-app-bar collapse :elevation="2">
         <template v-slot:prepend>
+          <v-icon icon="mdi-menu" size="24" @click="drawer = !drawer" style="cursor: pointer;" />
           <v-img width="100px" src="ArrasFoundation.png" />
+         
         </template>
-        <template v-slot:append>
+        <!-- <template v-slot:append>
           <RouterLink v-slot="{ href, navigate }" to="/">
             <v-btn v-show="$route?.name!=='landing'" :href="href" @click="navigate">Home</v-btn>
           </RouterLink>
-        </template>
+        </template> -->
       </v-app-bar>
       <div id="loading" class="loading-screen">
         <div class="loading-content">
@@ -45,9 +76,13 @@
   </main>
 </template>
 <script setup lang="ts">
-import { RouterLink, useRoute } from 'vue-router'
-const $route = useRoute()
+import { ref, inject, computed } from 'vue'
 
+//const hovered = ref(false)
+const drawer = ref(false)
+
+const mainConfig = inject('mainConfig') as any;
+const categories = computed(() => mainConfig?.categories || []);
 
 </script>
 <style scoped>

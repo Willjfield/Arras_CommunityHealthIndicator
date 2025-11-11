@@ -1,20 +1,19 @@
 <template>
   <div class="color-legend" :class="{ 'left': side === 'left', 'right': side === 'right' }">
-    <div class="legend-header">
-      <span class="legend-title">{{ selectedIndicator?.title || 'Indicator' }}</span>
-    </div>
-    <div class="legend-content">
-      <div class="legend-gradient">
-        <div 
-          class="gradient-bar" 
-          :style="{ 
-            background: `linear-gradient(to right, ${minColor}, ${maxColor})` 
-          }"
-        ></div>
+    <div class="legend-container">
+      <div class="legend-header">
+        <span class="legend-title">{{ selectedIndicator?.title || 'Indicator' }}</span>
       </div>
-      <div class="legend-labels">
-        <span class="min-label">{{ minValue }}%</span>
-        <span class="max-label">{{ maxValue }}%</span>
+      <div class="legend-content">
+        <div class="legend-gradient">
+          <div class="gradient-bar" :style="{
+            background: `linear-gradient(to right, ${minColor}, ${maxColor})`
+          }"></div>
+        </div>
+        <div class="legend-labels">
+          <span class="min-label">{{ minValue }}%</span>
+          <span class="max-label">{{ maxValue }}%</span>
+        </div>
       </div>
     </div>
   </div>
@@ -50,14 +49,10 @@ const maxColor = computed(() => {
 <style scoped>
 .color-legend {
   position: absolute;
-  top: 115px;
-  left: 5px;
-  width: 200px;
+  top: 3rem;
+  width: 50%;
   height: 80px;
-  background: rgba(255, 255, 255, 0.95);
-  border: 1px solid #e5e7eb;
-  border-radius: 5px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+ 
   z-index: 1000;
   user-select: none;
 }
@@ -114,5 +109,14 @@ const maxColor = computed(() => {
   font-size: 10px;
   color: #6b7280;
   font-weight: 500;
+}
+
+.legend-container {
+  width: 50%;
+  margin: 0 auto;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid #e5e7eb;
+  border-radius: 5px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 </style>

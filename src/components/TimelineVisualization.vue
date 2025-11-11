@@ -1,13 +1,8 @@
 <template>
   <div class="timeline-header">
-    <v-select :model-value="indicatorStore?.getCurrentIndicator()"
-      :items="themeLevelStore?.getAllCurrentThemeIndicators() || []" item-title="title" item-value="value" return-object
-      density="compact" variant="outlined" hide-details class="indicator-select"
-      @update:model-value="handleIndicatorChange" />
-
+    <IndicatorSelector :side="side" @indicator-changed="handleIndicatorChange" />
   </div>
   <div ref="container" class="timeline-visualization" style="height: 180px; bottom:20px;">
-
     <div class="chart-label">
       <span class="selected-geo">{{ `${indicatorStore?.getCurrentIndicator()?.title || ''}
         (${indicatorStore.getCurrentGeoSelection()})` }}<span class="selected-color"
@@ -26,7 +21,8 @@
 import * as d3 from 'd3'
 import { ref, onMounted, onUnmounted, watch, nextTick, inject } from 'vue'
 import useIndicatorLevelStore from '../stores/indicatorLevelStore';
-import { useThemeLevelStore } from '../stores/themeLevelStore';
+import IndicatorSelector from './IndicatorSelector.vue';
+
 const emitter = inject('mitt') as any
 interface Props {
   side: 'left' | 'right'
@@ -34,7 +30,6 @@ interface Props {
 
 const props = defineProps<Props>()
 const indicatorStore = useIndicatorLevelStore(props.side)
-const themeLevelStore = useThemeLevelStore()
 defineEmits<{
   indicatorChanged: [indicator: any, side: 'left' | 'right']
   close: []
@@ -363,9 +358,9 @@ const createYScale = (data: Array<{ year: number; value: number | null }>) => {
     .range([height + margin.bottom, margin.top])
 }
 
-const handleIndicatorChange = async (indicator: any) => {
-  await indicatorStore.setIndicatorFromIndicatorShortName(indicator.short_name, emitter)
-
+const handleIndicatorChange = async () => {
+  // Indicator is already set by IndicatorSelector component
+  // Just recreate the chart
   nextTick(() => {
     createChart()
   })
@@ -432,16 +427,15 @@ onUnmounted(() => {
 
 .timeline-header {
   position: absolute;
-  top: 70px;
-  left: 5px;
+  top: 0px;
+  width: 50%;
+  left: 0px;
   z-index: 1;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0;
-  border-bottom: 1px solid #e5e7eb;
-  background: rgba(249, 250, 251, 0.8);
-  border-radius: 8px 8px 0 0;
+
 }
 
 .chart-label {
@@ -454,23 +448,6 @@ onUnmounted(() => {
 }
 
 
-.indicator-select {
-  flex: 1;
-}
-
-.indicator-select :deep(.v-field) {
-  font-size: 11px;
-  min-height: 32px;
-}
-
-.indicator-select :deep(.v-field__input) {
-  font-size: 11px;
-  padding: 4px 8px;
-}
-
-.indicator-select :deep(.v-select__selection) {
-  font-size: 11px;
-}
 
 .close-btn {
   background: none;
