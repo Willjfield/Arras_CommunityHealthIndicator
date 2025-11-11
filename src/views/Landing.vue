@@ -5,7 +5,7 @@
       <v-row no-gutters class="hero-section">
         <v-col cols="12" class="text-center pa-8 pa-md-12">
           <h1 class="text-h3 text-md-h2 font-weight-bold mb-4 text-primary">
-            <v-img src="/assets/ArrasFoundation_RGB.png" max-width="800px" />
+            <v-img src="./assets/ArrasFoundation_RGB.png" max-width="800px" />
           </h1>
           <p class="text-h6 text-md-h5 text-medium-emphasis mb-8">
             Community Health Indicator
