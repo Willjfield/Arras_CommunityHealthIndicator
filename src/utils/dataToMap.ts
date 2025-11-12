@@ -2,7 +2,7 @@ import type { Icon, IndicatorConfig } from '../types/IndicatorConfig'
 import type { Map } from 'maplibre-gl'
 import type { Emitter } from 'mitt'
 import maplibregl from 'maplibre-gl'
-import { createApp, type App } from 'vue'
+import { createApp, type App, reactive } from 'vue'
 import Popup from '../components/Popup.vue'
 import vuetify from '../plugins/vuetify.js'
 
@@ -16,6 +16,9 @@ export class DataToMap {
     protected popup: any = null;
     protected frozenPopup: boolean = false;
     protected popupApp: App | null = null;
+    protected highlightedGeoid: string | null = null;
+    protected lastPopupGeoid: string | null = null;
+    protected popupProperties: ReturnType<typeof reactive> | null = null;
     constructor(_data: IndicatorConfig, _map: Map, side: 'left' | 'right' | null = null, _emitter?: Emitter<any>) {
         this.data = _data;
         this.map = _map;
@@ -27,6 +30,7 @@ export class DataToMap {
         }
         this.year = null;
         this.side = side;
+        this.highlightedGeoid = null;
     }
 
     async setupIndicator(year: number | null): Promise<boolean> {
@@ -97,7 +101,13 @@ export class DataToMap {
             this.popup = null;
         }
     }
-    addNewEvents(){}
+    addNewEvents(){
+        this.events.mouseleave = () => {
+            this.removePopup();
+        }
+        const mainLayer = (this as any).data.layers.main;
+        this.map.on('mouseleave', mainLayer,this.events.mouseleave);
+    }
     
     protected createPopupIfNeeded() {
         if (!this.popup) {
@@ -114,20 +124,51 @@ export class DataToMap {
 
     protected showPopup(lngLat: any, properties: any, side: 'left' | 'right') {
         if(!this.map) return;
-        // Unmount existing app if it exists
-        if (this.popupApp) {
-            this.popupApp.unmount();
-            this.popupApp = null;
-        }
+        
+        // Get the geoid from properties (could be properties.geoid or properties.id, etc.)
+        const currentGeoid = properties?.geoid || properties?.id || null;
+        const geoidChanged = currentGeoid !== this.lastPopupGeoid;
         
         // Use unique container ID based on side to avoid conflicts between left and right popups
         const containerId = `popup-container-${side}`;
         this.createPopupIfNeeded();
-        this.popup.setLngLat(lngLat).setHTML(`<div id="${containerId}"></div>`).addTo(this.map);
+        
+        // Always update popup position
+        this.popup.setLngLat(lngLat);
+        
+        // Only recreate the HTML container if geoid changed or popup doesn't exist
+        if (geoidChanged || !this.popupApp) {
+            this.popup.setHTML(`<div id="${containerId}"></div>`).addTo(this.map);
+        }
+        
         const popupContainer = document.getElementById(containerId);
+        
         if (popupContainer) {
-            this.popupApp = createApp(Popup, { properties, side }).use(vuetify);
-            this.popupApp.mount(popupContainer);
+            if (geoidChanged || !this.popupApp) {
+                // Unmount existing app if it exists
+                if (this.popupApp) {
+                    this.popupApp.unmount();
+                    this.popupApp = null;
+                }
+                
+                // Create reactive object for properties
+                this.popupProperties = reactive({ ...properties });
+                
+                // Create and mount new app instance with reactive properties
+                this.popupApp = createApp(Popup, { 
+                    properties: this.popupProperties, 
+                    side 
+                }).use(vuetify);
+                this.popupApp.mount(popupContainer);
+                
+                // Update last geoid
+                this.lastPopupGeoid = currentGeoid;
+            } else {
+                // Same geoid - just update the reactive properties by copying new values
+                if (this.popupProperties) {
+                    Object.assign(this.popupProperties, properties);
+                }
+            }
         }
     }
 
@@ -140,6 +181,8 @@ export class DataToMap {
             this.popup.remove();
             this.popup = null;
         }
+        this.lastPopupGeoid = null;
+        this.popupProperties = null;
     }
 
     async setPaintAndLayoutProperties(year:number | null){

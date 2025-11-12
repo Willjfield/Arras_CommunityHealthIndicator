@@ -74,7 +74,7 @@ export class PointDataToMap extends DataToMap {
                 this.emitter?.emit(`feature-${this.side || 'left'}-hovered`, null)
                 return
             } else if (features[0].properties.cluster) {
-                console.log(features[0].properties);
+                //console.log(features[0].properties);
                 map.setLayoutProperty(mainLayer, 'icon-size', ['case',
                     ['==', ['get', 'cluster'], true],
                     ['literal', (this as any).data.style.unselected['icon-size'] * this.clusterIconMultiplier],
@@ -127,6 +127,8 @@ export class PointDataToMap extends DataToMap {
             this.frozenPopup = !this.frozenPopup;
         }
         map.on('click', this.events.click);
+
+       
     }
 
     async setPaintAndLayoutProperties(year: number | null) {

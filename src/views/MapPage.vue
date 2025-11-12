@@ -1,6 +1,7 @@
 <template>
     <v-main class="d-flex align-center justify-center" style="">
         <v-container>
+            <LocationSearch />
             <ComparisonMap :_center="[-80.3, 34.7963]" :_zoom="8.57" :_type="'sideBySide'" />
         </v-container>
     </v-main>
@@ -18,12 +19,14 @@
 </style>
 <script>
 import ComparisonMap from '../components/ComparisonMap.vue';
+import LocationSearch from '../components/LocationSearch.vue';
 import { useThemeLevelStore } from '../stores/themeLevelStore'
 
 export default {
     name: 'Map',
     components: {
-        ComparisonMap
+        ComparisonMap,
+        LocationSearch
     },
     data() {
         return {}

@@ -1,5 +1,7 @@
+import { ARCGIS_TOKEN } from './arcgisConfig'
+
 export default async function createArcGISStyle(sitePath: string) {
-    const _token = 'AAPTxy8BH1VEsoebNVZXo8HurIeMuENS73kZqZHjRkbmCmUqodq0aZ3k4LkzH1hNzZt_ByURd7Ag3XoF1eOr43EFk6RMAKLoCDShkeXEaATvQIvvvyJidHeLEHtMhKYFXz-yz1y9R0QSUSOLQ1CMFeeVvd4t1-rsB2LSsNLk0TdveE7yyURu2F7LTkgtYpR3vdEUtooxW_1GHUzZjrPmjIPMW43Vh0wI35F_QOda3QKzwFo.AT1_tCIPsJMe'
+    const _token = ARCGIS_TOKEN
     const style = await fetch(`https://basemapstyles-api.arcgis.com/arcgis/rest/services/styles/v2/styles/open/navigation?token=${_token}`).then(res => res.json())
     console.log(style)
     style.sources = {
