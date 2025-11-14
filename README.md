@@ -4,25 +4,10 @@ This template should help get you started developing with Vue 3 and TypeScript i
 
 Learn more about the recommended Project Setup and IDE Support in the [Vue Docs TypeScript Guide](https://vuejs.org/guide/typescript/overview.html#project-setup).
 
-## Github for na?
-## Put in education (edit as needed)
-## Where should config be hosted?
-
-### 10/23 - 2 - refactoring
-### 10/24 - 1.5 - refactoring
-### 10/27 - 2 - refactoring
-### 10/28 - 2 - refactoring
-### 10/29 - 2 - data cleaning
-### 10/30 - 
-### 11/3
-### 11/4
-### 11/5
-
 
 ## Project Summary: Arras Community Health Indicator
-**Period:** October 24, 2024 - Present  
+**Period:** October 2025 
 **Total Changes:** 44 files changed, 4,937 insertions(+), 549 deletions(-)
-
 ---
 
 ### Major features added
@@ -91,6 +76,7 @@ Learn more about the recommended Project Setup and IDE Support in the [Vue Docs 
 
 #### Education indicators
 - Expanded `education.json` (328+ lines added)
+- Edited CSVs in Google Docs as needed
 - Added indicators:
   - 3rd grade ELA standards
   - 3rd grade math standards
@@ -154,7 +140,7 @@ Learn more about the recommended Project Setup and IDE Support in the [Vue Docs 
 
 ---
 
-### Notes
+### Notes and questions
 
 - Location search doesn't work well and definitely needs new placement if included in production
 - Any general thoughts on icons and clustering?
@@ -163,3 +149,6 @@ Learn more about the recommended Project Setup and IDE Support in the [Vue Docs 
 - Sharepoint compatibility
 - Great Falls High and Middle Schools have same geoid but different addresses? 1201005
 - Duplicate for 1201601 Academy for Teaching and Learning
+- Let's discuss creating a github team account for North Arrow
+- Hosting can be done through github or we can also create an account for Arras
+- Basemap and Location services now use an API key created with the Arras ESRI account. Should fall into the free tier but they should be aware of it.
