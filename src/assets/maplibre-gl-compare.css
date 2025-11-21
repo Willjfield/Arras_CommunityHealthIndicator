@@ -4,6 +4,7 @@
   width: 2px;
   height: 100%;
   z-index: 1;
+  text-align: left;
 }
 .maplibregl-compare .compare-swiper-vertical {
   background-color: #3887be;

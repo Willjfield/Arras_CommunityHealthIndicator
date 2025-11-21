@@ -146,7 +146,7 @@ Learn more about the recommended Project Setup and IDE Support in the [Vue Docs 
 - Any general thoughts on icons and clustering?
 - Some data fields may need adjustment based on actual data structure
 - Configuration hosting location still under consideration
-- Sharepoint compatibility
+- Sharepoint compatibility 
 - Great Falls High and Middle Schools have same geoid but different addresses? 1201005
 - Duplicate for 1201601 Academy for Teaching and Learning
 - Let's discuss creating a github team account for North Arrow

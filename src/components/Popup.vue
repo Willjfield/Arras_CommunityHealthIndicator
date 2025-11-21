@@ -162,6 +162,7 @@ const stats = computed(() => {
 .maplibregl-popup-content{
     box-shadow: #00000052 0px 2px 34px;
     border-radius: 8px;
+    z-index: 999999 !important;
 }
 </style>
 <style scoped>

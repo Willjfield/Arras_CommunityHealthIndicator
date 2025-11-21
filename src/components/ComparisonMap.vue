@@ -1,12 +1,12 @@
 <template>
   <div id="comparison-container">  
-    <div ref="mapContainerLeft" class="map-container">
+    <div ref="mapContainerLeft" class="map-container left">
       <TimelineVisualization side="left" />
       <ColorLegend
         v-if="leftIndicatorLevelStore.getCurrentIndicator() && leftIndicatorLevelStore.getCurrentIndicator()?.geolevel === 'area'"
         :selected-indicator="leftIndicatorLevelStore.getCurrentIndicator()" side="left" />
     </div>
-    <div ref="mapContainerRight" class="map-container">
+    <div ref="mapContainerRight" class="map-container right">
       <TimelineVisualization side="right" />
       <ColorLegend
         v-if="rightIndicatorLevelStore.getCurrentIndicator() && rightIndicatorLevelStore.getCurrentIndicator()?.geolevel === 'area'"
@@ -21,8 +21,10 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import { inject, onBeforeMount, onMounted, onUnmounted, ref, watch } from 'vue'
 //import { indicators } from '../assets/indicators.json'
 import Compare from '../assets/maplibre-gl-compare.js'
+//import Compare from 'maplibre-gl-compare-plus';
+import 'maplibre-gl-compare-plus/dist/maplibre-gl-compare.css';
 import TimelineVisualization from './TimelineVisualization.vue'
-import '../assets/maplibre-gl-compare.css'
+//import '../assets/maplibre-gl-compare.css'
 import { useIndicatorLevelStore } from '../stores/indicatorLevelStore'
 import ColorLegend from './ColorLegend.vue'
 import type { Emitter } from 'mitt'
@@ -155,7 +157,7 @@ onMounted(async () => {
   }
 
   if (leftMap && rightMap) {
-    _compare = new Compare(leftMap, rightMap, comparisonContainer, { type: props._type })
+    _compare = new Compare(leftMap, rightMap, comparisonContainer, { type: props._type, position: ['top', 'horiz-center'] })
   }
 
   // Listen for location selection events
@@ -285,8 +287,14 @@ onUnmounted(() => {
   overflow: visible;
 }
 
-.maplib
-
+.slider .map-container.right .timeline-header{
+  right: 0;
+    left: unset;
+}
+.slider .map-container.right .timeline-visualization{
+  right: 20px;
+  left: unset;
+}
 .map-container.collapsed {
   width: calc(100% + 8px);
 }
@@ -301,6 +309,7 @@ onUnmounted(() => {
   left: 0;
   bottom: 0;
   right: 0;
+  overflow: hidden;
 }
 
 .location-marker {
@@ -344,4 +353,5 @@ onUnmounted(() => {
   color: white;
   transform: scale(1.1);
 }
+.slider .maplibregl-compare .maplibregl-map{}
 </style>

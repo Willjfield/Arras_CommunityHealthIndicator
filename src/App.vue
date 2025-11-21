@@ -1,7 +1,7 @@
 <template>
   <main id="main" class="full-screen-main" tabindex="-1">
     <v-app>
-      <v-navigation-drawer v-model="drawer" temporary>
+      <v-navigation-drawer class="sidebar" v-model="drawer" temporary>
         <v-list>
           <v-list-item>
             <v-list-item-title class="text-h6 font-weight-bold">
@@ -86,6 +86,10 @@ const categories = computed(() => mainConfig?.categories || []);
 
 </script>
 <style scoped>
+.sidebar {
+  z-index: 1000;
+  height: calc(100% + -14px) !important;
+}
 .logo {
   height: 6em;
   padding: 1.5em;

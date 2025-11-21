@@ -140,19 +140,18 @@ const clearLocation = () => {
 <style scoped>
 .location-search-container {
   position: absolute;
-  bottom: 205px;
-  left: 20px;
-  /* transform: translateX(-50%); */
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: rgba(255, 255, 255, 0.95);
-  padding: 8px;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  min-width: 232px;
-  /* max-width: 500px; */
+    /* bottom: 205px; */
+    top: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    min-width: 232px;
+    z-index: 9999;
 }
 
 .location-search-input {
