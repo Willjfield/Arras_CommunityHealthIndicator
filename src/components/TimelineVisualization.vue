@@ -1,4 +1,5 @@
 <template>
+  <div class="timeline-visualization-container" :class="side === 'left' ? 'left' : 'right'">
   <div class="timeline-header">
     <IndicatorSelector :side="side" @indicator-changed="handleIndicatorChange" />
   </div>
@@ -14,6 +15,7 @@
           :style="{ border: `1px solid ${hoveredColorRef}` }"></span></span>
     </div>
     <svg ref="svg" class="timeline-chart"></svg>
+  </div>
   </div>
 </template>
 
@@ -411,6 +413,24 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+.timeline-visualization-container {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.timeline-visualization-container * {
+  pointer-events: all;
+}
+.timeline-visualization-container.left {
+  left: 0;
+}
+.timeline-visualization-container.right {
+  left: 50%;
+}
 .timeline-visualization {
   position: absolute;
   left: 20px;

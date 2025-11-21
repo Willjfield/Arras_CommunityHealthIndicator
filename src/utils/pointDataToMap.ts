@@ -79,7 +79,6 @@ export class PointDataToMap extends DataToMap {
         super.addNewEvents();
         const map = (this as any).map;
         const mainLayer = (this as any).data.layers.main;
-        const circleLayer = (this as any).data.layers.circle;
 
         if (!map) return
 

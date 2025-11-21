@@ -1,17 +1,17 @@
 <template>
   <div id="comparison-container">  
-    <div ref="mapContainerLeft" class="map-container left">
+    <div ref="mapContainerLeft" class="map-container left"> </div>
       <TimelineVisualization side="left" />
-      <ColorLegend
+      <ColorLegend 
         v-if="leftIndicatorLevelStore.getCurrentIndicator() && leftIndicatorLevelStore.getCurrentIndicator()?.geolevel === 'area'"
         :selected-indicator="leftIndicatorLevelStore.getCurrentIndicator()" side="left" />
-    </div>
-    <div ref="mapContainerRight" class="map-container right">
+   
+    <div ref="mapContainerRight" class="map-container right"> </div>
       <TimelineVisualization side="right" />
       <ColorLegend
         v-if="rightIndicatorLevelStore.getCurrentIndicator() && rightIndicatorLevelStore.getCurrentIndicator()?.geolevel === 'area'"
         :selected-indicator="rightIndicatorLevelStore.getCurrentIndicator()" side="right" />
-    </div>
+   
   </div>
 </template>
 
@@ -157,7 +157,7 @@ onMounted(async () => {
   }
 
   if (leftMap && rightMap) {
-    _compare = new Compare(leftMap, rightMap, comparisonContainer, { type: props._type, position: ['top', 'horiz-center'] })
+    _compare = new Compare(leftMap, rightMap, comparisonContainer, { type: props._type })
   }
 
   // Listen for location selection events
