@@ -4,24 +4,63 @@ import { type Map } from "maplibre-gl";
 import type { Emitter } from 'mitt'
 
 export class PointDataToMap extends DataToMap {
-    private clusterIconMultiplier: number;
-    private circleRadius: number;
+    maxDataValue: number;
+    minDataValue: number;
+    // private circleRadiusExpression: any;
+    // private iconSizeExpression: any;
     constructor(data: IndicatorConfig, map: Map, side: 'left' | 'right' | null = null, emitter?: Emitter<any>) {
         super(data, map, side, emitter);
-        this.circleRadius = 8;
-        this.clusterIconMultiplier = (this as any).data.style.selected['icon-size'] / (this as any).data.style.unselected['icon-size'];
-  
+        this.minDataValue = 0;
+        this.maxDataValue = 100;
+    }
+
+    getExpression(expType: 'circleRadius' | 'iconSize') {
+        const minValue = this.minDataValue;
+        const maxValue = this.maxDataValue;
+        const mappedValue = (value: number) => {
+            return (value - minValue) / (maxValue - minValue);
+        }
+        const mappedMinValue = mappedValue(minValue);
+        const mappedMaxValue = mappedValue(maxValue);
+            if (expType === 'circleRadius') {
+
+                return [
+                    "interpolate",
+                    ["linear"],
+                    ["zoom"],
+                    8, ["*",["to-number", (1.25/3)+mappedMinValue],["sqrt",["to-number",["get",`Count_${this.year}`]]]],
+                    15, ["*",["to-number",(1.25)+mappedMaxValue],["sqrt",["to-number",["get",`Count_${this.year}`]]]]
+                ];
+            }
+        if (expType === 'iconSize') {
+            return [
+                "interpolate",
+                ["linear"],
+                ["zoom"],
+                8, ["*",["to-number",0.03+(mappedMinValue*0.1)],["sqrt",["to-number",["get",`Count_${this.year}`]]]],
+                15, ["*",["to-number",0.1+(mappedMaxValue*0.1)],["sqrt",["to-number",["get",`Count_${this.year}`]]]]
+            ];
+        }
+        return null;
     }
 
     async setupIndicator(year: number | null): Promise<boolean> {
+        console.log(year);
         await super.setupIndicator?.(year);
         this.removeOldEvents();
         const geojson = this.generateGeojson();
+        this.minDataValue = Math.min(...geojson.features.map((feature: any) => +feature.properties[`Count_${year || 0}`] || 9999999999999));
+        this.maxDataValue = Math.max(...geojson.features.map((feature: any) => +feature.properties[`Count_${year || 0}`] || -1));
+        console.log(this.minDataValue, this.maxDataValue);
+        geojson.features.map((feature: any) => {
+            console.log(feature.properties[`Count_${year}`]);
+        });
+        //console.log(this.minDataValue, this.maxDataValue);
         const map: Map = (this as any).map;
         const data: IndicatorConfig = (this as any).data;
         const source: any = await map.getSource(data.source_name);
       
-        //console.log(geojson);
+
         if (source && typeof source.setData === "function") {
             source.setData(geojson);
         } else {
@@ -55,66 +94,19 @@ export class PointDataToMap extends DataToMap {
             })
 
             if (features.length === 0) {
-                map.setLayoutProperty(mainLayer, 'icon-size', ['case',
-                    ['==', ['get', 'cluster'], true],
-                    ['literal', (this as any).data.style.unselected['icon-size'] * this.clusterIconMultiplier],
-                    ['literal', (this as any).data.style.unselected['icon-size']]
-                ])
-                map.setPaintProperty(mainLayer, 'icon-color', '#888')
-                if (circleLayer) {
-                    map.setPaintProperty(circleLayer, 'circle-radius', ['case',
-                        ['==', ['get', 'cluster'], true],
-                        ['literal', this.circleRadius * this.clusterIconMultiplier],
-                        ['literal', this.circleRadius]
-                    ])
-                    map.setPaintProperty(circleLayer, 'circle-color', '#fff')
-                }
+                map.setPaintProperty(mainLayer, 'icon-color', '#000')
                 this.removePopup();
 
                 this.emitter?.emit(`feature-${this.side || 'left'}-hovered`, null)
                 return
-            } else if (features[0].properties.cluster) {
-                //console.log(features[0].properties);
-                map.setLayoutProperty(mainLayer, 'icon-size', ['case',
-                    ['==', ['get', 'cluster'], true],
-                    ['literal', (this as any).data.style.unselected['icon-size'] * this.clusterIconMultiplier],
-                    ['literal', (this as any).data.style.unselected['icon-size']]
-                ])
-                map.setPaintProperty(mainLayer, 'icon-color', ['case',
-                    ['==', ['get', 'cluster_id'], features[0].properties.cluster_id || 0],
-                    ['literal', (this as any).data.style.selected.color],
-                    ['literal', (this as any).data.style.unselected.color]
-                ])
-                if (circleLayer) {
-                    map.setPaintProperty(circleLayer, 'circle-radius', ['case',
-                        ['==', ['get', 'cluster'], true],
-                        ['literal', this.circleRadius * this.clusterIconMultiplier],
-                        ['literal', this.circleRadius]
-                    ])
-                    map.setPaintProperty(circleLayer, 'circle-color', '#fff')
-                }
-                this.removePopup();
-
-                this.showPopup(event.lngLat, features[0].properties, this.side as 'left' | 'right');
             } else {
-                map.setLayoutProperty(mainLayer, 'icon-size', ['case',
-                    ['==', ['get', 'cluster'], true],
-                    ['literal', (this as any).data.style.unselected['icon-size'] * this.clusterIconMultiplier],
-                    ['literal', (this as any).data.style.unselected['icon-size']]
-                ])
+
                 map.setPaintProperty(mainLayer, 'icon-color', ['case',
                     ['==', ['get', 'geoid'], features[0].properties.geoid],
                     ['literal', (this as any).data.style.selected.color],
                     ['literal', (this as any).data.style.unselected.color]
                 ])
-                if (circleLayer) {
-                    map.setPaintProperty(circleLayer, 'circle-radius', ['case',
-                        ['==', ['get', 'cluster'], true],
-                        ['literal', this.circleRadius * this.clusterIconMultiplier],
-                        ['literal', this.circleRadius]
-                    ])
-                    map.setPaintProperty(circleLayer, 'circle-color', '#fff')
-                }
+
 
                 // Show popup with Vue component
                 this.showPopup(event.lngLat, features[0].properties, this.side as 'left' | 'right');
@@ -137,22 +129,15 @@ export class PointDataToMap extends DataToMap {
         if (!map) return false;
 
         map.setLayoutProperty((this as any).data.layers.main, 'visibility', 'visible');
-        // const iconSize = ['*',['to-number', ['get', year || 0]],0.001]
-
-        //map.setLayoutProperty((this as any).data.layers.main, 'icon-size', iconSize);
-        map.setLayoutProperty((this as any).data.layers.main, 'icon-size', ['case',
-            ['==', ['get', 'cluster'], true],
-            ['literal', (this as any).data.style.unselected['icon-size'] * this.clusterIconMultiplier],
-            ['literal', (this as any).data.style.unselected['icon-size']]
-        ])
+        map.setLayoutProperty(
+            (this as any).data.layers.main, 
+            'icon-size', 
+            this.getExpression('iconSize')
+        )
         let circleLayer = (this as any).data.layers.circle;
         if (circleLayer) {
             map.setLayoutProperty(circleLayer, 'visibility', 'visible');
-            map.setPaintProperty(circleLayer, 'circle-radius', ['case',
-                ['==', ['get', 'cluster'], true],
-                ['literal', this.circleRadius * this.clusterIconMultiplier],
-                ['literal', this.circleRadius]
-            ])
+            map.setPaintProperty(circleLayer, 'circle-radius', this.getExpression('circleRadius'))
         }
         if (!circleLayer) {
             map.setLayoutProperty(circleLayer, 'visibility', 'none');
@@ -178,6 +163,7 @@ export class PointDataToMap extends DataToMap {
                 }
             })
         }
+        console.log(geojson);
         return geojson;
     }
 }

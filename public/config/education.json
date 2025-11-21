@@ -99,11 +99,23 @@
             "style": {
                 "selected": {
                     "color": "hsla(200, 100%, 60%, 1)",
-                    "icon-size": 1
+                    "icon-size":[
+                        "interpolate",
+                        ["linear"],
+                        ["zoom"],
+                        9, 0.3,
+                        15, 1
+                    ]
                 },
                 "unselected": {
-                    "color": "#888",
-                    "icon-size": 0.75
+                    "color": "#000",
+                    "icon-size": [
+                        "interpolate",
+                        ["linear"],
+                        ["zoom"],
+                        9, 0.3,
+                        15, 1
+                    ]
                 }
             }
         },
@@ -133,8 +145,8 @@
                     "icon-size": 1
                 },
                 "unselected": {
-                    "color": "#888",
-                    "icon-size": 0.75
+                    "color": "#000",
+                    "icon-size": 0.5
                 }
             }
         },
@@ -164,8 +176,8 @@
                     "icon-size": 1
                 },
                 "unselected": {
-                    "color": "#888",
-                    "icon-size": 0.75
+                    "color": "#000",
+                    "icon-size": 0.5
                 }
             }
         },
@@ -195,8 +207,8 @@
                     "icon-size": 1
                 },
                 "unselected": {
-                    "color": "#888",
-                    "icon-size": 0.75
+                    "color": "#000",
+                    "icon-size": 0.5
                 }
             }
         },
@@ -226,8 +238,8 @@
                     "icon-size": 1
                 },
                 "unselected": {
-                    "color": "#888",
-                    "icon-size": 0.75
+                    "color": "#000",
+                    "icon-size": 0.5
                 }
             }
         },
@@ -257,8 +269,8 @@
                     "icon-size": 1
                 },
                 "unselected": {
-                    "color": "#888",
-                    "icon-size": 0.75
+                    "color": "#000",
+                    "icon-size": 0.5
                 }
             }
         },
@@ -288,8 +300,8 @@
                     "icon-size": 1
                 },
                 "unselected": {
-                    "color": "#888",
-                    "icon-size": 0.75
+                    "color": "#000",
+                    "icon-size": 0.5
                 }
             }
         },
@@ -319,8 +331,8 @@
                     "icon-size": 1
                 },
                 "unselected": {
-                    "color": "#888",
-                    "icon-size": 0.75
+                    "color": "#000",
+                    "icon-size": 0.5
                 }
             }
         }

@@ -35,6 +35,7 @@ export class DataToMap {
 
     async setupIndicator(year: number | null): Promise<boolean> {
         this.year = year || this.year || null;
+        console.log(this.year);
         return true;
     }
 

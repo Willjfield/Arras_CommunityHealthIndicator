@@ -16,9 +16,9 @@ export default async function createArcGISStyle(sitePath: string) {
                     type: 'FeatureCollection',
                     features: []
                 },
-                cluster: true,
-                clusterMaxZoom: 14,
-                clusterRadius: 10
+                // cluster: true,
+                // clusterMaxZoom: 14,
+                // clusterRadius: 10
             }
         }
     }
@@ -62,7 +62,13 @@ export default async function createArcGISStyle(sitePath: string) {
                 },
                 paint: {
                     'circle-color': '#fff',
-                    'circle-radius': 8
+                    'circle-radius': [
+                        "interpolate",
+                        ["linear"],
+                        ["zoom"],
+                        9, 1,
+                        15, 4
+                    ],
                 }
             },
             {
@@ -71,15 +77,21 @@ export default async function createArcGISStyle(sitePath: string) {
                 source: 'points-source',
                 layout: {
                     visibility: 'none',
-                    'icon-size': 0.75,
+                    'icon-size': [
+                        "interpolate",
+                        ["linear"],
+                        ["zoom"],
+                        9, 0.25,
+                        15, 1
+                    ],
                     'icon-allow-overlap': false,
                     'icon-overlap': 'cooperative',
                     'icon-ignore-placement': false
                 },
                 paint: {
-                    'icon-halo-color': '#fff',
-                    'icon-halo-width': 2,
-                    'icon-color': '#888'
+                    // 'icon-halo-color': '#fff',
+                    // 'icon-halo-width': 2,
+                    'icon-color': '#000'
                 }
             }
         ]
