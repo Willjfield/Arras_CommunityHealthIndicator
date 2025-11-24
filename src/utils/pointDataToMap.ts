@@ -45,15 +45,15 @@ export class PointDataToMap extends DataToMap {
     }
 
     async setupIndicator(year: number | null): Promise<boolean> {
-        console.log(year);
+        //console.log(year);
         await super.setupIndicator?.(year);
         this.removeOldEvents();
         const geojson = this.generateGeojson();
         this.minDataValue = Math.min(...geojson.features.map((feature: any) => +feature.properties[`Count_${year || 0}`] || 9999999999999));
         this.maxDataValue = Math.max(...geojson.features.map((feature: any) => +feature.properties[`Count_${year || 0}`] || -1));
-        console.log(this.minDataValue, this.maxDataValue);
+        //console.log(this.minDataValue, this.maxDataValue);
         geojson.features.map((feature: any) => {
-            console.log(feature.properties[`Count_${year}`]);
+            //console.log(feature.properties[`Count_${year}`]);
         });
         //console.log(this.minDataValue, this.maxDataValue);
         const map: Map = (this as any).map;

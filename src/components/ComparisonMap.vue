@@ -1,17 +1,17 @@
 <template>
-  <div id="comparison-container">  
+  <div id="comparison-container">
     <div ref="mapContainerLeft" class="map-container left"> </div>
-      <TimelineVisualization side="left" />
-      <ColorLegend 
-        v-if="leftIndicatorLevelStore.getCurrentIndicator() && leftIndicatorLevelStore.getCurrentIndicator()?.geolevel === 'area'"
-        :selected-indicator="leftIndicatorLevelStore.getCurrentIndicator()" side="left" />
-   
+    <TimelineVisualization side="left" />
+    <ColorLegend
+      v-if="leftIndicatorLevelStore.getCurrentIndicator() && leftIndicatorLevelStore.getCurrentIndicator()?.geolevel === 'area'"
+      :selected-indicator="leftIndicatorLevelStore.getCurrentIndicator()" side="left" />
+
     <div ref="mapContainerRight" class="map-container right"> </div>
-      <TimelineVisualization side="right" />
-      <ColorLegend
-        v-if="rightIndicatorLevelStore.getCurrentIndicator() && rightIndicatorLevelStore.getCurrentIndicator()?.geolevel === 'area'"
-        :selected-indicator="rightIndicatorLevelStore.getCurrentIndicator()" side="right" />
-   
+    <TimelineVisualization side="right" />
+    <ColorLegend
+      v-if="rightIndicatorLevelStore.getCurrentIndicator() && rightIndicatorLevelStore.getCurrentIndicator()?.geolevel === 'area'"
+      :selected-indicator="rightIndicatorLevelStore.getCurrentIndicator()" side="right" />
+
   </div>
 </template>
 
@@ -22,7 +22,7 @@ import { inject, onBeforeMount, onMounted, onUnmounted, ref, watch } from 'vue'
 //import { indicators } from '../assets/indicators.json'
 import Compare from '../assets/maplibre-gl-compare.js'
 //import Compare from 'maplibre-gl-compare-plus';
-import 'maplibre-gl-compare-plus/dist/maplibre-gl-compare.css';
+import '../assets/maplibre-gl-compare.css';
 import TimelineVisualization from './TimelineVisualization.vue'
 //import '../assets/maplibre-gl-compare.css'
 import { useIndicatorLevelStore } from '../stores/indicatorLevelStore'
@@ -43,7 +43,10 @@ const props = defineProps<{
   _center: [number, number]
   _zoom: number
   _type: string
+  _orientation?: 'left-right' | 'top-bottom'
 }>()
+
+const orientation = ref<'left-right' | 'top-bottom'>(props._orientation ?? 'left-right')
 
 const leftIndicatorLevelStore = useIndicatorLevelStore('left')
 const rightIndicatorLevelStore = useIndicatorLevelStore('right')
@@ -64,6 +67,11 @@ onMounted(async () => {
   console.log('mnt')
   // Ensure the container is properly initialized
   const sitePath = inject('sitePath') as string;
+  const containerEl = document.querySelector(comparisonContainer) as HTMLElement | null
+  if (containerEl) {
+    containerEl.classList.remove('orientation-left-right', 'orientation-top-bottom')
+    containerEl.classList.add(orientation.value === 'top-bottom' ? 'orientation-top-bottom' : 'orientation-left-right')
+  }
 
   const leftStyle = await createArcGISStyle(sitePath) as any
   const rightStyle = await createArcGISStyle(sitePath) as any
@@ -157,7 +165,7 @@ onMounted(async () => {
   }
 
   if (leftMap && rightMap) {
-    _compare = new Compare(leftMap, rightMap, comparisonContainer, { type: props._type })
+    _compare = new Compare(leftMap, rightMap, comparisonContainer, { orientation: orientation.value, type: props._type, position:['top', 'horiz-center'] as any })
   }
 
   // Listen for location selection events
@@ -167,7 +175,7 @@ onMounted(async () => {
 
 const handleLocationSelected = (data: { coordinates: [number, number], text: string }) => {
   const [lng, lat] = data.coordinates
-  
+
   // Center both maps on the location
   if (leftMap) {
     leftMap.flyTo({
@@ -176,7 +184,7 @@ const handleLocationSelected = (data: { coordinates: [number, number], text: str
       duration: 1000
     })
   }
-  
+
   if (rightMap) {
     rightMap.flyTo({
       center: [lng, lat],
@@ -199,7 +207,7 @@ const handleLocationSelected = (data: { coordinates: [number, number], text: str
   const createMarkerElement = () => {
     const el = document.createElement('div')
     el.className = 'location-marker'
-    
+
     // Create pin icon
     const pinIcon = document.createElement('div')
     pinIcon.className = 'pin-icon'
@@ -209,7 +217,7 @@ const handleLocationSelected = (data: { coordinates: [number, number], text: str
         <circle cx="16" cy="16" r="8" fill="white"/>
       </svg>
     `
-    
+
     // Create close button
     const closeBtn = document.createElement('button')
     closeBtn.className = 'marker-close-btn'
@@ -219,10 +227,10 @@ const handleLocationSelected = (data: { coordinates: [number, number], text: str
       e.stopPropagation()
       handleLocationCleared()
     }
-    
+
     el.appendChild(pinIcon)
     el.appendChild(closeBtn)
-    
+
     return el
   }
 
@@ -262,9 +270,9 @@ const handleLocationCleared = () => {
 onUnmounted(() => {
   emitter.off('location-selected', handleLocationSelected)
   emitter.off('location-cleared', handleLocationCleared)
-  
+
   handleLocationCleared()
-  
+
   leftIndicatorLevelStore.removeMap()
   rightIndicatorLevelStore.removeMap()
   if (leftMap) {
@@ -273,6 +281,8 @@ onUnmounted(() => {
   if (rightMap) {
     rightMap.remove()
   }
+  const containerEl = document.querySelector(comparisonContainer) as HTMLElement | null
+  containerEl?.classList.remove('orientation-left-right', 'orientation-top-bottom')
 })
 </script>
 <style>
@@ -283,18 +293,23 @@ onUnmounted(() => {
   cursor: crosshair !important;
   width: 100%;
   transition: width .3s ease-in-out;
-  border-left: 1px solid black;
   overflow: visible;
 }
 
-.slider .map-container.right .timeline-header{
-  right: 0;
-    left: unset;
+.map-container.right {
+  border-left: 1px solid black;
 }
-.slider .map-container.right .timeline-visualization{
+
+.slider .map-container.right .timeline-header {
+  right: 0;
+  left: unset;
+}
+
+.slider .map-container.right .timeline-visualization {
   right: 20px;
   left: unset;
 }
+
 .map-container.collapsed {
   width: calc(100% + 8px);
 }
@@ -353,5 +368,15 @@ onUnmounted(() => {
   color: white;
   transform: scale(1.1);
 }
-.slider .maplibregl-compare .maplibregl-map{}
+
+#comparison-container.orientation-top-bottom.sideBySide .map-container {
+  position: relative;
+  height: 50%;
+  width: 100%;
+  border-left: none;
+}
+
+#comparison-container.orientation-top-bottom.sideBySide .map-container.right {
+  border-top: 1px solid black;
+}
 </style>

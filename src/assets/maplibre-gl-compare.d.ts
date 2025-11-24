@@ -3,7 +3,7 @@ export default class Compare {
     left: any,
     right: any,
     container: string | HTMLElement,
-    opts?: { type?: string }
+    opts?: { type?: string, orientation?: string, position?: string[] }
   )
   switchType(type: string): void
 }

@@ -1,8 +1,8 @@
 <template>
   <!-- <v-main class="landing-page"> -->
-    <v-container fluid class="pa-0 hero-section">
+    <v-container fluid class="pa-0 ma-0 hero-section">
       <!-- Hero Section -->
-      <v-row no-gutters class="hero-section">
+      <v-row no-gutters class="hero-section mt-0">
         <v-col cols="12" class="text-center pa-8 pa-md-12">
           <h1 class="text-h3 text-md-h2 font-weight-bold mb-4 text-primary">
             <v-img src="./assets/ArrasFoundation_RGB.png" max-width="800px" />
