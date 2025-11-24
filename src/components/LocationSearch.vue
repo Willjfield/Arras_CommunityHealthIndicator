@@ -1,5 +1,5 @@
 <template>
-  <div class="location-search-container">
+  <div v-show="orientation === 'left-right'" class="location-search-container">
     <v-autocomplete
       v-model="selectedLocation"
       :items="suggestions"
@@ -60,7 +60,7 @@ const selectedLocation = ref<GeocodeSuggestion | null>(null)
 const emitter = inject('mitt') as Emitter<any>
 
 let searchTimeout: ReturnType<typeof setTimeout> | null = null
-
+const orientation = window.innerWidth > window.innerHeight ? 'left-right' : 'top-bottom'
 const handleSearch = (query: string | null) => {
   searchQuery.value = query || ''
   

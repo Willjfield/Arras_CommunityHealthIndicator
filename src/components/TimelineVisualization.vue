@@ -428,12 +428,16 @@ onUnmounted(() => {
 .timeline-visualization-container.left {
   left: 0;
 }
-.timeline-visualization-container.right {
-  left: 50%;
+.orientation-top-bottom .timeline-visualization-container.right {
+  left: unset;
 }
+
 .timeline-visualization {
   position: absolute;
-  left: 20px;
+  right: 20px;
+  bottom: 20px;
+  left: auto;
+  top: auto;
   width: 450px;
 
   background: rgba(255, 255, 255, 0.95);
@@ -456,6 +460,14 @@ onUnmounted(() => {
   align-items: center;
   padding: 0;
 
+}
+
+.left .timeline-visualization{
+  left: 5px;
+}
+
+.right .timeline-visualization{
+  right: 5px;
 }
 
 .chart-label {
@@ -572,7 +584,4 @@ onUnmounted(() => {
   margin-left: 5px;
 }
 
-.left {
-  left: 20px;
-}
 </style>

@@ -375,4 +375,36 @@ onUnmounted(() => {
 #comparison-container.orientation-top-bottom.sideBySide .map-container.right {
   border-top: 1px solid black;
 }
+
+.orientation-top-bottom .timeline-visualization-container.left .timeline-header{
+  right: 0px;
+
+}
+
+.orientation-top-bottom 
+.timeline-visualization-container.left 
+.timeline-visualization{
+  top: 50%;
+  bottom: auto;
+  transform: translateY(-100%);
+  right: 0px;
+  left: unset;
+  zoom: .7;
+}
+
+.orientation-top-bottom 
+.timeline-visualization-container.right 
+.timeline-header{
+  right: 0px;
+  top: 50%;
+}
+
+.orientation-top-bottom 
+.timeline-visualization-container.right 
+.timeline-visualization{
+  zoom: .7;
+  left: unset;
+  right: 5px;
+  bottom: 5px !important;
+}
 </style>
