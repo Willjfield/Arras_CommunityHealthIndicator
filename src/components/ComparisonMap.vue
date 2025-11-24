@@ -46,8 +46,9 @@ const props = defineProps<{
   _orientation?: 'left-right' | 'top-bottom'
 }>()
 
-//const orientation = ref<'left-right' | 'top-bottom'>(props._orientation ?? 'left-right')
-const orientation = ref('top-bottom')
+const orientation = ref<'left-right' | 'top-bottom'>()
+orientation.value = window.innerWidth > window.innerHeight ? 'left-right' : 'top-bottom'
+//const orientation = ref('top-bottom')
 const leftIndicatorLevelStore = useIndicatorLevelStore('left')
 const rightIndicatorLevelStore = useIndicatorLevelStore('right')
 
@@ -67,11 +68,6 @@ onMounted(async () => {
   console.log('mnt')
   // Ensure the container is properly initialized
   const sitePath = inject('sitePath') as string;
-  const containerEl = document.querySelector(comparisonContainer) as HTMLElement | null
-  if (containerEl) {
-    containerEl.classList.remove('orientation-left-right', 'orientation-top-bottom')
-    containerEl.classList.add(orientation.value === 'top-bottom' ? 'orientation-top-bottom' : 'orientation-left-right')
-  }
 
   const leftStyle = await createArcGISStyle(sitePath) as any
   const rightStyle = await createArcGISStyle(sitePath) as any

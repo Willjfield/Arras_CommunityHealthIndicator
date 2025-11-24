@@ -40,6 +40,11 @@ function Compare(a, b, container, options) {
 
   this._appendTarget = (typeof container === 'string' && document.body.querySelectorAll) ? document.body.querySelectorAll(container)[0] : null
 
+  if (this._appendTarget) {
+
+    this._appendTarget.classList.remove('orientation-left-right', 'orientation-top-bottom')
+    this._appendTarget.classList.add(this.orientation === 'top-bottom' ? 'orientation-top-bottom' : 'orientation-left-right')
+  }
 
   this._controlContainer = document.createElement('div')
   this._controlContainer.className = this.orientation === ORIENTATION.LEFT_RIGHT
@@ -51,11 +56,11 @@ function Compare(a, b, container, options) {
     // get container with a selector
     //const appendTarget = document.body.querySelectorAll(container)[0]
     this._appendTarget.style.textAlign = 'left'
-    if (! this._appendTarget) {
+    if (!this._appendTarget) {
       throw new Error('Cannot find element with specified container selector.')
     }
     this._appendTarget.append(this._controlContainer)
-  } else if ( this._appendTarget instanceof Element && container.appendChild) {
+  } else if (this._appendTarget instanceof Element && container.appendChild) {
     // get container directly
     this._appendTarget.append(this._controlContainer)
   } else {
@@ -66,16 +71,16 @@ function Compare(a, b, container, options) {
 
   this._bounds = b.getContainer().getBoundingClientRect()
   const swiperPosition
-    = this.orientation === ORIENTATION.LEFT_RIGHT ? this._bounds.width/2 : this._bounds.height / 2
+    = this.orientation === ORIENTATION.LEFT_RIGHT ? this._bounds.width / 2 : this._bounds.height / 2
 
   this._setPosition(swiperPosition)
 
   this._clearSync = syncMove(a, b)
-  
+
   this._onResize = function () {
-   //console.log('onResize')
+    //console.log('onResize')
     const swiperPosition
-      = this.orientation === ORIENTATION.LEFT_RIGHT ? this._bounds.width/2 : this._bounds.height / 2
+      = this.orientation === ORIENTATION.LEFT_RIGHT ? this._bounds.width / 2 : this._bounds.height / 2
     this._setPosition(swiperPosition)
     this._bounds = a.getContainer().getBoundingClientRect()
     a.triggerRepaint()
@@ -103,7 +108,7 @@ function Compare(a, b, container, options) {
 
 Compare.prototype = {
 
-  _createTypeToggle () {
+  _createTypeToggle() {
     const toggle = document.createElement('div')
     toggle.className = 'maplibregl-compare-type-toggle'
     this.options.position.forEach(position => {
@@ -131,7 +136,7 @@ Compare.prototype = {
     switchInput.type = 'checkbox'
     switchInput.className = 'toggle-switch'
     switchInput.checked = (this?.options?.type || 'slider') === 'sideBySide'
-  
+
     switchInput.addEventListener('change', e => {
       const newType = e.target.checked ? 'sideBySide' : 'slider'
       this.options.type = newType
@@ -249,7 +254,7 @@ Compare.prototype = {
     return x
   },
 
-  _getY (e) {
+  _getY(e) {
     e = e.touches ? e.touches[0] : e
     const y = e.clientY - this._bounds.top
     if (y < 0) {
@@ -261,13 +266,13 @@ Compare.prototype = {
     return y
   },
 
-  switchType (_type = 'slider') {
+  switchType(_type = 'slider') {
     const a = this._mapA
     const b = this._mapB
     this._appendTarget.classList.remove('slider', 'sideBySide')
     this._appendTarget.classList.add(_type)
     const swiperPosition
-      = this.orientation === ORIENTATION.LEFT_RIGHT ? this._bounds.width/2 : this._bounds.height / 2
+      = this.orientation === ORIENTATION.LEFT_RIGHT ? this._bounds.width / 2 : this._bounds.height / 2
     this._setPosition(swiperPosition)
 
     // Update toggle switch state
