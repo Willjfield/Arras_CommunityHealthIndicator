@@ -46,8 +46,8 @@ const props = defineProps<{
   _orientation?: 'left-right' | 'top-bottom'
 }>()
 
-const orientation = ref<'left-right' | 'top-bottom'>(props._orientation ?? 'left-right')
-
+//const orientation = ref<'left-right' | 'top-bottom'>(props._orientation ?? 'left-right')
+const orientation = ref('top-bottom')
 const leftIndicatorLevelStore = useIndicatorLevelStore('left')
 const rightIndicatorLevelStore = useIndicatorLevelStore('right')
 
