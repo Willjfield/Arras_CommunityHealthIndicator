@@ -3,7 +3,7 @@
   <div class="timeline-header">
     <IndicatorSelector :side="side" @indicator-changed="handleIndicatorChange" />
   </div>
-  <div ref="container" class="timeline-visualization" style="height: 180px; bottom:20px;">
+  <div ref="container" class="timeline-visualization" style="height: 154px; bottom:20px;">
     <div class="chart-label">
       <span class="selected-geo">{{ `${indicatorStore?.getCurrentIndicator()?.title || ''}
         (${indicatorStore.getCurrentGeoSelection()})` }}<span class="selected-color"
@@ -432,6 +432,8 @@ onUnmounted(() => {
   left: unset;
 }
 
+
+
 .timeline-visualization {
   position: absolute;
   right: 20px;
@@ -447,6 +449,7 @@ onUnmounted(() => {
   cursor: move;
   z-index: 1000;
   user-select: none;
+  zoom:.9;
 }
 
 .timeline-header {
@@ -460,6 +463,11 @@ onUnmounted(() => {
   align-items: center;
   padding: 0;
 
+}
+
+.right .timeline-header{
+  right: 0px;
+  left: unset;
 }
 
 .left .timeline-visualization{
@@ -507,7 +515,7 @@ onUnmounted(() => {
   /* bottom: 0; */
   position: absolute;
   left: 0;
-  top: 35px;
+  top: 1.1em;
 }
 
 /* D3 styles */
@@ -583,5 +591,22 @@ onUnmounted(() => {
   margin-bottom: 2.5px;
   margin-left: 5px;
 }
+
+</style>
+<style>
+.orientation-top-bottom .color-legend.right{
+  top: calc(50% + 3rem);
+}
+
+.orientation-top-bottom .color-legend{
+  right: 0;
+}
+
+.orientation-top-bottom .legend-container{
+  right: 0;
+  left: unset;
+  width: 100% !important;
+}
+
 
 </style>

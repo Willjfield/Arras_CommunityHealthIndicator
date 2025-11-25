@@ -323,6 +323,34 @@ Compare.prototype = {
     this._setPosition(x)
   },
 
+  onceBoth(type, fn) {
+    let mapALoaded = false
+    let mapBLoaded = false
+    this._mapA.once(type, () => {
+      mapALoaded = true
+      if (mapBLoaded) fn()
+    })
+    this._mapB.once(type, () => {
+      mapBLoaded = true
+      if (mapALoaded) fn()
+    })
+    return this
+  },
+
+  onBoth(type, fn) {
+    let mapALoaded = false
+    let mapBLoaded = false
+    this._mapA.on(type, () => {
+      mapALoaded = true
+      if (mapBLoaded) fn()
+    })
+    this._mapB.on(type, () => {
+      mapBLoaded = true
+      if (mapALoaded) fn()
+    })
+    return this
+  },
+
   /**
    * Adds a listener for events of a specified type.
    *

@@ -7,7 +7,7 @@
       :search="searchQuery"
       item-title="text"
       return-object
-      placeholder="Search for a location..."
+      placeholder="Location Search..."
       variant="outlined"
       density="compact"
       hide-details
@@ -15,6 +15,8 @@
       class="location-search-input"
       @update:search="handleSearch"
       @update:model-value="handleLocationSelect"
+      :menu-icon="null"
+      :append="false"
     >
       <template v-slot:prepend-inner>
         <v-icon icon="mdi-magnify" size="20"></v-icon>
@@ -150,9 +152,14 @@ const clearLocation = () => {
     background: rgba(255, 255, 255, 0.95);
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-    min-width: 232px;
+    min-width: 150px;
     z-index: 9999;
+    padding:0;
 }
+.location-search-container:focus-within {
+  min-width: 250px;
+}
+
 
 .location-search-input {
   flex: 1;
@@ -168,3 +175,9 @@ const clearLocation = () => {
 }
 </style>
 
+<style>
+.location-search-input .v-field__input{
+  padding:0px;
+  padding-inline: 0px;
+}
+</style>

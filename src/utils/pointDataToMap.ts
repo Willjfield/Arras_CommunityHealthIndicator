@@ -52,9 +52,9 @@ export class PointDataToMap extends DataToMap {
         this.minDataValue = Math.min(...geojson.features.map((feature: any) => +feature.properties[`Count_${year || 0}`] || 9999999999999));
         this.maxDataValue = Math.max(...geojson.features.map((feature: any) => +feature.properties[`Count_${year || 0}`] || -1));
         //console.log(this.minDataValue, this.maxDataValue);
-        geojson.features.map((feature: any) => {
-            //console.log(feature.properties[`Count_${year}`]);
-        });
+        // geojson.features.map((feature: any) => {
+        //     //console.log(feature.properties[`Count_${year}`]);
+        // });
         //console.log(this.minDataValue, this.maxDataValue);
         const map: Map = (this as any).map;
         const data: IndicatorConfig = (this as any).data;

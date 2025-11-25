@@ -138,18 +138,22 @@
 
 .maplibregl-compare-type-toggle.top {
   top: 8px;
+  bottom: unset;
 }
 
 .maplibregl-compare-type-toggle.bottom {
   bottom: 8px;
+  top: unset;
 }
 
 .maplibregl-compare-type-toggle.left {
   left: 8px;
+  right: unset;
 }
 
 .maplibregl-compare-type-toggle.right {
   right: 8px;
+  left: unset;
 }
 
 .maplibregl-compare-type-toggle.horiz-center {

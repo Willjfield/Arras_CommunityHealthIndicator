@@ -1,4 +1,7 @@
 export default class Compare {
+  onceBoth(arg0: string, arg1: () => void) {
+    throw new Error('Method not implemented.');
+  }
   constructor(
     left: any,
     right: any,

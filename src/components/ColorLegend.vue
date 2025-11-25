@@ -62,7 +62,7 @@ const maxColor = computed(() => {
 }
 
 .color-legend.right {
-  right: 50%;
+  right: 0px;
 }
 
 .legend-header {

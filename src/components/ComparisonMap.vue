@@ -161,7 +161,13 @@ onMounted(async () => {
   }
 
   if (leftMap && rightMap) {
-    _compare = new Compare(leftMap, rightMap, comparisonContainer, { orientation: orientation.value, type: props._type, position:['top', 'horiz-center'] as any })
+    const position = orientation.value === 'top-bottom' ? ['bottom', 'left'] : ['top', 'horiz-center'] as any
+    _compare = new Compare(leftMap, rightMap, comparisonContainer, { orientation: orientation.value, type: props._type, position })
+      _compare.onceBoth('load', () => {
+      Array.from(document.getElementsByClassName('maplibregl-ctrl-attrib') as unknown as HTMLElement[]).forEach((element) => {
+        element.classList.remove('maplibregl-compact-show');
+      });
+    })
   }
 
   // Listen for location selection events
@@ -282,6 +288,12 @@ onUnmounted(() => {
 })
 </script>
 <style>
+.maplibregl-ctrl-bottom-right {
+  bottom: 150px;
+}
+.orientation-top-bottom .maplibregl-ctrl-bottom-right {
+  bottom: 100px;
+}
 .map-container {
   position: absolute;
   top: 0;
@@ -375,9 +387,14 @@ onUnmounted(() => {
 #comparison-container.orientation-top-bottom.sideBySide .map-container.right {
   border-top: 1px solid black;
 }
-
-.orientation-top-bottom .timeline-visualization-container.left .timeline-header{
+#comparison-container.orientation-top-bottom .maplibregl-ctrl-bottom-right {
+  bottom: 120px;
+}
+.orientation-top-bottom
+.timeline-visualization-container.left
+.timeline-header{
   right: 0px;
+  top: 0px;
 
 }
 
@@ -393,10 +410,19 @@ onUnmounted(() => {
 }
 
 .orientation-top-bottom 
-.timeline-visualization-container.right 
+.timeline-visualization-container 
 .timeline-header{
   right: 0px;
   top: 50%;
+  left: unset;
+  width: 100%;
+  flex-direction: row-reverse;
+}
+.orientation-top-bottom 
+.indicator-select{
+  margin: unset;
+  width: 100%;
+   
 }
 
 .orientation-top-bottom 

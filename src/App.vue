@@ -1,5 +1,5 @@
 <template>
-  <main id="main" class="full-screen-main" tabindex="-1">
+  <main id="main" class="full-screen-main" :class="{ 'orientation-top-bottom': orientation === 'top-bottom', 'orientation-left-right': orientation === 'left-right' }" tabindex="-1">
     <v-app>
       <v-navigation-drawer class="sidebar" v-model="drawer" temporary>
         <v-list>
@@ -30,10 +30,10 @@
           </v-list-item>
         </v-list>
       </v-navigation-drawer>
-      <v-app-bar collapse :elevation="2">
+      <v-app-bar class="app-bar" collapse :elevation="2">
         <template v-slot:prepend>
+          <v-img width="50px" src="ArrasFoundation.png" />
           <v-icon icon="mdi-menu" size="24" @click="drawer = !drawer" style="cursor: pointer;" />
-          <v-img width="100px" src="ArrasFoundation.png" />
          
         </template>
         <!-- <template v-slot:append>
@@ -83,7 +83,7 @@ const drawer = ref(false)
 
 const mainConfig = inject('mainConfig') as any;
 const categories = computed(() => mainConfig?.categories || []);
-
+const orientation = computed(() => window.innerWidth > window.innerHeight ? 'left-right' : 'top-bottom')
 </script>
 <style scoped>
 .sidebar {
@@ -258,5 +258,30 @@ const categories = computed(() => mainConfig?.categories || []);
   .loading-logo {
     max-width: 200px !important;
   }
+}
+</style>
+<style>
+.app-bar.v-toolbar.v-toolbar--collapse{
+  max-width: min-content;
+    padding: 8px;
+}
+.app-bar .v-toolbar__prepend, .app-bar .v-toolbar__append {
+    align-items: center;
+    align-self: stretch;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+.app-bar .v-toolbar__content, .app-bar .v-toolbar__extension{
+    align-items: center;
+    display: flex;
+    flex: 0 0;
+    position: relative;
+    transition: inherit;
+    width: 100%;
+    flex-wrap: wrap;
+    flex-direction: column;
+    align-content: space-around;
+    justify-content: space-evenly;
 }
 </style>
