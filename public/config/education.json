@@ -335,6 +335,37 @@
                     "icon-size": 0.5
                 }
             }
+        },
+        {
+            "title": "Kindergarten Readiness",
+            "field": "Kindergarten Readiness",
+            "geolevel": "point",
+            "default": false,
+            "has_pct": true,
+            "has_count": false,
+            "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vTDAYHOcGSybhfAirkRiKEyW7vgIj4aomJt_pNCcxAASGSwwNwtO5h7oPx6BVxyiN1Uij5nj7xdVDsU/pub?gid=1682018538&single=true&output=csv",
+            "source_name": "points-source",
+            "short_name": "kReadiness",
+            "layers": {
+                "main": "point-data",
+                "circle": "point-data-circle"
+            },
+            "icons": [
+                {
+                    "name": "icon-school",
+                    "filename": "assets/icons/school.png"
+                }
+            ],
+            "style": {
+                "selected": {
+                    "color": "hsla(200, 100%, 60%, 1)",
+                    "icon-size": 1
+                },
+                "unselected": {
+                    "color": "#000",
+                    "icon-size": 0.5
+                }
+            }
         }
     ]
 }

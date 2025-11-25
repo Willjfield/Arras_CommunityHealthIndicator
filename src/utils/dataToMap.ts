@@ -7,7 +7,7 @@ import Popup from '../components/Popup.vue'
 import vuetify from '../plugins/vuetify.js'
 
 export class DataToMap {
-    private readonly data: IndicatorConfig;
+    readonly data: IndicatorConfig;
     private readonly map: Map;
     protected readonly emitter?: Emitter<any>;
     events: { click: any; mousemove: any; mouseleave: any; };

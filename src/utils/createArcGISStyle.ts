@@ -69,6 +69,9 @@ export default async function createArcGISStyle(sitePath: string) {
                         9, 1,
                         15, 4
                     ],
+                    'circle-stroke-width': 1,
+                    'circle-stroke-color': '#000',
+                    'circle-stroke-opacity': 0.5
                 }
             },
             {
