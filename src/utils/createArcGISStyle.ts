@@ -3,7 +3,7 @@ import { ARCGIS_TOKEN } from './arcgisConfig'
 export default async function createArcGISStyle(sitePath: string) {
     const _token = ARCGIS_TOKEN
     const style = await fetch(`https://basemapstyles-api.arcgis.com/arcgis/rest/services/styles/v2/styles/open/navigation?token=${_token}`).then(res => res.json())
-    //console.log(style)
+    console.log(style)
     style.sources = {
         ...style.sources, ...{
             'places-source': {
@@ -26,33 +26,34 @@ export default async function createArcGISStyle(sitePath: string) {
             }
         }
     }
+    const indexOfPlacesLabel = style.layers.findIndex((layer: any) => layer.id === 'admin 2')
+    console.log(indexOfPlacesLabel)
+    style.layers.splice(indexOfPlacesLabel, 0, {
+        id: 'places-fill',
+        type: 'fill',
+        source: 'places-source',
+        layout: {
+            visibility: 'visible'
+        },
+        paint: {
+            'fill-color': '#3388ff',
+            'fill-opacity': 0.5
+        }
+    })
+    style.layers.splice(indexOfPlacesLabel + 1, 0, {
+        id: 'places-outline',
+        type: 'line',
+        source: 'places-source',
+        paint:{
+            'line-opacity': 0.25
+        },
+        layout: {
+            visibility: 'visible'
+        },
+    })
     style.layers = [
         ...style.layers,
-        ...[{
-            id: 'places-fill',
-            type: 'fill',
-            source: 'places-source',
-            layout: {
-                visibility: 'visible'
-            },
-            paint: {
-                'fill-color': '#3388ff',
-                'fill-opacity': 0.5
-            }
-        },
-        {
-            id: 'places-outline',
-            type: 'line',
-            source: 'places-source',
-            layout: {
-                visibility: 'visible'
-            },
-            paint: {
-                'line-width': 2,
-                'line-color': '#0000'
-            }
-        },
-        
+        ...[
         {
                 id: 'tracts-harmonized-fill',
                 type: 'fill',
@@ -87,7 +88,7 @@ export default async function createArcGISStyle(sitePath: string) {
                 type: 'symbol',
                 source: 'places-source',
                 layout: {
-                    visibility: 'hidden',
+                    visibility: 'none',
                     'text-anchor': 'center',
                     'text-field': '{NAME}',
                     'text-font': ['Noto Sans Bold'],
