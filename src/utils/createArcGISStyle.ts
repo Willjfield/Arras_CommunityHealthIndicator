@@ -6,6 +6,10 @@ export default async function createArcGISStyle(sitePath: string) {
     //console.log(style)
     style.sources = {
         ...style.sources, ...{
+            'places-source': {
+                    type: 'geojson',
+                    data: `https://services8.arcgis.com/Md1Xw98rMGIJNURK/ArcGIS/rest/services/ArrasIncorporatedPlaces/FeatureServer/0/query?where=OBJECTID%3E-1&objectIds=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&resultType=none&distance=0.0&units=esriSRUnit_Meter&outDistance=&relationParam=&returnGeodetic=false&outFields=*&returnGeometry=true&returnCentroid=false&returnEnvelope=false&featureEncoding=esriDefault&multipatchOption=xyFootprint&maxAllowableOffset=&geometryPrecision=&outSR=&defaultSR=&datumTransformation=&applyVCSProjection=false&returnIdsOnly=false&returnUniqueIdsOnly=false&returnCountOnly=false&returnExtentOnly=false&returnQueryGeometry=false&returnDistinctValues=false&cacheHint=false&collation=&orderByFields=&groupByFieldsForStatistics=&returnAggIds=false&outStatistics=&having=&resultOffset=&resultRecordCount=&returnZ=false&returnM=false&returnTrueCurves=false&returnExceededLimitFeatures=true&quantizationParameters=&sqlFormat=none&f=pgeojson&token=${_token}`,
+            },
             'tracts-harmonized': {
                 type: 'geojson',
                 data: sitePath + 'ChestLanTractsHarmonized.geojson'
@@ -25,6 +29,31 @@ export default async function createArcGISStyle(sitePath: string) {
     style.layers = [
         ...style.layers,
         ...[{
+            id: 'places-fill',
+            type: 'fill',
+            source: 'places-source',
+            layout: {
+                visibility: 'visible'
+            },
+            paint: {
+                'fill-color': '#3388ff',
+                'fill-opacity': 0.5
+            }
+        },
+        {
+            id: 'places-outline',
+            type: 'line',
+            source: 'places-source',
+            layout: {
+                visibility: 'visible'
+            },
+            paint: {
+                'line-width': 2,
+                'line-color': '#0000'
+            }
+        },
+        
+        {
                 id: 'tracts-harmonized-fill',
                 type: 'fill',
                 source: 'tracts-harmonized',
@@ -51,6 +80,21 @@ export default async function createArcGISStyle(sitePath: string) {
                 paint: {
                     'line-width': 2,
                     'line-color': '#0000'
+                }
+            },
+            {
+                id: 'places-label',
+                type: 'symbol',
+                source: 'places-source',
+                layout: {
+                    visibility: 'visible',
+                    'text-anchor': 'center',
+                    'text-field': '{NAME}',
+                    'text-font': ['Noto Sans Bold'],
+                    'text-size': 12
+                },
+                paint: {
+                    'text-color': '#000'
                 }
             },
             {
