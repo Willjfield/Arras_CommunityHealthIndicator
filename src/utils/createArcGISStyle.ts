@@ -87,7 +87,7 @@ export default async function createArcGISStyle(sitePath: string) {
                 type: 'symbol',
                 source: 'places-source',
                 layout: {
-                    visibility: 'visible',
+                    visibility: 'hidden',
                     'text-anchor': 'center',
                     'text-field': '{NAME}',
                     'text-font': ['Noto Sans Bold'],
