@@ -9,9 +9,10 @@ export class AreaDataToMap extends DataToMap {
     data: IndicatorConfig,
     map: Map,
     side: "left" | "right" | null = null,
-    emitter?: Emitter<any>
+    emitter?: Emitter<any>,
+    arrasBranding?: any
   ) {
-    super(data, map, side, emitter);
+    super(data, map, side, emitter, arrasBranding as any);
     this.selectedGeography = null;
   }
   selectedGeography: string | null;
