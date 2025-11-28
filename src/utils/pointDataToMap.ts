@@ -185,9 +185,9 @@ export class PointDataToMap extends DataToMap {
         this.getExpression("circleRadius")
       );
     }
-    if (!circleLayer) {
-      map.setLayoutProperty(circleLayer, "visibility", "none");
-    }
+    // if (!circleLayer) {
+    //   map.setLayoutProperty(circleLayer, "visibility", "none");
+    // }
     return true;
   }
 

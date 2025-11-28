@@ -88,7 +88,7 @@
             "short_name": "childcare",
             "layers": {
                 "main": "point-data",
-                "circle": "point-data-circle"
+                "circle": false
             },
             "icons": [
                 {
@@ -131,11 +131,11 @@
             "short_name": "3rdGradeMathReadiness",
             "layers": {
                 "main": "point-data",
-                "circle": "point-data-circle"
+                "circle": false
             },
             "icons": [
                 {
-                    "name": "icon-school",
+                    "name": "icon-school-raster",
                     "filename": "assets/icons/school.png"
                 }
             ],
@@ -162,11 +162,11 @@
             "short_name": "3rdGradeELAReadiness",
             "layers": {
                 "main": "point-data",
-                "circle": "point-data-circle"
+                "circle": false
             },
             "icons": [
                 {
-                    "name": "icon-school",
+                    "name": "icon-school-raster",
                     "filename": "assets/icons/school.png"
                 }
             ],
@@ -193,11 +193,11 @@
             "short_name": "8thGradeMathReadiness",
             "layers": {
                 "main": "point-data",
-                "circle": "point-data-circle"
+                "circle": false
             },
             "icons": [
                 {
-                    "name": "icon-school",
+                    "name": "icon-school-raster",
                     "filename": "assets/icons/school.png"
                 }
             ],
@@ -224,11 +224,11 @@
             "short_name": "8thGradeELAReadiness",
             "layers": {
                 "main": "point-data",
-                "circle": "point-data-circle"
+                "circle": false
             },
             "icons": [
                 {
-                    "name": "icon-school",
+                    "name": "icon-school-raster",
                     "filename": "assets/icons/school.png"
                 }
             ],
@@ -255,11 +255,11 @@
             "short_name": "highSchoolCompletion",
             "layers": {
                 "main": "point-data",
-                "circle": "point-data-circle"
+                "circle": false
             },
             "icons": [
                 {
-                    "name": "icon-school",
+                    "name": "icon-school-raster",
                     "filename": "assets/icons/school.png"
                 }
             ],
@@ -286,11 +286,11 @@
             "short_name": "highSchoolCareerReadiness",
             "layers": {
                 "main": "point-data",
-                "circle": "point-data-circle"
+                "circle": false
             },
             "icons": [
                 {
-                    "name": "icon-school",
+                    "name": "icon-school-raster",
                     "filename": "assets/icons/school.png"
                 }
             ],
@@ -317,11 +317,11 @@
             "short_name": "highSchoolCollegeReadiness",
             "layers": {
                 "main": "point-data",
-                "circle": "point-data-circle"
+                "circle": false
             },
             "icons": [
                 {
-                    "name": "icon-school",
+                    "name": "icon-school-raster",
                     "filename": "assets/icons/school.png"
                 }
             ],
@@ -347,13 +347,12 @@
             "source_name": "points-source",
             "short_name": "kReadiness",
             "layers": {
-                "main": "point-data",
-                "circle": "point-data-circle"
+                "main": "point-data"
             },
             "icons": [
                 {
                     "name": "icon-school",
-                    "filename": "assets/icons/school.png"
+                    "filename": "assets/icons/noun/noun-kindergarten-7433345.svg"
                 }
             ],
             "style": {

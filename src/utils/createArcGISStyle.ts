@@ -98,27 +98,27 @@ export default async function createArcGISStyle(sitePath: string) {
                     'text-color': '#000'
                 }
             },
-            {
-                id: 'point-data-circle',
-                type: 'circle',
-                source: 'points-source',
-                layout: {
-                    visibility: 'none'
-                },
-                paint: {
-                    'circle-color': '#fff',
-                    'circle-radius': [
-                        "interpolate",
-                        ["linear"],
-                        ["zoom"],
-                        9, 1,
-                        15, 4
-                    ],
-                    'circle-stroke-width': 1,
-                    'circle-stroke-color': '#000',
-                    'circle-stroke-opacity': 0.5
-                }
-            },
+            // {
+            //     id: 'point-data-circle',
+            //     type: 'circle',
+            //     source: 'points-source',
+            //     layout: {
+            //         visibility: 'none'
+            //     },
+            //     paint: {
+            //         'circle-color': '#fff',
+            //         'circle-radius': [
+            //             "interpolate",
+            //             ["linear"],
+            //             ["zoom"],
+            //             9, 1,
+            //             15, 4
+            //         ],
+            //         'circle-stroke-width': 1,
+            //         'circle-stroke-color': '#000',
+            //         'circle-stroke-opacity': 0.5
+            //     }
+            // },
             {
                 id: 'point-data',
                 type: 'symbol',
