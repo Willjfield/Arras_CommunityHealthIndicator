@@ -166,6 +166,7 @@ import JsonFormField from '../components/JsonFormField.vue';
 const mainConfigJson = ref<string>('');
 const mainConfigData = ref<any>({});
 const mainConfigError = ref<string | null>(null);
+
 const viewMode = ref<'form' | 'json'>('form');
 
 const categoriesWithConfigs = ref<any[]>([]);

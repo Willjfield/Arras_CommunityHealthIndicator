@@ -1,11 +1,12 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, inject } from 'vue'
 import type { IndicatorConfig } from '../types/IndicatorConfig.ts'
 import { useThemeLevelStore } from './themeLevelStore'
 import { createDataToMapWorker } from '../utils/dataToMapWorkerFactory.ts'
 import type { PointDataToMap } from '../utils/pointDataToMap.ts'
 import type { AreaDataToMap } from '../utils/areaDataToMap.ts'
 import type { Emitter } from 'mitt'
+//import axios from 'axios'
 export interface IndicatorLevelStore {
     currentIndicator: IndicatorConfig | null
     currentIndicatorData: any
@@ -18,9 +19,10 @@ export interface IndicatorLevelStore {
 }
 
 const themeLevelStore = useThemeLevelStore()
-
+//const sitePath = process.env.NODE_ENV === 'production' ? '/Arras_CommunityHealthIndicator/' : ''
 const indicatorLevelStore = (storeName: 'left' | 'right') => {
-
+    const arrasBranding = ref<any>(inject('arrasBranding') as any)
+    //console.log(arrasBranding.colors)
     const currentThemeIndicators = themeLevelStore.getAllCurrentThemeIndicators()
     const currentIndicator = ref<IndicatorConfig | null>(null)
     const currentGeoSelection = ref<string | null>(null)
@@ -38,6 +40,8 @@ const indicatorLevelStore = (storeName: 'left' | 'right') => {
     }
 
     let worker: AreaDataToMap | PointDataToMap | null = null;
+
+   
     function removeMap() {
         if(worker) {
             worker.removeOldEvents();
@@ -74,7 +78,7 @@ const indicatorLevelStore = (storeName: 'left' | 'right') => {
                 worker=null;
             }
 
-            worker = createDataToMapWorker(indicator, map, storeName as 'left' | 'right' | null, emitter);
+            worker = createDataToMapWorker(indicator, map, storeName as 'left' | 'right' | null, emitter, arrasBranding.value);
 
             if (worker) {
                 const headerShortNames = indicator.google_sheets_data.headerShortNames;

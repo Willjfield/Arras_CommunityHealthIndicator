@@ -16,7 +16,6 @@ const sitePath = process.env.NODE_ENV === 'production' ? '/Arras_CommunityHealth
 const historyBase = sitePath
 app.provide('sitePath', sitePath);
 const mainConfig = (await axios.get(sitePath+'/config/main.json')).data;
-
 const activeCategories = mainConfig.categories
     .filter((category: any) => category.enabled && category.config)
 
@@ -29,7 +28,7 @@ await Promise.all(activeCategories.map(async (config: any) => {
 
 app.provide('categoryConfigs', categoryConfigs);
 app.provide('mainConfig', mainConfig);
-
+app.provide('arrasBranding', (await axios.get(`${sitePath}/config/arras_branding.json`)).data);
 const router = createRouter({
     history: createWebHistory(historyBase),
     routes: [

@@ -6,52 +6,9 @@ import { createApp, type App, reactive } from "vue";
 import Popup from "../components/Popup.vue";
 import vuetify from "../plugins/vuetify.js";
 
-const svgToPng = async (svg: string): Promise<HTMLImageElement> => {
-  const svgBlob = new Blob([svg], { type: "image/svg+xml" });
-  const svgUrl = URL.createObjectURL(svgBlob);
+//import useIndicatorLevelStore from "../stores/indicatorLevelStore.js";
 
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.crossOrigin = "anonymous";
-    img.onload = () => {
-      // Create a canvas to rasterize the SVG to PNG
-      const canvas = document.createElement("canvas");
-      // Use natural dimensions if available, otherwise default to 256x256
-      const width = img.naturalWidth || img.width || 256;
-      const height = img.naturalHeight || img.height || 256;
-      canvas.width = width;
-      canvas.height = height;
 
-      const ctx = canvas.getContext("2d");
-      if (!ctx) {
-        URL.revokeObjectURL(svgUrl);
-        reject(new Error("Could not get canvas context"));
-        return;
-      }
-
-      // Draw the SVG image to the canvas
-      ctx.drawImage(img, 0, 0, width, height);
-
-      // Create a new image element from the canvas PNG data URL
-      const pngImg = new Image();
-      pngImg.onload = () => {
-        URL.revokeObjectURL(svgUrl);
-        resolve(pngImg);
-      };
-      pngImg.onerror = (error) => {
-        URL.revokeObjectURL(svgUrl);
-        reject(error);
-      };
-      // Convert canvas to PNG data URL
-      pngImg.src = canvas.toDataURL("image/png");
-    };
-    img.onerror = (error) => {
-      URL.revokeObjectURL(svgUrl);
-      reject(error);
-    };
-    img.src = svgUrl;
-  });
-};
 
 export class DataToMap {
   readonly data: IndicatorConfig;
@@ -66,11 +23,13 @@ export class DataToMap {
   protected highlightedGeoid: string | null = null;
   protected lastPopupGeoid: string | null = null;
   protected popupProperties: ReturnType<typeof reactive> | null = null;
+  protected arrasBranding: any;
   constructor(
     _data: IndicatorConfig,
     _map: Map,
     side: "left" | "right" | null = null,
-    _emitter?: Emitter<any>
+    _emitter?: Emitter<any>,
+    _arrasBranding?: any
   ) {
     this.data = _data;
     this.map = _map;
@@ -83,6 +42,8 @@ export class DataToMap {
     this.year = null;
     this.side = side;
     this.highlightedGeoid = null;
+    this.arrasBranding = _arrasBranding;
+    // console.log(this.arrasBranding.colors)
   }
 
   async setupIndicator(year: number | null): Promise<boolean> {
@@ -102,7 +63,7 @@ export class DataToMap {
         const svg = await fetch(icons[0].filename as string).then((res) =>
           res.text()
         );
-        const imgElement = await svgToPng(svg);
+        const imgElement = await this.svgToPng(svg);
         console.log(imgElement);
         const image = await this.map.loadImage(imgElement.src);
         console.log(image);
@@ -285,4 +246,69 @@ export class DataToMap {
       return true;
     }
   }
+
+  
+async svgToPng(svg: string): Promise<HTMLImageElement> {
+  const SCALE_FACTOR = 0.667;
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(svg, "image/svg+xml");
+  const circle = doc.querySelector("path");
+  const circleTransform = `translate(${SCALE_FACTOR*25}%, ${SCALE_FACTOR*25}%) scale(${SCALE_FACTOR})`
+  const paths = doc.querySelectorAll("path");
+
+  for(let path = 1; path < paths.length; path++) {
+    paths[path].style.fill = this.arrasBranding.colors.beige
+  }
+  if (circle) {
+    circle.style.transform = circleTransform;
+    circle.style.fill = this.arrasBranding.colors['dark-blue']
+  }
+  svg = doc.documentElement.outerHTML;
+ // svg = svg.replace(/width="\d+" height="\d+"/, "width='32' height='32'");
+
+  const svgBlob = new Blob([svg], { type: "image/svg+xml" });
+  const svgUrl = URL.createObjectURL(svgBlob);
+  const iconSize = 64;
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => {
+      // Create a canvas to rasterize the SVG to PNG
+      const canvas = document.createElement("canvas");
+      // Use natural dimensions if available, otherwise default to 16x16
+      const width = iconSize;//img.naturalWidth || img.width || 16;
+      const height = iconSize;//img.naturalHeight || img.height || 16;
+      canvas.width = width;
+      canvas.height = height;
+
+      const ctx = canvas.getContext("2d");
+      if (!ctx) {
+        URL.revokeObjectURL(svgUrl);
+        reject(new Error("Could not get canvas context"));
+        return;
+      }
+
+      // Draw the SVG image to the canvas
+      ctx.drawImage(img, 0, 0, width, height);
+
+      // Create a new image element from the canvas PNG data URL
+      const pngImg = new Image();
+      pngImg.onload = () => {
+        URL.revokeObjectURL(svgUrl);
+        resolve(pngImg);
+      };
+      pngImg.onerror = (error) => {
+        URL.revokeObjectURL(svgUrl);
+        reject(error);
+      };
+      // Convert canvas to PNG data URL
+      pngImg.src = canvas.toDataURL("image/png");
+    };
+    img.onerror = (error) => {
+      URL.revokeObjectURL(svgUrl);
+      reject(error);
+    };
+    img.src = svgUrl;
+  });
+}
 }

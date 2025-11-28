@@ -12,11 +12,13 @@ export class PointDataToMap extends DataToMap {
     data: IndicatorConfig,
     map: Map,
     side: "left" | "right" | null = null,
-    emitter?: Emitter<any>
+    emitter?: Emitter<any>,
+    arrasBranding?: any
   ) {
-    super(data, map, side, emitter);
+    super(data, map, side, emitter, arrasBranding as any);
     this.minDataValue = 0;
     this.maxDataValue = 100;
+    this.arrasBranding = arrasBranding as any;
   }
 
   getExpression(expType: "circleRadius" | "iconSize") {
