@@ -63,12 +63,15 @@ export class DataToMap {
         const svg = await fetch(icons[0].filename as string).then((res) =>
           res.text()
         );
-        const imgElement = await this.svgToPng(svg);
-        console.log(imgElement);
+        const imgElement = await this.svgToPng(svg, false);
         const image = await this.map.loadImage(imgElement.src);
-        console.log(image);
         if (!this.map.hasImage(icons[0].name)) {
           this.map.addImage(icons[0].name, (image as any).data);
+        }
+        const imgElementInverted = await this.svgToPng(svg, true);
+        const imageInverted = await this.map.loadImage(imgElementInverted.src);
+        if (!this.map.hasImage(icons[0].name + "-invert")) {
+          this.map.addImage(icons[0].name + "-invert", (imageInverted as any).data);
         }
       } else {
         const img = await this.map.loadImage(icons[0].filename as string);
@@ -248,7 +251,7 @@ export class DataToMap {
   }
 
   
-async svgToPng(svg: string): Promise<HTMLImageElement> {
+async svgToPng(svg: string, invertColors: boolean = false): Promise<HTMLImageElement> {
   const SCALE_FACTOR = 0.667;
   const parser = new DOMParser();
   const doc = parser.parseFromString(svg, "image/svg+xml");
@@ -256,12 +259,20 @@ async svgToPng(svg: string): Promise<HTMLImageElement> {
   const circleTransform = `translate(${SCALE_FACTOR*25}%, ${SCALE_FACTOR*25}%) scale(${SCALE_FACTOR})`
   const paths = doc.querySelectorAll("path");
 
+  const pngColors = {
+    icon: this.arrasBranding.colors[this.data.style.colors.icon],
+    circle: this.arrasBranding.colors[this.data.style.colors.circle]+'80'
+  }
+  if (invertColors) {
+    pngColors.icon = this.arrasBranding.colors[this.data.style.colors.circle];
+    pngColors.circle = this.arrasBranding.colors[this.data.style.colors.icon];
+  }
   for(let path = 1; path < paths.length; path++) {
-    paths[path].style.fill = this.arrasBranding.colors.beige
+    paths[path].style.fill = pngColors.icon
   }
   if (circle) {
     circle.style.transform = circleTransform;
-    circle.style.fill = this.arrasBranding.colors['dark-blue']
+    circle.style.fill = pngColors.circle
   }
   svg = doc.documentElement.outerHTML;
  // svg = svg.replace(/width="\d+" height="\d+"/, "width='32' height='32'");

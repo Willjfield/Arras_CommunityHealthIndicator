@@ -21,57 +21,80 @@ export class PointDataToMap extends DataToMap {
     this.arrasBranding = arrasBranding as any;
   }
 
-  getExpression(expType: "circleRadius" | "iconSize") {
+  getExpression() {
     const minValue = this.minDataValue;
     const maxValue = this.maxDataValue;
-    const mappedValue = (value: number) => {
-      return (value - minValue) / (maxValue - minValue);
-    };
-    const mappedMinValue = mappedValue(minValue);
-    const mappedMaxValue = mappedValue(maxValue);
+    console.log(minValue, maxValue);
+
     const propAccessor = (this.data as any).has_count
-        ? `Count_${this.year}`
-        : `${this.year}`;
-    if (expType === "circleRadius") {
-      
-      return [
+      ? `Count_${this.year}`
+      : `${this.year}`;
+    console.log(propAccessor);
+    return [
         "interpolate",
         ["linear"],
-        ["zoom"],
-        8,
-        [
-          "*",
-          ["to-number", 1.25 / 3 + mappedMinValue],
-          ["sqrt", ["to-number", ["get", propAccessor]]],
-        ],
-        15,
-        [
-          "*",
-          ["to-number", 1.25 + mappedMaxValue],
-          ["sqrt", ["to-number", ["get", propAccessor]]],
-        ],
+        ["to-number", ["get", propAccessor]],
+        minValue,
+        0.2,
+        maxValue,
+        1.0,
       ];
-    }
-    if (expType === "iconSize") {
-      return [
-        "interpolate",
-        ["linear"],
-        ["zoom"],
-        8,
-        [
-          "*",
-          ["to-number", 0.03 + mappedMinValue * 0.1],
-          ["sqrt", ["to-number", ["get", propAccessor]]]
-        ],
-        15,
-        [
-          "*",
-          ["to-number", 0.1 + mappedMaxValue * 0.1],
-          ["sqrt", ["to-number", ["get", propAccessor]]]
-        ]
-      ];
-    }
-    return null;
+    // if (expType === "circleRadius") {
+    //   return [
+    //     "interpolate",
+    //     ["linear"],
+    //     ["zoom"],
+    //     8,
+    //     [
+    //       "*",
+    //       ["to-number", (1.25 / 3).toString()],
+    //       ["sqrt", ["to-number", ["get", propAccessor]]],
+    //     ],
+    //     15,
+    //     [
+    //       "*",
+    //       ["to-number", "1.25"],
+    //       ["sqrt", ["to-number", ["get", propAccessor]]],
+    //     ],
+    //   ];
+    // }
+    // if (expType === "iconSize") {
+    //   // Top-level zoom interpolation, with data-based multiplication at each zoom level
+    //   return [
+    //     "interpolate",
+    //     ["linear"],
+    //     ["zoom"],
+    //     8,
+    //     [
+    //       "*",
+    //       0.5,
+    //       [
+    //         "interpolate",
+    //         ["linear"],
+    //         ["to-number", ["get", propAccessor]],
+    //         minValue,
+    //         0.5,
+    //         maxValue,
+    //         10.0,
+    //       ],
+    //     ],
+    //     15,
+    //     [
+    //       "*",
+    //       1.0,
+    //       [
+    //         "interpolate",
+    //         ["linear"],
+    //         ["to-number", ["get", propAccessor]],
+    //         minValue,
+    //         0.2,
+    //         maxValue,
+    //         10.0,
+    //       ],
+    //     ],
+    //   ];
+    // }
+    // return null;
   }
 
   async setupIndicator(year: number | null): Promise<boolean> {
@@ -80,17 +103,21 @@ export class PointDataToMap extends DataToMap {
     this.removeOldEvents();
     const geojson = this.generateGeojson();
     const propAccessor = (this.data as any).has_count
-        ? `Count_${this.year}`
-        : `${this.year}`;
+      ? `Count_${this.year}`
+      : `${this.year}`;
     this.minDataValue = Math.min(
       ...geojson.features.map(
-        (feature: any) =>
-          +feature.properties[propAccessor] || 9999999999999
+        (feature: any) => +feature.properties[propAccessor] || 9999999999999
       )
     );
     this.maxDataValue = Math.max(
       ...geojson.features.map(
-        (feature: any) => +feature.properties[propAccessor] || -1
+        (feature: any) => {
+          if(feature.properties.geoid === "overall") {
+            return -1;
+          }
+          return +feature.properties[propAccessor] || -1
+        }
       )
     );
 
@@ -130,19 +157,33 @@ export class PointDataToMap extends DataToMap {
       });
 
       if (features.length === 0) {
-        map.setPaintProperty(mainLayer, "icon-color", "#000");
+        map.setLayoutProperty(mainLayer, "icon-image", [
+          "literal",
+          (this as any).data.icons[0].name,
+        ]);
+        map.setPaintProperty(mainLayer, "icon-halo-width", 0);
+
         this.removePopup();
 
         this.emitter?.emit(`feature-${this.side || "left"}-hovered`, null);
         return;
       } else {
-        map.setPaintProperty(mainLayer, "icon-color", [
+        map.setLayoutProperty(mainLayer, "icon-image", [
           "case",
           ["==", ["get", "geoid"], features[0].properties.geoid],
-          ["literal", (this as any).data.style.selected.color],
-          ["literal", (this as any).data.style.unselected.color],
+          ["literal", (this as any).data.icons[0].name + "-invert"],
+          ["literal", (this as any).data.icons[0].name],
         ]);
+        map.setPaintProperty(mainLayer, "icon-halo-width", [
+          "case",
+          ["==", ["get", "geoid"], features[0].properties.geoid],
+          4,
+          0,
+        ]);
+        const outlineColor =
+          this.arrasBranding.colors[this.data.style.colors.circle];
 
+        map.setPaintProperty(mainLayer, "icon-halo-color", outlineColor);
         // Show popup with Vue component
         this.showPopup(
           event.lngLat,
@@ -176,20 +217,9 @@ export class PointDataToMap extends DataToMap {
     map.setLayoutProperty(
       (this as any).data.layers.main,
       "icon-size",
-      this.getExpression("iconSize")
+      this.getExpression()
     );
-    let circleLayer = (this as any).data.layers.circle;
-    if (circleLayer) {
-      map.setLayoutProperty(circleLayer, "visibility", "visible");
-      map.setPaintProperty(
-        circleLayer,
-        "circle-radius",
-        this.getExpression("circleRadius")
-      );
-    }
-    // if (!circleLayer) {
-    //   map.setLayoutProperty(circleLayer, "visibility", "none");
-    // }
+
     return true;
   }
 

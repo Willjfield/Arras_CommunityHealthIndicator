@@ -21,6 +21,7 @@ export interface IndicatorConfig {
         circle: string | null;
     };
     style: {
+        colors: any;
         min: {
             color: string;
             value: number;
