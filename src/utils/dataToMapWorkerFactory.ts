@@ -4,15 +4,15 @@ import type { IndicatorConfig } from '../types/IndicatorConfig.ts'
 import type maplibregl from 'maplibre-gl'
 import type { Emitter } from 'mitt'
 
-export function createDataToMapWorker(indicator: IndicatorConfig, map: maplibregl.Map | null, side: 'left' | 'right' | null = null, emitter?: Emitter<any | null>, arrasBranding?: any) : AreaDataToMap | PointDataToMap | null {
+export function createDataToMapWorker(indicator: IndicatorConfig, map: maplibregl.Map | null, side: 'left' | 'right' | null = null, emitter?: Emitter<any | null>, arrasBranding?: any, sitePath?: string) : AreaDataToMap | PointDataToMap | null {
     if (!map) {
         return null
     }
     switch (indicator?.geolevel) {
         case 'area':
-                return new AreaDataToMap(indicator, map, side, emitter, arrasBranding as any)
+                return new AreaDataToMap(indicator, map, side, emitter, arrasBranding as any, sitePath)
         case 'point':
-            return new PointDataToMap(indicator, map, side, emitter, arrasBranding as any)
+            return new PointDataToMap(indicator, map, side, emitter, arrasBranding as any, sitePath)
         default:
             return null
     }

@@ -69,15 +69,9 @@
       "icons": [
         {
           "name": "icon-childcare",
-          "filename": "assets/icons/noun/noun-childcare-6285882.svg"
+          "filename": "/assets/icons/noun/noun-childcare-6285882.svg"
         }
-      ],
-      "style": {
-        "colors": {
-          "icon": "dark-blue",
-          "circle": "yellow"
-        }
-      }
+      ]
     },
     {
       "title": "3rd Grade Math Readiness",
@@ -96,15 +90,9 @@
       "icons": [
         {
           "name": "icon-school-raster",
-          "filename": "assets/icons/school.png"
+          "filename": "/assets/icons/noun/noun-calculator-526090.svg"
         }
-      ],
-      "style": {
-        "colors": {
-          "icon": "yellow",
-          "circle": "dark-blue"
-        }
-      }
+      ]
     },
     {
       "title": "3rd Grade ELA Readiness",
@@ -123,15 +111,9 @@
       "icons": [
         {
           "name": "icon-school-raster",
-          "filename": "assets/icons/school.png"
+          "filename": "/assets/icons/noun/noun-literacy-7916638.svg"
         }
-      ],
-      "style": {
-        "colors": {
-          "icon": "yellow",
-          "circle": "dark-blue"
-        }
-      }
+      ]
     },
     {
       "title": "8th Grade Math Readiness",
@@ -150,15 +132,9 @@
       "icons": [
         {
           "name": "icon-school-raster",
-          "filename": "assets/icons/school.png"
+          "filename": "/assets/icons/noun/noun-calculator-3433172.svg"
         }
-      ],
-      "style": {
-        "colors": {
-          "icon": "yellow",
-          "circle": "dark-blue"
-        }
-      }
+      ]
     },
     {
       "title": "8th Grade ELA Readiness",
@@ -177,15 +153,9 @@
       "icons": [
         {
           "name": "icon-school-raster",
-          "filename": "assets/icons/school.png"
+          "filename": "/assets/icons/noun/noun-literature-7025302.svg"
         }
-      ],
-      "style": {
-        "colors": {
-          "icon": "yellow",
-          "circle": "dark-blue"
-        }
-      }
+      ]
     },
     {
       "title": "High School Completion Rate",
@@ -204,15 +174,9 @@
       "icons": [
         {
           "name": "icon-school-raster",
-          "filename": "public/assets/icons/noun/noun-graduate-7295602(1).svg"
+          "filename": "/assets/icons/noun/noun-graduate-7295602(1).svg"
         }
-      ],
-      "style": {
-        "colors": {
-          "icon": "yellow",
-          "circle": "dark-blue"
-        }
-      }
+      ]
     },
     {
       "title": "High School Career Readiness",
@@ -231,15 +195,9 @@
       "icons": [
         {
           "name": "icon-school-raster",
-          "filename": "assets/icons/noun/noun-school-8099722.svg"
+          "filename": "/assets/icons/noun/noun-school-8099722.svg"
         }
-      ],
-      "style": {
-        "colors": {
-          "icon": "yellow",
-          "circle": "dark-blue"
-        }
-      }
+      ]
     },
     {
       "title": "High School College Readiness",
@@ -258,15 +216,9 @@
       "icons": [
         {
           "name": "icon-school-raster",
-          "filename": "assets/icons/noun/noun-diploma-7875606.svg"
+          "filename": "/assets/icons/noun/noun-diploma-7875606.svg"
         }
-      ],
-      "style": {
-        "colors": {
-          "icon": "yellow",
-          "circle": "dark-blue"
-        }
-      }
+      ]
     },
     {
       "title": "Kindergarten Readiness",
@@ -284,15 +236,9 @@
       "icons": [
         {
           "name": "icon-school",
-          "filename": "assets/icons/noun/noun-kindergarten-7433345.svg"
+          "filename": "/assets/icons/noun/noun-kindergarten-7433345.svg"
         }
-      ],
-      "style": {
-        "colors": {
-          "icon": "yellow",
-          "circle": "dark-blue"
-        }
-      }
+      ]
     }
   ]
 }

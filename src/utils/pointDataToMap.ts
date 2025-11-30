@@ -13,9 +13,10 @@ export class PointDataToMap extends DataToMap {
     map: Map,
     side: "left" | "right" | null = null,
     emitter?: Emitter<any>,
-    arrasBranding?: any
+    arrasBranding?: any,
+    sitePath?: string
   ) {
-    super(data, map, side, emitter, arrasBranding as any);
+    super(data, map, side, emitter, arrasBranding as any, sitePath);
     this.minDataValue = 0;
     this.maxDataValue = 100;
     this.arrasBranding = arrasBranding as any;

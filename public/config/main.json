@@ -10,7 +10,21 @@
             "query_str":"edu",
             "enabled": true,
             "description": "We envision communities that offer quality elementary, secondary, post-secondary educational opportunities and academic achievement.",
-            "config": "/config/education.json"
+            "config": "/config/education.json",
+            "style": {
+                "colors": {
+                    "icon": "yellow",
+                    "circle": "dark-blue"
+                },
+                "min": {
+                    "color": "hsla(90, 100%, 98%, 1)",
+                    "value": 0
+                },
+                "max": {
+                    "color": "hsla(90, 100%, 40%, 1)",
+                    "value": 100
+                }
+            }
         },
         {
             "title": "Health",

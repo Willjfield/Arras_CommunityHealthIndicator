@@ -10,9 +10,10 @@ export class AreaDataToMap extends DataToMap {
     map: Map,
     side: "left" | "right" | null = null,
     emitter?: Emitter<any>,
-    arrasBranding?: any
+    arrasBranding?: any,
+    sitePath?: string
   ) {
-    super(data, map, side, emitter, arrasBranding as any);
+    super(data, map, side, emitter, arrasBranding as any, sitePath);
     this.selectedGeography = null;
   }
   selectedGeography: string | null;

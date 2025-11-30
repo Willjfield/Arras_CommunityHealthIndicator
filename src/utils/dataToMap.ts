@@ -24,12 +24,14 @@ export class DataToMap {
   protected lastPopupGeoid: string | null = null;
   protected popupProperties: ReturnType<typeof reactive> | null = null;
   protected arrasBranding: any;
+  protected sitePath: string;
   constructor(
     _data: IndicatorConfig,
     _map: Map,
     side: "left" | "right" | null = null,
     _emitter?: Emitter<any>,
-    _arrasBranding?: any
+    _arrasBranding?: any,
+    _sitePath?: string
   ) {
     this.data = _data;
     this.map = _map;
@@ -43,7 +45,21 @@ export class DataToMap {
     this.side = side;
     this.highlightedGeoid = null;
     this.arrasBranding = _arrasBranding;
+    this.sitePath = _sitePath || '';
     // console.log(this.arrasBranding.colors)
+  }
+
+  protected resolveIconPath(filename: string): string {
+    // If it's already an absolute URL, return as-is
+    if (filename.startsWith('http://') || filename.startsWith('https://')) {
+      return filename;
+    }
+    // If it starts with /, it's already a root path - prepend sitePath
+    if (filename.startsWith('/')) {
+      return this.sitePath + filename;
+    }
+    // Otherwise, treat as relative and prepend sitePath + /
+    return this.sitePath + '/' + filename;
   }
 
   async setupIndicator(year: number | null): Promise<boolean> {
@@ -60,7 +76,8 @@ export class DataToMap {
     //If, in the future, we want to add more than one icon, we need to change this to a loop. For now we assume there is one and it is used as the "main" one
     if (icons && icons.length === 1) {
       if (icons[0]?.filename?.endsWith(".svg")) {
-        const svg = await fetch(icons[0].filename as string).then((res) =>
+        const iconPath = this.resolveIconPath(icons[0].filename as string);
+        const svg = await fetch(iconPath).then((res) =>
           res.text()
         );
         const imgElement = await this.svgToPng(svg, false);
@@ -74,7 +91,8 @@ export class DataToMap {
           this.map.addImage(icons[0].name + "-invert", (imageInverted as any).data);
         }
       } else {
-        const img = await this.map.loadImage(icons[0].filename as string);
+        const iconPath = this.resolveIconPath(icons[0].filename as string);
+        const img = await this.map.loadImage(iconPath);
 
         if (!this.map.hasImage(icons[0].name)) {
           this.map.addImage(icons[0].name, img.data, { sdf: true });
@@ -255,9 +273,9 @@ async svgToPng(svg: string, invertColors: boolean = false): Promise<HTMLImageEle
   const SCALE_FACTOR = 0.667;
   const parser = new DOMParser();
   const doc = parser.parseFromString(svg, "image/svg+xml");
-  const circle = doc.querySelector("path");
+  const circle = doc.getElementsByClassName("bg-circle")[0] as HTMLElement;
   const circleTransform = `translate(${SCALE_FACTOR*25}%, ${SCALE_FACTOR*25}%) scale(${SCALE_FACTOR})`
-  const paths = doc.querySelectorAll("path");
+  const paths = doc.getElementsByTagName("path") as HTMLCollectionOf<SVGPathElement>;
 
   const pngColors = {
     icon: this.arrasBranding.colors[this.data.style.colors.icon],
@@ -267,15 +285,15 @@ async svgToPng(svg: string, invertColors: boolean = false): Promise<HTMLImageEle
     pngColors.icon = this.arrasBranding.colors[this.data.style.colors.circle];
     pngColors.circle = this.arrasBranding.colors[this.data.style.colors.icon];
   }
+
   for(let path = 1; path < paths.length; path++) {
-    paths[path].style.fill = pngColors.icon
+    paths[path].setAttribute("fill", pngColors.icon)
   }
   if (circle) {
     circle.style.transform = circleTransform;
-    circle.style.fill = pngColors.circle
+    circle.setAttribute("fill", pngColors.circle)
   }
   svg = doc.documentElement.outerHTML;
- // svg = svg.replace(/width="\d+" height="\d+"/, "width='32' height='32'");
 
   const svgBlob = new Blob([svg], { type: "image/svg+xml" });
   const svgUrl = URL.createObjectURL(svgBlob);

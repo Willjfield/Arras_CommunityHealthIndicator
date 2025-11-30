@@ -22,6 +22,7 @@ const themeLevelStore = useThemeLevelStore()
 //const sitePath = process.env.NODE_ENV === 'production' ? '/Arras_CommunityHealthIndicator/' : ''
 const indicatorLevelStore = (storeName: 'left' | 'right') => {
     const arrasBranding = ref<any>(inject('arrasBranding') as any)
+    const sitePath = inject('sitePath') as string
     //console.log(arrasBranding.colors)
     const currentThemeIndicators = themeLevelStore.getAllCurrentThemeIndicators()
     const currentIndicator = ref<IndicatorConfig | null>(null)
@@ -78,7 +79,7 @@ const indicatorLevelStore = (storeName: 'left' | 'right') => {
                 worker=null;
             }
 
-            worker = createDataToMapWorker(indicator, map, storeName as 'left' | 'right' | null, emitter, arrasBranding.value);
+            worker = createDataToMapWorker(indicator, map, storeName as 'left' | 'right' | null, emitter, arrasBranding.value, sitePath);
 
             if (worker) {
                 const headerShortNames = indicator.google_sheets_data.headerShortNames;
