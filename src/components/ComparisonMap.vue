@@ -124,6 +124,7 @@ onMounted(async () => {
       center: props._center,
       zoom: props._zoom,
       hash: true,
+            canvasContextAttributes: {antialias: true} ,
       transformRequest: (url: string) => {
         // Handle ArcGIS tile requests (no modification needed)
         if (url.includes('arcgisonline.com') || url.includes('arcgis.com')) {
@@ -152,6 +153,12 @@ onMounted(async () => {
         return { url }
       }
     })
+    rightMap.addControl(new maplibregl.NavigationControl({
+        visualizePitch: true,
+        visualizeRoll: true,
+        showZoom: true,
+        showCompass: true
+    }));
     rightIndicatorLevelStore.initializeMap(rightMap, emitter)
     rightMap.on('mousemove', (e: any) => {
       if (!rightMap) return
@@ -291,6 +298,14 @@ onUnmounted(() => {
 .maplibregl-ctrl-bottom-right {
   bottom: 150px;
 }
+
+  .maplibregl-ctrl-top-right {
+    right: 50%;
+    left: unset;
+  }
+  .maplibregl-ctrl-group button+button{
+    border-radius: 0;
+  }
 .orientation-top-bottom .maplibregl-ctrl-bottom-right {
   bottom: 100px;
 }
@@ -305,7 +320,7 @@ onUnmounted(() => {
 }
 
 .map-container.right {
-  border-left: 1px solid black;
+  border-left: 2px solid black;
 }
 
 .slider .map-container.right .timeline-header {

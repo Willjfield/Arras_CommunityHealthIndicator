@@ -21,7 +21,8 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue'
-
+import { inject } from 'vue'
+const arrasBranding = inject('arrasBranding') as any
 interface Props {
   selectedIndicator: any
   side: 'left' | 'right'
@@ -38,11 +39,19 @@ const maxValue = computed(() => {
 })
 
 const minColor = computed(() => {
-  return props.selectedIndicator?.style?.min?.color || '#f2f0f7'
+  const colorName = props.selectedIndicator?.style?.min?.color;
+  if (colorName) {
+    return arrasBranding.colors[colorName];
+  }
+  return '#f2f0f7';
 })
 
 const maxColor = computed(() => {
-  return props.selectedIndicator?.style?.max?.color || '#000000'
+  const colorName = props.selectedIndicator?.style?.max?.color;
+  if (colorName) {
+    return arrasBranding.colors[colorName];
+  }
+  return '#000000';
 })
 </script>
 

@@ -156,6 +156,8 @@ export class AreaDataToMap extends DataToMap {
     const map = (this as any).map;
     if (!map) return false;
     const data = (this as any).data;
+    const minColor = this.arrasBranding.colors[data.style.min.color];
+    const maxColor = this.arrasBranding.colors[data.style.max.color];
     if (
       !data ||
       !data.layers ||
@@ -178,9 +180,9 @@ export class AreaDataToMap extends DataToMap {
     const fillColor = [
       ...data.fill_color,
       data.style.min.value,
-      data.style.min.color,
+      minColor,
       data.style.max.value,
-      data.style.max.color,
+      maxColor,
     ];
 
     if (!data.layers.main) {

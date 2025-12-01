@@ -279,11 +279,11 @@ async svgToPng(svg: string, invertColors: boolean = false): Promise<HTMLImageEle
 
   const pngColors = {
     icon: this.arrasBranding.colors[this.data.style.colors.icon],
-    circle: this.arrasBranding.colors[this.data.style.colors.circle]+'80'
+    circle: this.arrasBranding.colors[this.data.style.colors.circle]+'cc'
   }
   if (invertColors) {
-    pngColors.icon = this.arrasBranding.colors[this.data.style.colors.circle];
-    pngColors.circle = this.arrasBranding.colors[this.data.style.colors.icon];
+    pngColors.icon = this.arrasBranding.colors[this.data.style.colors.icon];
+    pngColors.circle = this.arrasBranding.colors[this.data.style.colors.icon]+'70';
   }
 
   for(let path = 1; path < paths.length; path++) {

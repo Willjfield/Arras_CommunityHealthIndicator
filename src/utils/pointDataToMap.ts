@@ -162,7 +162,7 @@ export class PointDataToMap extends DataToMap {
           "literal",
           (this as any).data.icons[0].name,
         ]);
-        map.setPaintProperty(mainLayer, "icon-halo-width", 0);
+        //map.setPaintProperty(mainLayer, "icon-halo-width", 0);
 
         this.removePopup();
 
@@ -175,16 +175,16 @@ export class PointDataToMap extends DataToMap {
           ["literal", (this as any).data.icons[0].name + "-invert"],
           ["literal", (this as any).data.icons[0].name],
         ]);
-        map.setPaintProperty(mainLayer, "icon-halo-width", [
-          "case",
-          ["==", ["get", "geoid"], features[0].properties.geoid],
-          4,
-          0,
-        ]);
-        const outlineColor =
-          this.arrasBranding.colors[this.data.style.colors.circle];
+        // map.setPaintProperty(mainLayer, "icon-halo-width", [
+        //   "case",
+        //   ["==", ["get", "geoid"], features[0].properties.geoid],
+        //   0.1,
+        //   0,
+        // ]);
+        // const outlineColor =
+        //   this.arrasBranding.colors[this.data.style.colors.circle];
 
-        map.setPaintProperty(mainLayer, "icon-halo-color", outlineColor);
+        //map.setPaintProperty(mainLayer, "icon-halo-color", "#000");
         // Show popup with Vue component
         this.showPopup(
           event.lngLat,

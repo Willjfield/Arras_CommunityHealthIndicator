@@ -1207,8 +1207,8 @@
         "icon-ignore-placement": false
       },
       "paint": {
-        "icon-halo-color": "#fff",
-        "icon-halo-width": 2,
+        "icon-halo-color": "#000",
+        "icon-halo-width": 4,
         "icon-color": "#888"
       }
     }

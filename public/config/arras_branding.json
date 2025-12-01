@@ -6,6 +6,8 @@
         "beige": "#dfd1a7",
         "red": "#cf4520",
         "yellow": "#fdb827",
-        "dark-blue": "#1d4389"
+        "dark-blue": "#1d4389",
+        "black": "#083828",
+        "white": "#ffffff"
     }
 }

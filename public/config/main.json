@@ -13,15 +13,15 @@
             "config": "/config/education.json",
             "style": {
                 "colors": {
-                    "icon": "yellow",
-                    "circle": "dark-blue"
+                    "icon": "dark-blue",
+                    "circle": "white"
                 },
                 "min": {
-                    "color": "hsla(90, 100%, 98%, 1)",
+                    "color": "white",
                     "value": 0
                 },
                 "max": {
-                    "color": "hsla(90, 100%, 40%, 1)",
+                    "color": "dark-blue",
                     "value": 100
                 }
             }
