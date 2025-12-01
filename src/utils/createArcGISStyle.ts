@@ -12,6 +12,7 @@ export default async function createArcGISStyle(sitePath: string) {
       "places-source": {
         type: "geojson",
         data: `https://services8.arcgis.com/Md1Xw98rMGIJNURK/ArcGIS/rest/services/ArrasIncorporatedPlaces/FeatureServer/0/query?where=OBJECTID%3E-1&objectIds=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&resultType=none&distance=0.0&units=esriSRUnit_Meter&outDistance=&relationParam=&returnGeodetic=false&outFields=*&returnGeometry=true&returnCentroid=false&returnEnvelope=false&featureEncoding=esriDefault&multipatchOption=xyFootprint&maxAllowableOffset=&geometryPrecision=&outSR=&defaultSR=&datumTransformation=&applyVCSProjection=false&returnIdsOnly=false&returnUniqueIdsOnly=false&returnCountOnly=false&returnExtentOnly=false&returnQueryGeometry=false&returnDistinctValues=false&cacheHint=false&collation=&orderByFields=&groupByFieldsForStatistics=&returnAggIds=false&outStatistics=&having=&resultOffset=&resultRecordCount=&returnZ=false&returnM=false&returnTrueCurves=false&returnExceededLimitFeatures=true&quantizationParameters=&sqlFormat=none&f=pgeojson&token=${_token}`,
+        generateId: true,
       },
       "tracts-harmonized": {
         type: "geojson",
@@ -45,7 +46,7 @@ export default async function createArcGISStyle(sitePath: string) {
       visibility: "visible",
     },
     paint: {
-      "fill-color": "#3388ff",
+      "fill-color": "#aaa",
       "fill-opacity": 0.5,
     },
   });
@@ -60,6 +61,27 @@ export default async function createArcGISStyle(sitePath: string) {
       visibility: "visible",
     },
   });
+  // style.layers.splice(indexOfPlacesLabel + 1, 0, {
+  //   id: "place-labels",
+  //   type: "symbol",
+  //   source: "places-source",
+  //   layout: {
+  //     visibility: "visible",
+  //     "text-field": "{NAME}",
+  //     "text-font": ["Noto Sans Bold"],
+  //     "text-size": 12,
+  //     "text-overlap": "cooperative",
+  //   },
+  //   paint: {
+  //     "text-color": "#000",
+  //     "text-opacity": [
+  //       "case",
+  //       ["boolean", ["feature-state", "hover"], false],
+  //       1,
+  //       0,
+  //     ],
+  //   },
+  // });
   style.layers.splice(indexOfPlacesLabel + 1, 0, {
     id: "tracts-harmonized-fill",
     type: "fill",
@@ -113,18 +135,12 @@ export default async function createArcGISStyle(sitePath: string) {
           visibility: "visible",
         },
         paint: {
-          "line-width": [
-            "interpolate",
-            ["linear"],
-            ["zoom"],
-            9, 1,
-            15, 2,
-          ],
+          "line-width": ["interpolate", ["linear"], ["zoom"], 9, 1, 15, 2],
           "line-color": "#088",
         },
       },
       {
-        id:"counties-labels",
+        id: "counties-labels",
         type: "symbol",
         source: "counties-outline",
         layout: {
@@ -134,9 +150,9 @@ export default async function createArcGISStyle(sitePath: string) {
           "text-size": 12,
         },
         paint: {
-            "text-color": "#088",
-        }
+          "text-color": "#088",
         },
+      },
     ],
   ];
   return style;

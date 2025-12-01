@@ -25,6 +25,7 @@ const ORIENTATION = {
 }
 function Compare(a, b, container, options) {
   this.options = options || {}
+  this.includeLabel = this.options.includeLabel || true
   this._mapA = a
   this._mapB = b
   this.orientation = this.options.orientation || ORIENTATION.LEFT_RIGHT
@@ -176,9 +177,29 @@ Compare.prototype = {
     append.append(divider)
     append.append(mapIconRight2)
 
-    toggle.append(prepend)
-    toggle.append(switchLabel)
-    toggle.append(append)
+    // Create a wrapper for the controls row
+    const controlsRow = document.createElement('div')
+    controlsRow.className = 'toggle-controls-row'
+    controlsRow.style.display = 'flex'
+    controlsRow.style.alignItems = 'center'
+    controlsRow.style.gap = '8px'
+    
+    controlsRow.append(prepend)
+    controlsRow.append(switchLabel)
+    controlsRow.append(append)
+
+    // Make toggle use column layout
+    toggle.style.flexDirection = 'column'
+    toggle.style.alignItems = 'center'
+    
+    toggle.append(controlsRow)
+    
+    if(this.includeLabel){
+      const toggleLabel = document.createElement('div')
+      toggleLabel.className = 'toggle-label'
+      toggleLabel.textContent = 'Slider | Side by Side'
+      toggle.prepend(toggleLabel)
+    }
 
     return toggle
   },

@@ -1,45 +1,77 @@
 {
-    "categories": [
-        {
-            "title": "Economic Vitality",
-            "query_str": "econ",
-            "description": "We envision residents and community partners convening together to address shared values for the purposes of good governance, community development, and artistic expression."
+  "categories": [
+    {
+      "title": "Economic Vitality",
+      "query_str": "econ",
+      "enabled": true,
+      "description": "We envision residents and community partners convening together to address shared values for the purposes of good governance, community development, and artistic expression.",
+      "config": "/config/economy.json",
+      "style": {
+        "colors": {
+          "icon": "red",
+          "circle": "white"
         },
-        {
-            "title": "Education",
-            "query_str":"edu",
-            "enabled": true,
-            "description": "We envision communities that offer quality elementary, secondary, post-secondary educational opportunities and academic achievement.",
-            "config": "/config/education.json",
-            "style": {
-                "colors": {
-                    "icon": "dark-blue",
-                    "circle": "white"
-                },
-                "min": {
-                    "color": "white",
-                    "value": 0
-                },
-                "max": {
-                    "color": "dark-blue",
-                    "value": 100
-                }
-            }
+        "min": {
+          "color": "white",
+          "value": 0
         },
-        {
-            "title": "Health",
-            "query_str":"health",
-            "description": "We envision communities where young adults have access to education and job opportunities."
-        },
-        {
-            "title": "Natural Environment",
-            "query_str":"nat_env",
-            "description": "We envision communities where people are able and willing to work, spend, earn, and invest."
-        },
-        {
-            "title": "Social & Cultural Wellbeing",
-            "query_str":"social_cultural",
-            "description": "We envision communities that offer empowering supports for family wellbeing, safe neighborhoods, and community trust."
+        "max": {
+          "color": "red",
+          "value": 100
         }
-    ]
+      }
+    },
+    {
+      "title": "Education",
+      "query_str": "edu",
+      "enabled": true,
+      "description": "We envision communities that offer quality elementary, secondary, post-secondary educational opportunities and academic achievement.",
+      "config": "/config/education.json",
+      "style": {
+        "colors": {
+          "icon": "dark-blue",
+          "circle": "white"
+        },
+        "min": {
+          "color": "white",
+          "value": 0
+        },
+        "max": {
+          "color": "dark-blue",
+          "value": 100
+        }
+      }
+    },
+    {
+      "title": "Health",
+      "query_str": "health",
+      "enabled": true,
+      "description": "We envision residents and community partners convening together to address shared values for the purposes of good governance, community development, and artistic expression.",
+      "config": "/config/health.json",
+      "style": {
+        "colors": {
+          "icon": "green",
+          "circle": "white"
+        },
+        "min": {
+          "color": "white",
+          "value": 0
+        },
+        "max": {
+          "color": "green",
+          "value": 100
+        }
+      }
+    },
+    {
+      "title": "Natural Environment",
+      "query_str": "nat_env",
+      "description": "We envision communities where people are able and willing to work, spend, earn, and invest."
+    },
+    {
+      "title": "Social & Cultural Wellbeing",
+      "query_str": "social_cultural",
+      "description": "We envision communities that offer empowering supports for family wellbeing, safe neighborhoods, and community trust."
+    }
+  ]
 }

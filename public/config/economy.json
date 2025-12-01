@@ -1,0 +1,36 @@
+{
+  "indicators": [
+    {
+      "title": "Adults with Bachelor's Degree or Higher",
+      "field": "Adults with Bachelor's Degree or Higher",
+      "geolevel": "area",
+      "default": "left",
+      "has_pct": true,
+      "has_count": true,
+      "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vQLH2WHaIW_W1rCEHkcCALW2GFVgr20hRmIu2DOKyETmKi3-vMDv0dF5WFbLU47By9gDXSeTdA4oJH6/pub?gid=936536633&single=true&output=csv",
+      "source_name": "tracts-harmonized",
+      "short_name": "bachelors",
+      "layers": {
+        "main": "tracts-harmonized-fill",
+        "outline": "tracts-harmonized-outline"
+      },
+      "fill_color": ["interpolate", ["linear"], ["to-number", ["get", "1990"]]]
+    },
+    {
+      "title": "Children in Concentrated Poverty",
+      "field": "Children in Concentrated Poverty",
+      "geolevel": "area",
+      "default": "right",
+      "has_pct": true,
+      "has_count": true,
+      "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vR9zeolHtawv9gwC_vD12fwM_GuujMxXi8KVJoF3PqSONsdw3LvX2sZRZOnji09mBVopP1I0tDXOMN6/pub?gid=646151606&single=true&output=csv",
+      "source_name": "tracts-harmonized",
+      "short_name": "concentrated_poverty",
+      "layers": {
+        "main": "tracts-harmonized-fill",
+        "outline": "tracts-harmonized-outline"
+      },
+      "fill_color": ["interpolate", ["linear"], ["to-number", ["get", "1990"]]]
+    }
+  ]
+}

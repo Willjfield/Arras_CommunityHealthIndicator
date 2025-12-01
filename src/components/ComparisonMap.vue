@@ -5,14 +5,14 @@
     <ColorLegend
       v-if="leftIndicatorLevelStore.getCurrentIndicator() && leftIndicatorLevelStore.getCurrentIndicator()?.geolevel === 'area'"
       :selected-indicator="leftIndicatorLevelStore.getCurrentIndicator()" side="left" />
-
+    <PointLegend v-else :selected-indicator="leftIndicatorLevelStore.getCurrentIndicator()" side="left" />
     <div ref="mapContainerRight" class="map-container right"> </div>
     <TimelineVisualization side="right" />
     <ColorLegend
       v-if="rightIndicatorLevelStore.getCurrentIndicator() && rightIndicatorLevelStore.getCurrentIndicator()?.geolevel === 'area'"
       :selected-indicator="rightIndicatorLevelStore.getCurrentIndicator()" side="right" />
-
-  </div>
+    <PointLegend v-else :selected-indicator="rightIndicatorLevelStore.getCurrentIndicator()" side="right" />
+    </div>
 </template>
 
 <script lang="ts" setup>
@@ -27,6 +27,7 @@ import TimelineVisualization from './TimelineVisualization.vue'
 //import '../assets/maplibre-gl-compare.css'
 import { useIndicatorLevelStore } from '../stores/indicatorLevelStore'
 import ColorLegend from './ColorLegend.vue'
+import PointLegend from './PointLegend.vue'
 import type { Emitter } from 'mitt'
 import createArcGISStyle from '../utils/createArcGISStyle'
 
@@ -48,7 +49,7 @@ const props = defineProps<{
 
 const orientation = ref<'left-right' | 'top-bottom'>()
 orientation.value = window.innerWidth > window.innerHeight ? 'left-right' : 'top-bottom'
-//const orientation = ref('top-bottom')
+
 const leftIndicatorLevelStore = useIndicatorLevelStore('left')
 const rightIndicatorLevelStore = useIndicatorLevelStore('right')
 
@@ -190,15 +191,16 @@ const handleLocationSelected = (data: { coordinates: [number, number], text: str
     leftMap.flyTo({
       center: [lng, lat],
       zoom: Math.max(leftMap.getZoom(), 12),
-      duration: 1000
+      duration: 500,
+      padding: {top: 0, bottom:0, left: window.innerWidth * 0.5, right: 0}
     })
-  }
-
-  if (rightMap) {
-    rightMap.flyTo({
-      center: [lng, lat],
-      zoom: Math.max(rightMap.getZoom(), 12),
-      duration: 1000
+    leftMap.once('moveend', () => {
+      rightMap?.flyTo({
+        center: [lng, lat],
+        zoom: Math.max(rightMap.getZoom(), 12),
+        duration: 500,
+        padding: {top: 0, bottom:0, left: window.innerWidth * 0.5, right: 0}
+      })
     })
   }
 
@@ -207,6 +209,7 @@ const handleLocationSelected = (data: { coordinates: [number, number], text: str
     leftMarker.remove()
     leftMarker = null
   }
+
   if (rightMarker) {
     rightMarker.remove()
     rightMarker = null
@@ -227,18 +230,13 @@ const handleLocationSelected = (data: { coordinates: [number, number], text: str
       </svg>
     `
 
-    // Create close button
-    const closeBtn = document.createElement('button')
-    closeBtn.className = 'marker-close-btn'
-    closeBtn.innerHTML = '×'
-    closeBtn.setAttribute('aria-label', 'Remove location')
-    closeBtn.onclick = (e) => {
+    el.onclick = (e: any) => {
       e.stopPropagation()
       handleLocationCleared()
     }
 
     el.appendChild(pinIcon)
-    el.appendChild(closeBtn)
+
 
     return el
   }
@@ -357,11 +355,11 @@ onUnmounted(() => {
 
 .pin-icon {
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
-  transition: transform 0.2s;
+
 }
 
 .location-marker:hover .pin-icon {
-  transform: scale(1.1);
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6));
 }
 
 .marker-close-btn {

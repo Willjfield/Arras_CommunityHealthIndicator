@@ -76,14 +76,23 @@
   </main>
 </template>
 <script setup lang="ts">
-import { ref, inject, computed } from 'vue'
+import { ref, inject, computed, watch } from 'vue'
+//import { onBeforeRouteLeave, type RouteLocationNormalized } from 'vue-router'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 //const hovered = ref(false)
 const drawer = ref(false)
 
 const mainConfig = inject('mainConfig') as any;
 const categories = computed(() => mainConfig?.categories || []);
 const orientation = computed(() => window.innerWidth > window.innerHeight ? 'left-right' : 'top-bottom')
+
+watch(router.currentRoute, (newRoute, oldRoute) => {
+    if(newRoute.name === 'map' && oldRoute?.name === 'map') {
+      window.location.reload()
+    }
+}, { immediate: true })
 </script>
 <style scoped>
 .sidebar {

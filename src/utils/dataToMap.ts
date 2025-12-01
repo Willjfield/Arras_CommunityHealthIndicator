@@ -25,6 +25,7 @@ export class DataToMap {
   protected popupProperties: ReturnType<typeof reactive> | null = null;
   protected arrasBranding: any;
   protected sitePath: string;
+  protected hoveringPlaceId: number = -1;
   constructor(
     _data: IndicatorConfig,
     _map: Map,
@@ -46,6 +47,7 @@ export class DataToMap {
     this.highlightedGeoid = null;
     this.arrasBranding = _arrasBranding;
     this.sitePath = _sitePath || '';
+    this.hoveringPlaceId = -1;
     // console.log(this.arrasBranding.colors)
   }
 
@@ -164,6 +166,23 @@ export class DataToMap {
     };
     const mainLayer = (this as any).data.layers.main;
     this.map.on("mouseleave", mainLayer, this.events.mouseleave);
+  
+  this.events.mousemove = (event: any) => {
+    const features = this.map.queryRenderedFeatures(event.point, {
+      layers: ['places-fill'],
+    });
+    if (features.length > 0) {
+     //console.log(features[0].properties.NAME);
+     this.hoveringPlaceId = features[0].id as number;
+      this.map.setFeatureState({source: 'places-source', id: this.hoveringPlaceId}, {hover: true});
+    } else {
+      this.map.setFeatureState({source: 'places-source', id: this.hoveringPlaceId}, {hover: false});
+      this.hoveringPlaceId = -1;
+    }
+  }
+
+
+  this.map.on("mousemove", this.events.mousemove);
   }
 
   protected createPopupIfNeeded() {

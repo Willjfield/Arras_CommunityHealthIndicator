@@ -14,16 +14,6 @@
         "main": "tracts-harmonized-fill",
         "outline": "tracts-harmonized-outline"
       },
-      "style": {
-        "min": {
-          "color": "hsla(90, 100%, 98%, 1)",
-          "value": 0
-        },
-        "max": {
-          "color": "hsla(90, 100%, 40%, 1)",
-          "value": 100
-        }
-      },
       "fill_color": ["interpolate", ["linear"], ["to-number", ["get", "1990"]]]
     },
     {
@@ -39,16 +29,6 @@
       "layers": {
         "main": "tracts-harmonized-fill",
         "outline": "tracts-harmonized-outline"
-      },
-      "style": {
-        "min": {
-          "color": "hsla(90, 100%, 98%, 1)",
-          "value": 0
-        },
-        "max": {
-          "color": "hsla(90, 100%, 40%, 1)",
-          "value": 100
-        }
       },
       "fill_color": ["interpolate", ["linear"], ["to-number", ["get", "1990"]]]
     },
