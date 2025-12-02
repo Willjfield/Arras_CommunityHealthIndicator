@@ -14,7 +14,19 @@
         "main": "tracts-harmonized-fill",
         "outline": "tracts-harmonized-outline"
       },
-      "fill_color": ["interpolate", ["linear"], ["to-number", ["get", "1990"]]]
+      "fill_color": [
+        "interpolate",
+        [
+          "linear"
+        ],
+        [
+          "to-number",
+          [
+            "get",
+            "1990"
+          ]
+        ]
+      ]
     },
     {
       "title": "Children in Concentrated Poverty",
@@ -30,7 +42,75 @@
         "main": "tracts-harmonized-fill",
         "outline": "tracts-harmonized-outline"
       },
-      "fill_color": ["interpolate", ["linear"], ["to-number", ["get", "1990"]]]
+      "fill_color": [
+        "interpolate",
+        [
+          "linear"
+        ],
+        [
+          "to-number",
+          [
+            "get",
+            "1990"
+          ]
+        ]
+      ]
+    },
+    {
+      "title": "Median Household Income",
+      "field": "Median Household Income",
+      "geolevel": "area",
+      "default": false,
+      "has_pct": false,
+      "has_count": true,
+      "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRxBdPEeiYzDaPP8ZRebLlTvX_OzEFwRL6c7zC45u0HES0ZlD5v2o8tUdL0xcBmYKTpCL_I4ALJoWNR/pub?gid=956489115&single=true&output=csv",
+      "source_name": "tracts-harmonized",
+      "short_name": "hh-income",
+      "layers": {
+        "main": "tracts-harmonized-fill",
+        "outline": "tracts-harmonized-outline"
+      },
+      "fill_color": [
+        "interpolate",
+        [
+          "linear"
+        ],
+        [
+          "to-number",
+          [
+            "get",
+            "1990"
+          ]
+        ]
+      ]
+    },
+    {
+      "title": "Housing cost burdened households (30% or more of income)",
+      "field": "Housing Burden",
+      "geolevel": "area",
+      "default": false,
+      "has_pct": true,
+      "has_count": true,
+      "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vS0QQ808Zlb6SD7sdjmijEDSlqLhHs2qElErij9mqKt8AQEKH_dAZxfxlyIeqogfI6EN8rMy1qPyb22/pub?gid=1195534552&single=true&output=csv",
+      "source_name": "tracts-harmonized",
+      "short_name": "housing-burden",
+      "layers": {
+        "main": "tracts-harmonized-fill",
+        "outline": "tracts-harmonized-outline"
+      },
+      "fill_color": [
+        "interpolate",
+        [
+          "linear"
+        ],
+        [
+          "to-number",
+          [
+            "get",
+            "1990"
+          ]
+        ]
+      ]
     }
   ]
 }

@@ -59,8 +59,8 @@ const processData = (_feature: string | number | null) => {
   if (!raw_data) return []
   const headerShortNames = raw_data.headerShortNames
   const rows = raw_data.data
-
-
+  console.log(props.side)
+  console.log(raw_data)
   //SET CURRENTGEO SELECTION TO HOVERED
   const currentGeoSelection = _feature || indicatorStore.getCurrentGeoSelection()
  

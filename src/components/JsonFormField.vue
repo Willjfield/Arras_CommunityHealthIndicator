@@ -25,7 +25,20 @@
 
     <template v-else-if="Array.isArray(modelValue)">
       <!-- Array fields -->
-      <v-expansion-panels v-if="isNested" variant="accordion" class="mb-2">
+      <!-- MapLibre expressions should be shown as JSON strings -->
+      <div v-if="isMapLibreExpression" class="mb-4 maplibre-expression-textarea">
+        <v-textarea 
+          :model-value="JSON.stringify(modelValue, null, 2)" 
+          :label="fieldLabel" 
+          variant="outlined" 
+          rows="4"
+          :hint="'MapLibre expression array - edit as JSON'" 
+          persistent-hint
+          @update:model-value="(val) => updateMapLibreExpression(val)"
+        ></v-textarea>
+      </div>
+      <!-- Regular array of objects -->
+      <v-expansion-panels v-else-if="isNested" variant="accordion" class="mb-2">
         <v-expansion-panel>
           <v-expansion-panel-title>
             <strong>{{ fieldLabel }}</strong>
@@ -33,12 +46,23 @@
           </v-expansion-panel-title>
           <v-expansion-panel-text>
             <div v-for="(item, index) in modelValue" :key="index" class="mb-4">
-              <v-card variant="outlined" class="pa-3">
-                <JsonFormField v-model="modelValue[index]" :field-name="item.title" :parent-path="path"
-                  :is-nested="true" @update:model-value="(val) => updateArrayItem(index, val)" />
-                <v-btn icon="mdi-delete" size="x-small" variant="text" color="error" inline
-                  style="float: right; position: absolute; bottom: 0; right: 0;"
-                  @click="removeArrayItem(index)"></v-btn>
+              <v-card variant="outlined" class="pa-3" style="position: relative;">
+                <JsonFormField 
+                  v-model="modelValue[index]" 
+                  :field-name="getArrayItemLabel(item, index)" 
+                  :parent-path="path"
+                  :is-nested="true" 
+                  @update:model-value="(val) => updateArrayItem(index, val)" 
+                />
+                <v-btn 
+                  icon="mdi-delete" 
+                  size="x-small" 
+                  variant="text" 
+                  color="error" 
+                  inline
+                  style="position: absolute; bottom: 8px; right: 8px;"
+                  @click="removeArrayItem(index)"
+                ></v-btn>
               </v-card>
             </div>
             <v-btn color="primary" size="small" prepend-icon="mdi-plus" @click="addArrayItem" class="mt-2">
@@ -90,6 +114,18 @@
           persistent-hint @update:model-value="updateValue"></v-text-field>
       </div>
 
+      <div v-else-if="isSelectField" class="mb-4">
+        <v-select 
+          :model-value="modelValue" 
+          :label="fieldLabel" 
+          :items="selectOptions" 
+          variant="outlined" 
+          :hint="hint"
+          persistent-hint 
+          @update:model-value="updateValue"
+        ></v-select>
+      </div>
+
       <div v-else class="mb-4">
         <v-textarea v-if="isLongText" :model-value="modelValue" :label="fieldLabel" variant="outlined" rows="3"
           :hint="hint" persistent-hint @update:model-value="updateValue"></v-textarea>
@@ -125,6 +161,11 @@ const path = computed(() => {
 });
 
 const fieldLabel = computed(() => {
+  // For indicators array items, use title or short_name if available
+  if (props.parentPath?.includes('indicators') && typeof props.modelValue === 'object' && props.modelValue !== null) {
+    if (props.modelValue.title) return props.modelValue.title;
+    if (props.modelValue.short_name) return props.modelValue.short_name;
+  }
   return props.fieldName || 'Root';
 });
 
@@ -175,6 +216,57 @@ const isUrl = computed(() => {
 const isLongText = computed(() => {
   if (typeof props.modelValue !== 'string') return false;
   return props.modelValue.length > 50 || (props.fieldName?.toLowerCase().includes('description') ?? false);
+});
+
+const isMapLibreExpression = computed(() => {
+  // Check if this is a MapLibre expression array (like fill_color)
+  if (!Array.isArray(props.modelValue)) return false;
+  if (props.modelValue.length === 0) return false;
+  // MapLibre expressions typically start with strings like "interpolate", "get", etc.
+  const firstElement = props.modelValue[0];
+  if (typeof firstElement === 'string') {
+    const mapLibreKeywords = ['interpolate', 'linear', 'exponential', 'get', 'to-number', 'step', 'match', 'case'];
+    return mapLibreKeywords.includes(firstElement.toLowerCase());
+  }
+  return false;
+});
+
+const isSelectField = computed(() => {
+  // Handle fields that should be dropdowns
+  const fieldNameLower = props.fieldName?.toLowerCase() || '';
+  
+  // Default field can be 'left', 'right', or false
+  if (fieldNameLower === 'default') {
+    return true;
+  }
+  
+  // Geolevel can be 'area' or 'point'
+  if (fieldNameLower === 'geolevel') {
+    return true;
+  }
+  
+  return false;
+});
+
+const selectOptions = computed(() => {
+  const fieldNameLower = props.fieldName?.toLowerCase() || '';
+  
+  if (fieldNameLower === 'default') {
+    return [
+      { title: 'Left', value: 'left' },
+      { title: 'Right', value: 'right' },
+      { title: 'None (false)', value: false }
+    ];
+  }
+  
+  if (fieldNameLower === 'geolevel') {
+    return [
+      { title: 'Area (choropleth)', value: 'area' },
+      { title: 'Point (markers)', value: 'point' }
+    ];
+  }
+  
+  return [];
 });
 
 const colorPickerValue = ref<string>('#000000');
@@ -283,6 +375,35 @@ function onColorPickerChange(value: any) {
   colorPickerValue.value = typeof value === 'string' ? value : value?.hex || '#000000';
   updateValue(colorPickerValue.value);
 }
+
+function getArrayItemLabel(item: any, index: number): string {
+  // For indicators array, use title or short_name
+  if (props.fieldName === 'indicators' || props.parentPath?.includes('indicators')) {
+    if (item?.title) return item.title;
+    if (item?.short_name) return item.short_name;
+  }
+  // For icons array, use name or filename
+  if (props.fieldName === 'icons' || props.parentPath?.includes('icons')) {
+    if (item?.name) return item.name;
+    if (item?.filename) return item.filename.split('/').pop() || `Icon ${index + 1}`;
+  }
+  // For other arrays, try common fields
+  if (item?.title) return item.title;
+  if (item?.name) return item.name;
+  if (item?.label) return item.label;
+  return `Item ${index + 1}`;
+}
+
+function updateMapLibreExpression(value: string) {
+  try {
+    const parsed = JSON.parse(value);
+    if (Array.isArray(parsed)) {
+      emit('update:modelValue', parsed);
+    }
+  } catch (e) {
+    // Invalid JSON, don't update
+  }
+}
 </script>
 
 <style scoped>
@@ -291,6 +412,12 @@ function onColorPickerChange(value: any) {
 }
 
 .outer-expansion-panel {
+  width: 98%;
+  display: inline-block;
+  float: left;
+}
+
+.maplibre-expression-textarea {
   width: 98%;
   display: inline-block;
   float: left;

@@ -79,8 +79,16 @@
           <v-card>
             <v-card-title>
               <span class="text-h6">Category Configurations</span>
+              <v-spacer></v-spacer>
+              <v-chip size="small" color="info" variant="tonal">
+                {{ categoriesWithConfigs.length }} category{{ categoriesWithConfigs.length !== 1 ? 'ies' : 'y' }}
+              </v-chip>
             </v-card-title>
             <v-card-text>
+              <v-alert type="info" variant="tonal" density="compact" class="mb-4">
+                <strong>Category Configs:</strong> Each category config file contains an <code>indicators</code> array. 
+                Each indicator can be for <code>area</code> (choropleth maps) or <code>point</code> (icon markers) geolevels.
+              </v-alert>
               <v-tabs v-model="activeTab" color="primary">
                 <v-tab
                   v-for="category in categoriesWithConfigs"
@@ -99,6 +107,16 @@
                 >
                   <v-card variant="flat" class="mt-4">
                     <v-card-text>
+                      <v-alert 
+                        v-if="viewMode === 'form' && categoryConfigsData[category.query_str]?.indicators" 
+                        type="info" 
+                        variant="tonal" 
+                        density="compact" 
+                        class="mb-4"
+                      >
+                        <strong>{{ categoryConfigsData[category.query_str].indicators.length }} indicator(s)</strong> in this category.
+                        Expand the indicators array below to edit individual indicators.
+                      </v-alert>
                       <div v-if="viewMode === 'form'">
                         <JsonFormField
                           v-model="categoryConfigsData[category.query_str]"

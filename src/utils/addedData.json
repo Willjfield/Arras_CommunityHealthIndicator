@@ -1,0 +1,132 @@
+{
+  "sources": {
+    "places-source": {
+      "type": "geojson",
+      "data": "https://services8.arcgis.com/Md1Xw98rMGIJNURK/ArcGIS/rest/services/ArrasIncorporatedPlaces/FeatureServer/0/query?where=OBJECTID%3E-1&objectIds=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&resultType=none&distance=0.0&units=esriSRUnit_Meter&outDistance=&relationParam=&returnGeodetic=false&outFields=*&returnGeometry=true&returnCentroid=false&returnEnvelope=false&featureEncoding=esriDefault&multipatchOption=xyFootprint&maxAllowableOffset=&geometryPrecision=&outSR=&defaultSR=&datumTransformation=&applyVCSProjection=false&returnIdsOnly=false&returnUniqueIdsOnly=false&returnCountOnly=false&returnExtentOnly=false&returnQueryGeometry=false&returnDistinctValues=false&cacheHint=false&collation=&orderByFields=&groupByFieldsForStatistics=&returnAggIds=false&outStatistics=&having=&resultOffset=&resultRecordCount=&returnZ=false&returnM=false&returnTrueCurves=false&returnExceededLimitFeatures=true&quantizationParameters=&sqlFormat=none&f=pgeojson&token=${_token}",
+      "generateId": true
+    },
+    "tracts-harmonized": {
+      "type": "geojson",
+      "data": "${sitePath}ChestLanTractsHarmonized.geojson"
+    },
+    "counties-source": {
+      "type": "geojson",
+      "data": "${sitePath}SC_counties.geojson"
+    },
+    "points-source": {
+      "type": "geojson",
+      "data": {
+        "type": "FeatureCollection",
+        "features": []
+      }
+    }
+  },
+  "layers": {
+    "under-labels": [
+      {
+        "id": "places-fill",
+        "type": "fill",
+        "source": "places-source",
+        "layout": {
+          "visibility": "visible"
+        },
+        "paint": {
+          "fill-color": "#aaa",
+          "fill-opacity": 0.5
+        }
+      },
+      {
+        "id": "places-outline",
+        "type": "line",
+        "source": "places-source",
+        "paint": {
+          "line-opacity": 0.25
+        },
+        "layout": {
+          "visibility": "visible"
+        }
+      },
+      {
+        "id": "counties-data",
+        "type": "fill",
+        "source": "counties-source",
+        "layout": {
+          "visibility": "visible"
+        },
+        "paint": {
+          "fill-color": "#088"
+        }
+      },
+      {
+        "id": "tracts-harmonized-fill",
+        "type": "fill",
+        "source": "tracts-harmonized",
+        "layout": {
+          "visibility": "none"
+        },
+        "paint": {
+          "fill-color": "#3388ff",
+          "fill-opacity": {
+            "stops": [
+              [10, 1],
+              [12, 0.65]
+            ]
+          }
+        }
+      }
+    ],
+    "over-labels": [
+      {
+        "id": "tracts-harmonized-outline",
+        "type": "line",
+        "source": "tracts-harmonized",
+        "layout": {
+          "visibility": "visible"
+        },
+        "paint": {
+          "line-width": 2,
+          "line-color": "#0000"
+        }
+      },
+      {
+        "id": "point-data",
+        "type": "symbol",
+        "source": "points-source",
+        "layout": {
+          "visibility": "none",
+          "icon-size": ["interpolate", ["linear"], ["zoom"], 9, 0.25, 15, 1],
+          "icon-overlap": "cooperative"
+        },
+        "paint": {
+          "icon-color": "#000"
+        }
+      },
+      {
+        "id": "counties-outline",
+        "type": "line",
+        "source": "counties-source",
+        "layout": {
+          "visibility": "visible"
+        },
+        "paint": {
+          "line-width": ["interpolate", ["linear"], ["zoom"], 9, 1, 15, 2],
+          "line-color": "#088"
+        }
+      },
+      {
+        "id": "counties-labels",
+        "type": "symbol",
+        "source": "counties-source",
+        "layout": {
+          "visibility": "visible",
+          "text-field": "{NAME} County",
+          "text-font": ["Noto Sans Bold"],
+          "text-size": 12
+        },
+        "paint": {
+          "text-color": "#088"
+        }
+      }
+    ]
+  }
+}

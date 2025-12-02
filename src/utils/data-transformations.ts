@@ -29,7 +29,7 @@ function formatGoogleSheetData(csvString: string) {
         }
        })
     })
-    console.log(data)
+
     return {
         headerLabels,
         headerShortNames,
