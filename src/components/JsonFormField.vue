@@ -34,7 +34,7 @@
           rows="4"
           :hint="'MapLibre expression array - edit as JSON'" 
           persistent-hint
-          @update:model-value="(val) => updateMapLibreExpression(val)"
+          @update:model-value="(val: string) => updateMapLibreExpression(val)"
         ></v-textarea>
       </div>
       <!-- Regular array of objects -->

@@ -10,8 +10,8 @@ export default async function createArcGISStyle(sitePath: string) {
     ...style.sources,
     ...JSON.parse(
       JSON.stringify(sources)
-      .replaceAll("${sitePath}", sitePath)
-      .replaceAll("${_token}", _token)
+      .replace(/\$\{sitePath\}/g, sitePath)
+      .replace(/\$\{_token\}/g, _token)
     ) as any
   };
   console.log(style.sources);
