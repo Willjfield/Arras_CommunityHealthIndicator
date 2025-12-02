@@ -51,7 +51,7 @@
         "type": "fill",
         "source": "counties-source",
         "layout": {
-          "visibility": "visible"
+          "visibility": "none"
         },
         "paint": {
           "fill-color": "#088"
