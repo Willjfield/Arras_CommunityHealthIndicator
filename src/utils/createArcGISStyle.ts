@@ -2,8 +2,14 @@ import { ARCGIS_TOKEN } from "./arcgisConfig";
 import { sources, layers } from "./addedData.json";
 export default async function createArcGISStyle(sitePath: string) {
   const _token = ARCGIS_TOKEN;
+  const STYLES = {
+    "navigation": "styles/open/navigation",
+    "human-detail":"styles/arcgis/human-geography/detail",
+    "light-gray":"styles/arcgis/light-gray"
+  }
+  const styleName = "light-gray";
   const style = await fetch(
-    `https://basemapstyles-api.arcgis.com/arcgis/rest/services/styles/v2/styles/open/navigation?token=${_token}`
+    `https://basemapstyles-api.arcgis.com/arcgis/rest/services/styles/v2/${STYLES[styleName]}?token=${_token}`
   ).then((res) => res.json());
   
   style.sources = {
