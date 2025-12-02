@@ -39,6 +39,7 @@ export class AreaDataToMap extends DataToMap {
       }
       return false;
     });
+    //console.log(geojson);
 
     if (source && typeof source.setData === "function") {
       source.setData(geojson);
@@ -151,13 +152,16 @@ export class AreaDataToMap extends DataToMap {
     map.on("click", this.events.click);
   }
 
+ 
   async setPaintAndLayoutProperties(year: number | null) {
     await super.setPaintAndLayoutProperties(year);
     const map = (this as any).map;
     if (!map) return false;
     const data = (this as any).data;
+    const { minValue, maxValue } = this.getMinMaxValues();
     const minColor = this.arrasBranding.colors[data.style.min.color];
     const maxColor = this.arrasBranding.colors[data.style.max.color];
+   
     if (
       !data ||
       !data.layers ||
@@ -179,12 +183,12 @@ export class AreaDataToMap extends DataToMap {
     data.fill_color[2][1][1] = "" + (this.year || -1);
     const fillColor = [
       ...data.fill_color,
-      data.style.min.value,
+      minValue,
       minColor,
-      data.style.max.value,
+      maxValue,
       maxColor,
     ];
-
+    console.log(fillColor);
     if (!data.layers.main) {
       console.error("data.layers.main is undefined");
       return false;

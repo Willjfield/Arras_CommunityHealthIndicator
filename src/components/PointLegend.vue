@@ -8,38 +8,60 @@
         <table class="legend-icon-container">
           <tbody>
             <tr>
-              <td style="text-align: left;"><v-img style="float: left;" inline align-left width="8px" v-if="selectedIndicator?.icons?.[0]?.filename" :src="selectedIndicator.icons[0].filename" /></td>
-              <td style="text-align: center;"><v-img style="margin: 0 auto;" inline width="16px" v-if="selectedIndicator?.icons?.[0]?.filename" :src="selectedIndicator.icons[0].filename" /></td>
-              <td style="text-align: right;"><v-img style="float: right;" inline align-right width="24px" v-if="selectedIndicator?.icons?.[0]?.filename" :src="selectedIndicator.icons[0].filename" /></td>
+              <td style="text-align: left;">
+                <img
+                  style="float: left;"
+                  inline
+                  align-left
+                  width="8px"
+                  v-if="svgIcon && typeof svgIcon === 'string'"
+                  :src="svgIcon"
+                />
+              </td>
+              <td style="text-align: center;">
+                <img
+                  style="margin: 0 auto;"
+                  inline
+                  width="16px"
+                  v-if="selectedIndicator?.icons?.[0]?.filename && typeof svgIcon === 'string'"
+                  :src="svgIcon"
+                />
+              </td>
+              <td style="text-align: right;"><img style="float: right;" inline align-right width="32px" v-if="selectedIndicator?.icons?.[0]?.filename" :src="svgIcon" /></td>
             </tr>
-            <tr>
-              <td style="text-align: left;"><span class="min-label">{{ minValue }}%</span></td>
-              <td style="text-align: center;"><span class="mid-label">{{ (maxValue/2).toFixed(0) }}%</span></td>
-              <td style="text-align: right;"><span class="max-label">{{ maxValue }}%</span></td>
+            <tr class="legend-labels">
+              <td style="text-align: left;"><span class="min-label">{{ minValue }} {{ indicatorDescription }}</span></td>
+              <td style="text-align: center;"><span class="mid-label">{{ (maxValue/2).toFixed(0) }} {{ indicatorDescription }}</span></td>
+              <td style="text-align: right;"><span class="max-label">{{ maxValue }} {{ indicatorDescription }}</span></td>
             </tr>
           </tbody>
         </table>
-       <div class="legend-labels">
-          <span class="min-label"></span>
-          <span class="max-label"></span>
-        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { computed, inject, ref, onMounted } from 'vue'
+import { svgToPng } from '../utils/data-transformations';
 //import { inject } from 'vue'
 //const arrasBranding = inject('arrasBranding') as any
-//const arrasBranding = inject('arrasBranding') as any
+const arrasBranding = inject('arrasBranding') as any
 interface Props {
   selectedIndicator: any
   side: 'left' | 'right'
 }
 
 const props = defineProps<Props>()
-
+  const indicatorDescription = computed(() => {
+  if(props.selectedIndicator?.ratePer) {
+    return 'per ' + (+ props.selectedIndicator?.ratePer).toLocaleString('en-US')+' people';
+  }
+  if(props.selectedIndicator?.totalAmntOf) {
+    return props.selectedIndicator?.totalAmntOf;
+  }
+  return '%';
+})
 const minValue = computed(() => {
   return props.selectedIndicator?.style?.min?.value || 0
 })
@@ -48,6 +70,40 @@ const maxValue = computed(() => {
   return props.selectedIndicator?.style?.max?.value || 100
 })
 
+const sitePath = inject('sitePath') as string
+const resolveIconPath = (filename: string): string => {
+    // If it's already an absolute URL, return as-is
+    if (filename.startsWith("http://") || filename.startsWith("https://")) {
+      return filename;
+    }
+    // If it starts with /, it's already a root path - prepend sitePath
+    if (filename.startsWith("/")) {
+      return sitePath + filename;
+    }
+    // Otherwise, treat as relative and prepend sitePath + /
+    return sitePath + "/" + filename;
+  }
+
+const svgIcon = ref('');
+  onMounted(async () => {
+    const iconPath = resolveIconPath(props.selectedIndicator?.icons?.[0]?.filename as string);
+    if(iconPath) {
+      const svg = await fetch(iconPath).then((res) => res.text());
+      const imgElement = await svgToPng(svg, false, arrasBranding, props.selectedIndicator);
+      console.log(imgElement.src);
+      svgIcon.value = imgElement.src;
+    }
+  })
+// const svgIcon = computed(async () => {
+//   const iconPath = resolveIconPath(props.selectedIndicator?.icons?.[0]?.filename as string);
+//   if(iconPath) {
+//     const svg = await fetch(iconPath).then((res) => res.text());
+//    const imgElement = await svgToPng(svg, false, arrasBranding, props.selectedIndicator);
+//    console.log(imgElement.src);
+//    return imgElement.src;
+//   }
+//   return '';
+// })
 // const minColor = computed(() => {
 //   const colorName = props.selectedIndicator?.style?.min?.color;
 //   if (colorName) {
@@ -103,7 +159,7 @@ const maxValue = computed(() => {
 }
 
 .legend-content {
-  padding: 8px 12px;
+  padding: 2px 12px;
 }
 
 .legend-gradient {
@@ -118,7 +174,12 @@ const maxValue = computed(() => {
 }
 
 .legend-labels {  
-
+  /* display: flex;
+  justify-content: space-between; */
+  /* align-items: center; */
+  font-size: 10px;
+  color: #6b7280;
+  font-weight: bold;
 }
 
 .min-label,

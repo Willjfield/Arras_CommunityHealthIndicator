@@ -11,8 +11,8 @@
           }"></div>
         </div>
         <div class="legend-labels">
-          <span class="min-label">{{ minValue }}%</span>
-          <span class="max-label">{{ maxValue }}%</span>
+          <span class="min-label">{{ minValue }} {{ indicatorDescription }}</span>
+          <span class="max-label">{{ maxValue }} {{ indicatorDescription }}</span>
         </div>
       </div>
     </div>
@@ -29,6 +29,16 @@ interface Props {
 }
 
 const props = defineProps<Props>()
+
+const indicatorDescription = computed(() => {
+  if(props.selectedIndicator?.ratePer) {
+    return 'per ' + (+ props.selectedIndicator?.ratePer).toLocaleString('en-US')+' people';
+  }
+  if(props.selectedIndicator?.totalAmntOf) {
+    return props.selectedIndicator?.totalAmntOf;
+  }
+  return '%';
+})
 
 const minValue = computed(() => {
   return props.selectedIndicator?.style?.min?.value || 0

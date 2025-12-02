@@ -1,27 +1,32 @@
 <template>
   <div class="timeline-visualization-container" :class="side === 'left' ? 'left' : 'right'">
-  <div class="timeline-header">
-    <IndicatorSelector :side="side" @indicator-changed="handleIndicatorChange" />
-  </div>
-  <div ref="container" class="timeline-visualization" style="height: 154px; bottom:20px;">
-    <div class="chart-label">
-      <span class="selected-geo">{{ `${indicatorStore?.getCurrentIndicator()?.title || ''}
-        (${indicatorStore.getCurrentGeoSelection()})` }}<span class="selected-color"
-          :style="{ border: `1px solid ${selectedColorRef}` }"></span></span>
-      <br />
-      <span v-show="!hoveredGeo" class="hovered-geo mx-2 font-italic font-weight-medium">Hover over a feature to see the
-        timeline</span>
-      <span v-show="hoveredGeo" class="hovered-geo mx-2">Feature: {{ hoveredGeo }}<span class="hovered-color"
-          :style="{ border: `1px solid ${hoveredColorRef}` }"></span></span>
+    <div class="timeline-header">
+      <IndicatorSelector :side="side" @indicator-changed="handleIndicatorChange" />
     </div>
-    <svg ref="svg" class="timeline-chart"></svg>
-  </div>
+    <div ref="container" class="timeline-visualization" style="height: 154px; bottom:20px;">
+      <v-select v-if="availableYears.length > 0" v-model="selectedYear" :items="availableYears" label="Year"
+        density="compact" variant="solo" flat elevation="0" hide-details style="max-width: 120px; position: absolute;top: -41px;" @update:model-value="handleYearChange"></v-select>
+      <div class="chart-label">
+        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+          <span class="selected-geo">{{ `${indicatorStore?.getCurrentIndicator()?.title || ''}
+            (${indicatorStore.getCurrentGeoSelection()})` }}<span class="selected-color"
+              :style="{ border: `1px solid ${selectedColorRef}` }"></span></span>
+
+        </div>
+        <span v-show="!hoveredGeo" class="hovered-geo mx-2 font-italic font-weight-medium">Hover over a feature to see
+          the
+          timeline</span>
+        <span v-show="hoveredGeo" class="hovered-geo mx-2">Feature: {{ hoveredGeo }}<span class="hovered-color"
+            :style="{ border: `1px solid ${hoveredColorRef}` }"></span></span>
+      </div>
+      <svg ref="svg" class="timeline-chart"></svg>
+    </div>
   </div>
 </template>
 
 <script lang="ts" setup>
 import * as d3 from 'd3'
-import { ref, onMounted, onUnmounted, watch, nextTick, inject } from 'vue'
+import { ref, onMounted, onUnmounted, watch, nextTick, inject, computed } from 'vue'
 import useIndicatorLevelStore from '../stores/indicatorLevelStore';
 import IndicatorSelector from './IndicatorSelector.vue';
 
@@ -51,6 +56,46 @@ let height = 100
 let margin = { top: 15, right: 5, bottom: 15, left: 30 }
 let yScale: d3.ScaleLinear<number, number> = d3.scaleLinear().domain([0, 100]).range([height - margin.bottom, margin.top])
 
+// Year selector - get available years from the indicator data
+const availableYears = computed(() => {
+  const indicator = indicatorStore.getCurrentIndicator()
+  const raw_data = indicator?.google_sheets_data
+
+  if (!raw_data) return []
+
+  const headerShortNames = raw_data.headerShortNames
+  let yearColumns: number[] = []
+
+  if (indicator?.has_pct) {
+    // Find year columns (numeric strings)
+    yearColumns = headerShortNames.filter((header: string) =>
+      /^\d{4}$/.test(header) && !isNaN(Number(header))
+    ).map((year: string) => Number(year)).sort((a: number, b: number) => a - b)
+  } else {
+    yearColumns = headerShortNames
+      .filter((header: string) =>
+        header.startsWith('Count_')
+      )
+      .map((year: string) => Number(year.replace('Count_', '')))
+      .sort((a: number, b: number) => a - b)
+  }
+
+  return yearColumns
+})
+
+const selectedYear = computed({
+  get: () => indicatorStore.getCurrentYear(),
+  set: (value: number | null) => {
+    if (value !== null) {
+      indicatorStore.setCurrentYear(value)
+    }
+  }
+})
+
+const handleYearChange = (year: number) => {
+  indicatorStore.setCurrentYear(year)
+}
+
 const processData = (_feature: string | number | null) => {
 
   const indicator = indicatorStore.getCurrentIndicator()
@@ -59,11 +104,11 @@ const processData = (_feature: string | number | null) => {
   if (!raw_data) return []
   const headerShortNames = raw_data.headerShortNames
   const rows = raw_data.data
-  console.log(props.side)
-  console.log(raw_data)
+  //console.log(props.side)
+  //console.log(raw_data)
   //SET CURRENTGEO SELECTION TO HOVERED
   const currentGeoSelection = _feature || indicatorStore.getCurrentGeoSelection()
- 
+
   let matchingRow: Record<string, any> | undefined = undefined;
   const data: Array<{ year: number; value: number | null }> = []
   let yearColumns: number[] = []
@@ -89,7 +134,7 @@ const processData = (_feature: string | number | null) => {
 
   yearColumns.forEach((year: number) => {
     let yearValue = matchingRow?.[year.toString()]
-    if(indicator?.has_count && !indicator?.has_pct) {
+    if (indicator?.has_count && !indicator?.has_pct) {
       yearValue = matchingRow?.['Count_' + year.toString()]
     }
     data.push({
@@ -163,6 +208,22 @@ const createChart = () => {
   svgElement.selectAll('.y-axis .tick line')
     .style('stroke', '#e0e0e0')
     .style('stroke-width', 1)
+
+  // Add vertical line for current year
+  const currentYear = indicatorStore.getCurrentYear()
+  if (currentYear && data.some(d => d.year === currentYear)) {
+    const currentYearX = xScale(currentYear)
+    svgElement.append('line')
+      .attr('class', 'current-year-line')
+      .attr('x1', currentYearX)
+      .attr('x2', currentYearX)
+      .attr('y1', margin.top)
+      .attr('y2', height + margin.bottom)
+      .style('stroke', '#dc2626')
+      .style('stroke-width', 1.5)
+      .style('stroke-dasharray', '3,3')
+      .style('opacity', 0.7)
+  }
 
   // Create line generator
   const line = d3.line<{ year: number; value: number | null }>()
@@ -310,6 +371,22 @@ const createAxisOnly = (data: Array<{ year: number; value: number | null }>) => 
     .style('font-size', '10px')
     .style('fill', '#666')
 
+  // Add vertical line for current year
+  const currentYear = indicatorStore.getCurrentYear()
+  if (currentYear && data.some(d => d.year === currentYear)) {
+    const currentYearX = xScale(currentYear)
+    svgElement.append('line')
+      .attr('class', 'current-year-line')
+      .attr('x1', currentYearX)
+      .attr('x2', currentYearX)
+      .attr('y1', margin.top)
+      .attr('y2', height + margin.bottom)
+      .style('stroke', '#dc2626')
+      .style('stroke-width', 1.5)
+      .style('stroke-dasharray', '3,3')
+      .style('opacity', 0.7)
+  }
+
   // Add "No data" text
   svgElement.append('text')
     .attr('x', width / 2)
@@ -351,8 +428,8 @@ const createYScale = (data: Array<{ year: number; value: number | null }>) => {
   if (values.length === 0) return d3.scaleLinear().domain([0, 100]).range([height - margin.bottom, margin.top])
 
   const min = 0//Math.min(...values) - (10 * (indicatorStore.getCurrentIndicator()?.geolevel === 'area' ? 0 : 1))
-  const max = Math.max(100,Math.max(...values)) || 100;
-   //+ (10 * (indicatorStore.getCurrentIndicator()?.geolevel === 'area' ? 0 : 1))
+  const max = Math.max(100, Math.max(...values)) || 100;
+  //+ (10 * (indicatorStore.getCurrentIndicator()?.geolevel === 'area' ? 0 : 1))
   const padding = (max - min) || 1
 
   return d3.scaleLinear()
@@ -425,9 +502,11 @@ onUnmounted(() => {
 .timeline-visualization-container * {
   pointer-events: all;
 }
+
 .timeline-visualization-container.left {
   left: 0;
 }
+
 .orientation-top-bottom .timeline-visualization-container.right {
   left: unset;
 }
@@ -449,7 +528,7 @@ onUnmounted(() => {
   cursor: move;
   z-index: 1000;
   user-select: none;
-  zoom:.9;
+  zoom: .9;
 }
 
 .timeline-header {
@@ -465,16 +544,16 @@ onUnmounted(() => {
 
 }
 
-.right .timeline-header{
+.right .timeline-header {
   right: 0px;
   left: unset;
 }
 
-.left .timeline-visualization{
+.left .timeline-visualization {
   left: 5px;
 }
 
-.right .timeline-visualization{
+.right .timeline-visualization {
   right: 5px;
 }
 
@@ -591,22 +670,19 @@ onUnmounted(() => {
   margin-bottom: 2.5px;
   margin-left: 5px;
 }
-
 </style>
 <style>
-.orientation-top-bottom .color-legend.right{
+.orientation-top-bottom .color-legend.right {
   top: calc(50% + 3rem);
 }
 
-.orientation-top-bottom .color-legend{
+.orientation-top-bottom .color-legend {
   right: 0;
 }
 
-.orientation-top-bottom .legend-container{
+.orientation-top-bottom .legend-container {
   right: 0;
   left: unset;
   width: 100% !important;
 }
-
-
 </style>

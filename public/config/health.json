@@ -89,14 +89,14 @@
       "field": "Heart Disease Mortality Rate",
       "geolevel": "area",
       "default": false,
-      "has_pct": true,
+      "has_pct": false,
       "has_count": true,
+      "ratePer": 100000,
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vQAZ7te1R2RjauYyukLy8AzDXjLJgYofIjfn8ktnOt7TV2_j9TqtnoW31hWBOPqmtF8O4Y12dpUdSD5/pub?gid=361602694&single=true&output=csv",
-      "source_name": "counties",
+      "source_name": "counties-source",
       "short_name": "heart-disease",
       "layers": {
-        "main": "tracts-harmonized-fill",
-        "outline": "tracts-harmonized-outline"
+        "main": "counties-data"
       },
       "fill_color": [
         "interpolate",
@@ -120,11 +120,10 @@
       "has_pct": true,
       "has_count": true,
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vTSIDstR1PxU_mFXK6GbZGvKUoLN8HXi4UASSww3tFAxBzkV2EZMmtkh9_v_OSkZxAc2g2oSNYogSav/pub?gid=0&single=true&output=csv",
-      "source_name": "counties",
+      "source_name": "counties-source",
       "short_name": "birth-weight",
       "layers": {
-        "main": "tracts-harmonized-fill",
-        "outline": "tracts-harmonized-outline"
+        "main": "counties-data"
       },
       "fill_color": [
         "interpolate",
@@ -145,14 +144,14 @@
       "field": "Malignant Neoplasm Morality",
       "geolevel": "area",
       "default": false,
-      "has_pct": true,
+      "has_pct": false,
       "has_count": true,
+      "ratePer": 100000,
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vTQx5IGI_FrPFnuH2_qxNO3csjQq6vE0VJEFPfqB4zGkltxOKuAMJ2CrBYSV6wiS6kE3p76nGqWc8iz/pub?gid=829636489&single=true&output=csv",
-      "source_name": "counties",
+      "source_name": "counties-source",
       "short_name": "neoplasm-mortality",
       "layers": {
-        "main": "tracts-harmonized-fill",
-        "outline": "tracts-harmonized-outline"
+        "main": "counties-data"
       },
       "fill_color": [
         "interpolate",
@@ -176,7 +175,7 @@
       "has_pct": true,
       "has_count": true,
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vSiMSkw-to8lXOD0pyjuoci-xIFvCdL3woQsEsPtPI0w1TO-g-zt1UVAOV4TOczQ_0RIWX_iFm4EasK/pub?gid=876954295&single=true&output=csv",
-      "source_name": "counties",
+      "source_name": "tracts-harmonized",
       "short_name": "mental-health-distress",
       "layers": {
         "main": "tracts-harmonized-fill",

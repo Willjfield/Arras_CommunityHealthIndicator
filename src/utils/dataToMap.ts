@@ -5,10 +5,8 @@ import maplibregl from "maplibre-gl";
 import { createApp, type App, reactive } from "vue";
 import Popup from "../components/Popup.vue";
 import vuetify from "../plugins/vuetify.js";
-
+import { svgToPng } from "./data-transformations";
 //import useIndicatorLevelStore from "../stores/indicatorLevelStore.js";
-
-
 
 export class DataToMap {
   readonly data: IndicatorConfig;
@@ -26,6 +24,8 @@ export class DataToMap {
   protected arrasBranding: any;
   protected sitePath: string;
   protected hoveringPlaceId: number = -1;
+  minValue: number | null;
+  maxValue: number | null;
   constructor(
     _data: IndicatorConfig,
     _map: Map,
@@ -46,27 +46,36 @@ export class DataToMap {
     this.side = side;
     this.highlightedGeoid = null;
     this.arrasBranding = _arrasBranding;
-    this.sitePath = _sitePath || '';
+    this.sitePath = _sitePath || "";
     this.hoveringPlaceId = -1;
+
+    //const { minValue, maxValue } = this.getMinMaxValues();
+    this.minValue = null;
+    this.maxValue = null;
     // console.log(this.arrasBranding.colors)
   }
 
   protected resolveIconPath(filename: string): string {
     // If it's already an absolute URL, return as-is
-    if (filename.startsWith('http://') || filename.startsWith('https://')) {
+    if (filename.startsWith("http://") || filename.startsWith("https://")) {
       return filename;
     }
     // If it starts with /, it's already a root path - prepend sitePath
-    if (filename.startsWith('/')) {
+    if (filename.startsWith("/")) {
       return this.sitePath + filename;
     }
     // Otherwise, treat as relative and prepend sitePath + /
-    return this.sitePath + '/' + filename;
+    return this.sitePath + "/" + filename;
   }
 
   async setupIndicator(year: number | null): Promise<boolean> {
     this.year = year || this.year || null;
-    console.log(this.year);
+    
+    const { minValue, maxValue } = this.getMinMaxValues();
+    this.minValue = minValue;
+    this.maxValue = maxValue;
+    this.data.style.min.value = minValue;
+    this.data.style.max.value = maxValue;
     return true;
   }
 
@@ -79,18 +88,19 @@ export class DataToMap {
     if (icons && icons.length === 1) {
       if (icons[0]?.filename?.endsWith(".svg")) {
         const iconPath = this.resolveIconPath(icons[0].filename as string);
-        const svg = await fetch(iconPath).then((res) =>
-          res.text()
-        );
-        const imgElement = await this.svgToPng(svg, false);
+        const svg = await fetch(iconPath).then((res) => res.text());
+        const imgElement = await svgToPng(svg, false, this.arrasBranding, this.data);
         const image = await this.map.loadImage(imgElement.src);
         if (!this.map.hasImage(icons[0].name)) {
           this.map.addImage(icons[0].name, (image as any).data);
         }
-        const imgElementInverted = await this.svgToPng(svg, true);
+        const imgElementInverted = await svgToPng(svg, true, this.arrasBranding, this.data);
         const imageInverted = await this.map.loadImage(imgElementInverted.src);
         if (!this.map.hasImage(icons[0].name + "-invert")) {
-          this.map.addImage(icons[0].name + "-invert", (imageInverted as any).data);
+          this.map.addImage(
+            icons[0].name + "-invert",
+            (imageInverted as any).data
+          );
         }
       } else {
         const iconPath = this.resolveIconPath(icons[0].filename as string);
@@ -99,7 +109,6 @@ export class DataToMap {
         if (!this.map.hasImage(icons[0].name)) {
           this.map.addImage(icons[0].name, img.data, { sdf: true });
         }
-       
       }
       this.map.setLayoutProperty(
         this.data.layers.main,
@@ -166,23 +175,28 @@ export class DataToMap {
     };
     const mainLayer = (this as any).data.layers.main;
     this.map.on("mouseleave", mainLayer, this.events.mouseleave);
-  
-  this.events.mousemove = (event: any) => {
-    const features = this.map.queryRenderedFeatures(event.point, {
-      layers: ['places-fill'],
-    });
-    if (features.length > 0) {
-     //console.log(features[0].properties.NAME);
-     this.hoveringPlaceId = features[0].id as number;
-      this.map.setFeatureState({source: 'places-source', id: this.hoveringPlaceId}, {hover: true});
-    } else {
-      this.map.setFeatureState({source: 'places-source', id: this.hoveringPlaceId}, {hover: false});
-      this.hoveringPlaceId = -1;
-    }
-  }
 
+    this.events.mousemove = (event: any) => {
+      const features = this.map.queryRenderedFeatures(event.point, {
+        layers: ["places-fill"],
+      });
+      if (features.length > 0) {
+        //console.log(features[0].properties.NAME);
+        this.hoveringPlaceId = features[0].id as number;
+        this.map.setFeatureState(
+          { source: "places-source", id: this.hoveringPlaceId },
+          { hover: true }
+        );
+      } else {
+        this.map.setFeatureState(
+          { source: "places-source", id: this.hoveringPlaceId },
+          { hover: false }
+        );
+        this.hoveringPlaceId = -1;
+      }
+    };
 
-  this.map.on("mousemove", this.events.mousemove);
+    this.map.on("mousemove", this.events.mousemove);
   }
 
   protected createPopupIfNeeded() {
@@ -287,76 +301,110 @@ export class DataToMap {
     }
   }
 
-  
-async svgToPng(svg: string, invertColors: boolean = false): Promise<HTMLImageElement> {
-  const SCALE_FACTOR = 0.667;
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(svg, "image/svg+xml");
-  const circle = doc.getElementsByClassName("bg-circle")[0] as HTMLElement;
-  const circleTransform = `translate(${SCALE_FACTOR*25}%, ${SCALE_FACTOR*25}%) scale(${SCALE_FACTOR})`
-  const paths = doc.getElementsByTagName("path") as HTMLCollectionOf<SVGPathElement>;
+  // async svgToPng(
+  //   svg: string,
+  //   invertColors: boolean = false
+  // ): Promise<HTMLImageElement> {
+  //   const SCALE_FACTOR = 0.667;
+  //   const parser = new DOMParser();
+  //   const doc = parser.parseFromString(svg, "image/svg+xml");
+  //   const circle = doc.getElementsByClassName("bg-circle")[0] as HTMLElement;
+  //   const circleTransform = `translate(${SCALE_FACTOR * 25}%, ${
+  //     SCALE_FACTOR * 25
+  //   }%) scale(${SCALE_FACTOR})`;
+  //   const paths = doc.getElementsByTagName(
+  //     "path"
+  //   ) as HTMLCollectionOf<SVGPathElement>;
 
-  const pngColors = {
-    icon: this.arrasBranding.colors[this.data.style.colors.icon],
-    circle: this.arrasBranding.colors[this.data.style.colors.circle]+'cc'
-  }
-  if (invertColors) {
-    pngColors.icon = this.arrasBranding.colors[this.data.style.colors.icon];
-    pngColors.circle = this.arrasBranding.colors[this.data.style.colors.icon]+'70';
-  }
+  //   const pngColors = {
+  //     icon: this.arrasBranding.colors[this.data.style.colors.icon],
+  //     circle: this.arrasBranding.colors[this.data.style.colors.circle] + "cc",
+  //   };
+  //   if (invertColors) {
+  //     pngColors.icon = this.arrasBranding.colors[this.data.style.colors.icon];
+  //     pngColors.circle =
+  //       this.arrasBranding.colors[this.data.style.colors.icon] + "70";
+  //   }
 
-  for(let path = 1; path < paths.length; path++) {
-    paths[path].setAttribute("fill", pngColors.icon)
-  }
-  if (circle) {
-    circle.style.transform = circleTransform;
-    circle.setAttribute("fill", pngColors.circle)
-  }
-  svg = doc.documentElement.outerHTML;
+  //   for (let path = 1; path < paths.length; path++) {
+  //     paths[path].setAttribute("fill", pngColors.icon);
+  //   }
+  //   if (circle) {
+  //     circle.style.transform = circleTransform;
+  //     circle.setAttribute("fill", pngColors.circle);
+  //   }
+  //   svg = doc.documentElement.outerHTML;
 
-  const svgBlob = new Blob([svg], { type: "image/svg+xml" });
-  const svgUrl = URL.createObjectURL(svgBlob);
-  const iconSize = 64;
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.crossOrigin = "anonymous";
-    img.onload = () => {
-      // Create a canvas to rasterize the SVG to PNG
-      const canvas = document.createElement("canvas");
-      // Use natural dimensions if available, otherwise default to 16x16
-      const width = iconSize;//img.naturalWidth || img.width || 16;
-      const height = iconSize;//img.naturalHeight || img.height || 16;
-      canvas.width = width;
-      canvas.height = height;
+  //   const svgBlob = new Blob([svg], { type: "image/svg+xml" });
+  //   const svgUrl = URL.createObjectURL(svgBlob);
+  //   const iconSize = 64;
+  //   return new Promise((resolve, reject) => {
+  //     const img = new Image();
+  //     img.crossOrigin = "anonymous";
+  //     img.onload = () => {
+  //       // Create a canvas to rasterize the SVG to PNG
+  //       const canvas = document.createElement("canvas");
+  //       // Use natural dimensions if available, otherwise default to 16x16
+  //       const width = iconSize; //img.naturalWidth || img.width || 16;
+  //       const height = iconSize; //img.naturalHeight || img.height || 16;
+  //       canvas.width = width;
+  //       canvas.height = height;
 
-      const ctx = canvas.getContext("2d");
-      if (!ctx) {
-        URL.revokeObjectURL(svgUrl);
-        reject(new Error("Could not get canvas context"));
-        return;
+  //       const ctx = canvas.getContext("2d");
+  //       if (!ctx) {
+  //         URL.revokeObjectURL(svgUrl);
+  //         reject(new Error("Could not get canvas context"));
+  //         return;
+  //       }
+
+  //       // Draw the SVG image to the canvas
+  //       ctx.drawImage(img, 0, 0, width, height);
+
+  //       // Create a new image element from the canvas PNG data URL
+  //       const pngImg = new Image();
+  //       pngImg.onload = () => {
+  //         URL.revokeObjectURL(svgUrl);
+  //         resolve(pngImg);
+  //       };
+  //       pngImg.onerror = (error) => {
+  //         URL.revokeObjectURL(svgUrl);
+  //         reject(error);
+  //       };
+  //       // Convert canvas to PNG data URL
+  //       pngImg.src = canvas.toDataURL("image/png");
+  //     };
+  //     img.onerror = (error) => {
+  //       URL.revokeObjectURL(svgUrl);
+  //       reject(error);
+  //     };
+  //     img.src = svgUrl;
+  //   });
+  // }
+  getMinMaxValues() {
+    const data: IndicatorConfig = (this as any).data;
+    // const propAccessor = (this as any).has_count
+    //   ? `Count_${this.year}`
+    //   : `${this.year}`;
+      //todo: this has to get min and max from all the  years, not just this year
+    const years = data.google_sheets_data.headerShortNames.filter((year: string) => /^\d{4}$/.test(year) && !isNaN(Number(year)));
+   console.log(years);
+    let minValue = 9999999999999;
+    let maxValue = 0;
+    console.log(this.side)
+    for(let year=0; year<years.length; year++) {
+      const yearValues = data.google_sheets_data.data.filter((feature: any) => feature?.geoid !== "overall").map((feature: any) => feature[years[year] as string]);
+      console.log(yearValues);
+      const thisyearMinValue = Math.min(...yearValues);
+      const thisyearMaxValue = Math.max(...yearValues);
+      console.log(thisyearMinValue, thisyearMaxValue);
+      if(+thisyearMinValue < minValue) {
+        minValue = +thisyearMinValue;
       }
-
-      // Draw the SVG image to the canvas
-      ctx.drawImage(img, 0, 0, width, height);
-
-      // Create a new image element from the canvas PNG data URL
-      const pngImg = new Image();
-      pngImg.onload = () => {
-        URL.revokeObjectURL(svgUrl);
-        resolve(pngImg);
-      };
-      pngImg.onerror = (error) => {
-        URL.revokeObjectURL(svgUrl);
-        reject(error);
-      };
-      // Convert canvas to PNG data URL
-      pngImg.src = canvas.toDataURL("image/png");
-    };
-    img.onerror = (error) => {
-      URL.revokeObjectURL(svgUrl);
-      reject(error);
-    };
-    img.src = svgUrl;
-  });
-}
+      if(+thisyearMaxValue > maxValue) {
+        maxValue = +thisyearMaxValue;
+      }
+    }
+   
+    return { minValue: Math.floor(minValue*.95), maxValue: Math.ceil(maxValue*1.05)};
+  } 
 }
