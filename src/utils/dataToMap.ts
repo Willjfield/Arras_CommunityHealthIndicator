@@ -48,10 +48,8 @@ export class DataToMap {
     this.sitePath = _sitePath || "";
     this.hoveringPlaceId = -1;
 
-    //const { minValue, maxValue } = this.getMinMaxValues();
     this.minValue = null;
     this.maxValue = null;
-    // console.log(this.arrasBranding.colors)
   }
 
   async setupIndicator(year: number | null): Promise<boolean> {
@@ -118,7 +116,6 @@ export class DataToMap {
   }
   addNewEvents() {
     this.events.mouseleave = () => {
-      //console.log(this.frozenPopup)
       if(this.frozenPopup || !this.popup) return;
       this.removePopup();
     };
@@ -130,7 +127,6 @@ export class DataToMap {
         layers: ["places-fill"],
       });
       if (features.length > 0) {
-        //console.log(features[0].properties.NAME);
         this.hoveringPlaceId = features[0].id as number;
         this.map.setFeatureState(
           { source: "places-source", id: this.hoveringPlaceId },
@@ -249,21 +245,18 @@ export class DataToMap {
   
   getMinMaxValues() {
     const data: IndicatorConfig = (this as any).data;
-    // const propAccessor = (this as any).has_count
-    //   ? `Count_${this.year}`
-    //   : `${this.year}`;
+
       //todo: this has to get min and max from all the  years, not just this year
     const years = data.google_sheets_data.headerShortNames.filter((year: string) => /^\d{4}$/.test(year) && !isNaN(Number(year)));
-   console.log(years);
+    console.log(years)
     let minValue = 9999999999999;
     let maxValue = 0;
-    console.log(this.side)
     for(let year=0; year<years.length; year++) {
       const yearValues = data.google_sheets_data.data.filter((feature: any) => feature?.geoid !== "overall").map((feature: any) => feature[years[year] as string]);
-      console.log(yearValues);
+     // console.log(yearValues);
       const thisyearMinValue = Math.min(...yearValues);
       const thisyearMaxValue = Math.max(...yearValues);
-      console.log(thisyearMinValue, thisyearMaxValue);
+      
       if(+thisyearMinValue < minValue) {
         minValue = +thisyearMinValue;
       }

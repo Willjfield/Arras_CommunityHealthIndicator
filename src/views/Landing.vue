@@ -80,10 +80,11 @@
                       class="category-btn mb-3"
                       :class="{ 'category-btn-disabled': !cat.enabled }"
                     >
-                      <v-icon 
+                    <v-img :src="cat.icon" width="24" height="24" class="mr-2"></v-img>
+                      <!-- <v-icon 
                         :icon="cat.icon || 'mdi-chart-line'" 
                         class="mr-2"
-                      ></v-icon>
+                      ></v-icon> -->
                       {{ cat.title }}
                     </v-btn>
                   </v-col>

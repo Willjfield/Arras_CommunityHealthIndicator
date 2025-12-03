@@ -1,12 +1,7 @@
 <template>
   <v-select :model-value="indicatorStore?.getCurrentIndicator()"
-    :items="themeLevelStore?.getAllCurrentThemeIndicators() || []" 
-    return-object
-    item-title="title"
-    density="compact" 
-    variant="outlined" 
-    hide-details 
-    class="indicator-select"
+    :items="themeLevelStore?.getAllCurrentThemeIndicators() || []" return-object item-title="title" density="compact"
+    variant="outlined" width="100%" hide-details class="indicator-select"
     @update:model-value="handleIndicatorChange">
     <template v-slot:item="{ props: itemProps }">
       <v-list-item class="indicator-select-item" v-bind="itemProps"></v-list-item>
@@ -44,10 +39,22 @@ defineExpose({
   indicatorStore
 })
 </script>
+<style>
+.v-overlay__content.v-select__content {
+  width: 37%;
+}
+.v-list-item-title{
+  white-space: normal;
+  line-height: 1em;
+  padding: 4px;
+  /* border-bottom: 1px solid lightgray; */
+}
 
+</style>
 <style scoped>
+
 .indicator-select {
-  width: 100%;
+
   /* margin: 0 auto; */
   border-bottom: 1px solid #e5e7eb;
   background: rgba(249, 250, 251, 0.8);
@@ -70,21 +77,26 @@ defineExpose({
 }
 
 .indicator-select :deep(.v-field__input) {
-  font-size: 11px;
+  overflow: clip;
   padding: 4px 8px;
   height: 100%;
+  max-height: 96px;
+  
 }
 
 .indicator-select :deep(.v-select__selection) {
   font-size: 14px;
   line-height: 1.2em;
   text-overflow: ellipsis;
-  white-space: break-spaces;
+  white-space: normal;
 }
 
 .indicator-select :deep(.v-select__selection-text) {
   text-overflow: ellipsis;
-  white-space: break-spaces;
+    white-space: normal;
+    font-size: small;
+    line-height: 1em;
+    font-weight: bold;
 }
 
 .indicator-select-item {
@@ -92,6 +104,7 @@ defineExpose({
   min-height: 32px;
   overflow: visible;
   text-overflow: ellipsis;
-  white-space: break-spaces;
+  white-space: normal !important;
+  border-bottom: 1px solid lightgray;
 }
 </style>

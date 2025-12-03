@@ -21,11 +21,11 @@
                   :style="{ backgroundColor: maxColor }" /></td>
             </tr>
             <tr class="legend-labels">
-              <td style="text-align: left;"><span class="min-label">{{ minValue }} {{ indicatorDescription }}</span>
+              <td style="text-align: left;"><span class="min-label">{{ minValue.toFixed(0) }} {{ indicatorDescription }}</span>
               </td>
               <td style="text-align: center;"><span class="mid-label">{{ (maxValue / 2).toFixed(0) }} {{
                   indicatorDescription }}</span></td>
-              <td style="text-align: right;"><span class="max-label">{{ maxValue }} {{ indicatorDescription }}</span>
+              <td style="text-align: right;"><span class="max-label">{{ maxValue.toFixed(0) }} {{ indicatorDescription }}</span>
               </td>
             </tr>
           </tbody>
@@ -54,7 +54,7 @@ const indicatorDescription = computed(() => {
   return '%';
 })
 const minValue = computed(() => {
-  return props.selectedIndicator?.style?.min?.value || 0
+  return (+props.selectedIndicator?.style?.min?.value > +props.selectedIndicator?.style?.max?.value ? 0 : +props.selectedIndicator?.style?.min?.value) || 0
 })
 
 const maxValue = computed(() => {

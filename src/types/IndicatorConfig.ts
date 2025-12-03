@@ -3,6 +3,7 @@ export interface Icon {
     filename?: string;
 }
 export interface IndicatorConfig {
+    ratePer: number;
     title: string;
     field: string;
     short_name: string;

@@ -46,13 +46,7 @@
       "layers": {
         "main": "point-data",
         "circle": false
-      },
-      "icons": [
-        {
-          "name": "icon-childcare",
-          "filename": "/assets/icons/noun/noun-childcare-6285882.svg"
-        }
-      ]
+      }
     },
     {
       "title": "3rd Grade Math Readiness",
@@ -67,13 +61,7 @@
       "layers": {
         "main": "point-data",
         "circle": false
-      },
-      "icons": [
-        {
-          "name": "icon-math-third-grade",
-          "filename": "/assets/icons/noun/noun-calculator-526090.svg"
-        }
-      ]
+      }
     },
     {
       "title": "3rd Grade ELA Readiness",
@@ -88,13 +76,7 @@
       "layers": {
         "main": "point-data",
         "circle": false
-      },
-      "icons": [
-        {
-          "name": "icon-literacy-third-grade",
-          "filename": "/assets/icons/noun/noun-literacy-7916638.svg"
-        }
-      ]
+      }
     },
     {
       "title": "8th Grade Math Readiness",
@@ -109,13 +91,7 @@
       "layers": {
         "main": "point-data",
         "circle": false
-      },
-      "icons": [
-        {
-          "name": "icon-math-calc",
-          "filename": "/assets/icons/noun/noun-calculator-3433172.svg"
-        }
-      ]
+      }
     },
     {
       "title": "8th Grade ELA Readiness",
@@ -130,13 +106,7 @@
       "layers": {
         "main": "point-data",
         "circle": false
-      },
-      "icons": [
-        {
-          "name": "icon-literature",
-          "filename": "/assets/icons/noun/noun-literature-7025302.svg"
-        }
-      ]
+      }
     },
     {
       "title": "High School Completion Rate",
@@ -151,13 +121,7 @@
       "layers": {
         "main": "point-data",
         "circle": false
-      },
-      "icons": [
-        {
-          "name": "icon-diploma",
-          "filename": "/assets/icons/noun/noun-graduate-7295602(1).svg"
-        }
-      ]
+      }
     },
     {
       "title": "High School Career Readiness",
@@ -172,13 +136,7 @@
       "layers": {
         "main": "point-data",
         "circle": false
-      },
-      "icons": [
-        {
-          "name": "icon-school-career",
-          "filename": "/assets/icons/noun/noun-school-8099722.svg"
-        }
-      ]
+      }
     },
     {
       "title": "High School College Readiness",
@@ -193,12 +151,26 @@
       "layers": {
         "main": "point-data",
         "circle": false
+      }
+    },
+    {
+      "title":"Disconnected Youth",
+      "field": "Disconnected Youth",
+      "geolevel": "area",
+      "default": false,
+      "has_pct": true,
+      "has_count": true,
+      "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vTDWAG9o2tS_C9Kxjn3DpBkx7F2u3dh3AVFOz5OSGzaz3rx_hg_M7KzYatkCwzo4NuPnQTiKDqnKxvj/pub?gid=0&single=true&output=csv",
+      "source_name": "tracts-harmonized",
+      "short_name": "disconnectedYouth",
+      "layers": {
+        "main": "tracts-harmonized-fill",
+        "outline": "tracts-harmonized-outline"
       },
-      "icons": [
-        {
-          "name": "icon-diploma",
-          "filename": "/assets/icons/noun/noun-diploma-7875606.svg"
-        }
+      "fill_color": [
+        "interpolate",
+        ["linear"],
+        ["to-number", ["get", "1990"]]
       ]
     },
     {
@@ -213,13 +185,7 @@
       "short_name": "kReadiness",
       "layers": {
         "main": "point-data"
-      },
-      "icons": [
-        {
-          "name": "icon-kindergarten",
-          "filename": "/assets/icons/noun/noun-kindergarten-7433345.svg"
-        }
-      ]
+      }
     }
   ]
 }

@@ -1,8 +1,9 @@
 function formatGoogleSheetData(csvString: string) {
   const rows = csvString.split("\n");
   const shortNameRowIdx = rows.findIndex(
-    (row) => !row.split(",").includes(" ") && row.split(",").includes("geoid")
+    (row) => !row.includes("-") && row.includes("geoid")
   );
+
   const headerShortNames = rows[shortNameRowIdx]
     .split(",")
     .map((header) => header.trim());

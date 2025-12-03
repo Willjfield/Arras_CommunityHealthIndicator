@@ -6,27 +6,7 @@
       "enabled": true,
       "description": "We envision residents and community partners convening together to address shared values for the purposes of good governance, community development, and artistic expression.",
       "config": "/config/economy.json",
-      "style": {
-        "colors": {
-          "icon": "red",
-          "circle": "white"
-        },
-        "min": {
-          "color": "white",
-          "value": 0
-        },
-        "max": {
-          "color": "red",
-          "value": 100
-        }
-      }
-    },
-    {
-      "title": "Education",
-      "query_str": "edu",
-      "enabled": true,
-      "description": "We envision communities that offer quality elementary, secondary, post-secondary educational opportunities and academic achievement.",
-      "config": "/config/education.json",
+      "icon": "assets/theme_icons/econ_blue.png",
       "style": {
         "colors": {
           "icon": "dark-blue",
@@ -43,11 +23,53 @@
       }
     },
     {
+      "title": "Education",
+      "query_str": "edu",
+      "enabled": true,
+      "description": "We envision communities that offer quality elementary, secondary, post-secondary educational opportunities and academic achievement.",
+      "config": "/config/education.json",
+      "icon": "assets/theme_icons/edu_red.png",
+      "style": {
+        "colors": {
+          "icon": "red",
+          "circle": "white"
+        },
+        "min": {
+          "color": "white",
+          "value": 0
+        },
+        "max": {
+          "color": "red",
+          "value": 100
+        }
+      }
+    },
+    {
       "title": "Health",
       "query_str": "health",
       "enabled": true,
       "description": "We envision residents and community partners convening together to address shared values for the purposes of good governance, community development, and artistic expression.",
       "config": "/config/health.json",
+      "icon": "assets/theme_icons/health_gray.png",
+      "style": {
+        "colors": {
+          "icon": "pale-blue",
+          "circle": "white"
+        },
+        "min": {
+          "color": "white",
+          "value": 0
+        },
+        "max": {
+          "color": "pale-blue",
+          "value": 100
+        }
+      }
+    },
+    {
+      "title": "Natural Environment",
+      "query_str": "nat_env",
+      "icon": "assets/theme_icons/nature_green.png",
       "style": {
         "colors": {
           "icon": "green",
@@ -61,16 +83,27 @@
           "color": "green",
           "value": 100
         }
-      }
-    },
-    {
-      "title": "Natural Environment",
-      "query_str": "nat_env",
+      },
       "description": "We envision communities where people are able and willing to work, spend, earn, and invest."
     },
     {
       "title": "Social & Cultural Wellbeing",
       "query_str": "social_cultural",
+      "icon": "assets/theme_icons/soc-cult_pink.png",
+      "style": {
+        "colors": {
+          "icon": "pink",
+          "circle": "white"
+        },
+        "min": {
+          "color": "white",
+          "value": 0
+        },
+        "max": {
+          "color": "pink",
+          "value": 100
+        }
+      },
       "description": "We envision communities that offer empowering supports for family wellbeing, safe neighborhoods, and community trust."
     }
   ]

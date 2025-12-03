@@ -17,7 +17,7 @@
             @click="drawer = false"
           >
             <template v-slot:prepend>
-              <v-icon :icon="category.icon || 'mdi-chart-line'"></v-icon>
+              <v-img :src="category.icon" width="24" height="24" class="mr-2"></v-img>
             </template>
             <v-list-item-title>{{ category.title }}</v-list-item-title>
           </v-list-item>

@@ -41,7 +41,7 @@
                             :class="{ 'stat-item': true, 'stat-item-empty': stat.value == 0 || !stat.value }"
                         >
                             <div class="stat-label">{{ stat.key }}                     
-                                <v-icon v-if="index > 0 
+                                <!-- <v-icon v-if="index > 0 
                                 && index < stats.length
                                 && +stat.value > +(stats[index - 1].value)" 
                                 icon="mdi-arrow-up-bold" class="ma-0" size="10" color="green"></v-icon>
@@ -51,9 +51,10 @@
                                 && +stat.value > 0
                                 && +stat.value < +(stats[index - 1].value)"
                                 icon="mdi-arrow-down-bold" class="ma-0" size="10" color="red"></v-icon>
-                            </div>
+                            -->
+                            </div> 
                             <div v-if="+stat.value > 0" class="stat-value percentage">
-                                {{ stat.value }}%
+                                {{ (+stat.value).toFixed(1) }}%
                                 <span v-if="props.properties[`Count_${stat.key}`]" class="stat-total">
                                     ({{ props.properties[`Count_${stat.key}`] }} total)
                                 </span>
