@@ -68,7 +68,7 @@ const maxColor = computed(() => {
 <style scoped>
 .color-legend {
   position: absolute;
-  top: 3rem;
+  top: 5px;
   width: 50%;
   height: 80px;
  

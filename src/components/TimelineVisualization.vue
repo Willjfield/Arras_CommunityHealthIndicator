@@ -3,9 +3,10 @@
     <div class="timeline-header">
       <IndicatorSelector :side="side" @indicator-changed="handleIndicatorChange" />
     </div>
-    <div ref="container" class="timeline-visualization" style="height: 154px; bottom:20px;">
-      <v-select v-if="availableYears.length > 0" v-model="selectedYear" :items="availableYears" label="Year"
-        density="compact" variant="solo" flat elevation="0" hide-details style="max-width: 120px; position: absolute;top: -41px;" @update:model-value="handleYearChange"></v-select>
+    <v-select v-if="availableYears.length > 0" v-model="selectedYear" :items="availableYears" label="Year"
+      density="compact" variant="solo" elevation="0" hide-details class="year-selector" @update:model-value="handleYearChange"></v-select>
+    <div ref="container" class="timeline-visualization">
+      
       <div class="chart-label">
         <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
           <span class="selected-geo">{{ `${indicatorStore?.getCurrentIndicator()?.title || ''}
@@ -516,11 +517,10 @@ onUnmounted(() => {
 .timeline-visualization {
   position: absolute;
   right: 20px;
-  bottom: 20px;
   left: auto;
   top: auto;
   width: 450px;
-
+  max-width: 33%;
   background: rgba(255, 255, 255, 0.95);
   border: 1px solid #e5e7eb;
   border-radius: 5px;
@@ -529,28 +529,34 @@ onUnmounted(() => {
   z-index: 1000;
   user-select: none;
   zoom: .9;
+  height: 154px; 
+  bottom:5px;
 }
 
 .timeline-header {
   position: absolute;
-  top: 0px;
-  width: 50%;
+  bottom: 3em;
+  width: 15%;
   left: 0px;
   z-index: 1;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0;
-
+  max-width: 25%;
 }
 
 .right .timeline-header {
-  right: 0px;
-  left: unset;
+  left: calc(50% + 5px);
+}
+
+.left .timeline-header {
+  left: 5px;
 }
 
 .left .timeline-visualization {
-  left: 5px;
+  left: 50%;
+    transform: translateX(-101%);
 }
 
 .right .timeline-visualization {
@@ -669,6 +675,18 @@ onUnmounted(() => {
   height: 0;
   margin-bottom: 2.5px;
   margin-left: 5px;
+}
+
+.year-selector {
+  width: 15%;
+  position: absolute;
+  bottom: 5px;
+}
+.left .year-selector {
+    left: 5px;
+}
+.right .year-selector {
+    left: calc(50% + 5px);
 }
 </style>
 <style>

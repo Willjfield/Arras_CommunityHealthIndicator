@@ -46,8 +46,18 @@ defineExpose({
 
 <style scoped>
 .indicator-select {
-  max-width: 60%;
-    margin: 0 auto;
+  width: 100%;
+    /* margin: 0 auto; */
+    border-bottom: 1px solid #e5e7eb;
+  background: rgba(249, 250, 251, 0.8);
+  border-radius: 8px 8px 0 0;
+  height: 6em;
+}
+
+.right .indicator-select {
+
+  left: calc(50% + 5px);
+    /* margin: 0 auto; */
     border-bottom: 1px solid #e5e7eb;
   background: rgba(249, 250, 251, 0.8);
   border-radius: 8px 8px 0 0;
@@ -61,10 +71,19 @@ defineExpose({
 .indicator-select :deep(.v-field__input) {
   font-size: 11px;
   padding: 4px 8px;
+  height: 100%;
 }
 
 .indicator-select :deep(.v-select__selection) {
-  font-size: 11px;
+  font-size: 14px;
+  line-height: 1.2em;
+  text-overflow: ellipsis;
+    white-space: break-spaces;
+}
+
+.indicator-select :deep(.v-select__selection-text) {
+  text-overflow: ellipsis;
+    white-space: break-spaces;
 }
 </style>
 

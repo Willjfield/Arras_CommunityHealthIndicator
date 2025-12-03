@@ -301,6 +301,11 @@ onUnmounted(() => {
     right: 50%;
     left: unset;
   }
+
+  .slider .maplibregl-ctrl-top-right {
+    right: 5px;
+    left: unset;
+  }
   .maplibregl-ctrl-group button+button{
     border-radius: 0;
   }

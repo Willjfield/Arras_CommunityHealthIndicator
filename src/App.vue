@@ -40,11 +40,6 @@
           <v-icon icon="mdi-menu" size="24" @click="drawer = !drawer" style="cursor: pointer;" />
          
         </template>
-        <!-- <template v-slot:append>
-          <RouterLink v-slot="{ href, navigate }" to="/">
-            <v-btn v-show="$route?.name!=='landing'" :href="href" @click="navigate">Home</v-btn>
-          </RouterLink>
-        </template> -->
       </v-app-bar>
       <div id="loading" class="loading-screen">
         <div class="loading-content">
@@ -274,6 +269,15 @@ watch(router.currentRoute, (newRoute, oldRoute) => {
 }
 </style>
 <style>
+.point-legend,
+.color-legend{
+  pointer-events: none;
+}
+.point-legend *,
+.color-legend *{
+  pointer-events: all;
+}
+
 .app-bar.v-toolbar.v-toolbar--collapse{
   max-width: min-content;
     padding: 8px;
