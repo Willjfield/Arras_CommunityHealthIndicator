@@ -35,7 +35,7 @@
                 
                 <!-- Percentage Stats -->
                 <div v-if="currentIndicator.has_pct" class="stats-grid">
-                    <template v-for="(stat, index) in stats" :key="stat.key">
+                    <template v-for="(stat) in stats" :key="stat.key">
                         <div 
                             v-if="!stat.key.startsWith('Count_')"
                             :class="{ 'stat-item': true, 'stat-item-empty': stat.value == 0 || !stat.value }"
