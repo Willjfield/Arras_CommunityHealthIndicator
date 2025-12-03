@@ -32,7 +32,11 @@
       </v-navigation-drawer>
       <v-app-bar class="app-bar" collapse :elevation="2">
         <template v-slot:prepend>
-          <v-img width="50px" src="ArrasFoundation.png" />
+          <RouterLink v-slot="{ href, navigate }" to="/">
+            <v-btn size="large"variant="text" :href="href" @click="navigate">
+              <v-img width="50px" src="ArrasFoundation.png" />
+            </v-btn>
+          </RouterLink>
           <v-icon icon="mdi-menu" size="24" @click="drawer = !drawer" style="cursor: pointer;" />
          
         </template>

@@ -1,20 +1,22 @@
 <template>
   <!-- <v-main class="landing-page"> -->
     <v-container fluid class="pa-0 ma-0 hero-section">
-      <!-- Hero Section -->
-      <v-row no-gutters class="hero-section mt-0">
-        <v-col cols="12" class="text-center pa-8 pa-md-12">
-          <h1 class="text-h3 text-md-h2 font-weight-bold mb-4 text-primary">
-            <v-img src="./assets/ArrasFoundation_RGB.png" max-width="800px" />
-          </h1>
-          <p class="text-h6 text-md-h5 text-medium-emphasis mb-8">
-            Community Health Indicator
-          </p>
-        </v-col>
-      </v-row>
-
       <!-- Main Content -->
-      <v-container class="mt-8">
+      <v-container class="mt-0">
+        <v-row>
+          <v-col cols="12" md="12">
+            <v-card variant="flat" style="background-color: rgba(255, 255, 255, 0.5);" class="pa-6 mt-2 text-center">
+              <p class="text-body-1 text-medium-emphasis" style="line-height: 1.1em; max-width: 900px; margin: 0 auto;">
+                The Community Health Indicator platform provides an interactive, data-driven exploration of community wellbeing 
+                across multiple dimensions including economic vitality, education, health, natural environment, and social & cultural 
+                wellbeing. Through dynamic maps, timeline visualizations, and comparative analysis tools, users can examine how 
+                communities have changed over time, compare different geographic areas side-by-side, and gain insights into the 
+                factors that shape community health. This platform empowers residents, community partners, and policymakers to 
+                make informed decisions by providing accessible, visual representations of complex community data.
+              </p>
+            </v-card>
+          </v-col>
+        </v-row>
         <v-row>
           <!-- Carousel Section -->
           <v-col cols="12" md="7" class="mb-6 mb-md-0">
