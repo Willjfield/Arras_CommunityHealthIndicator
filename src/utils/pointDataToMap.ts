@@ -6,8 +6,7 @@ import type { Emitter } from "mitt";
 export class PointDataToMap extends DataToMap {
   maxDataValue: number;
   minDataValue: number;
-  // private circleRadiusExpression: any;
-  // private iconSizeExpression: any;
+
   constructor(
     data: IndicatorConfig,
     map: Map,
@@ -32,70 +31,14 @@ export class PointDataToMap extends DataToMap {
       : `${this.year}`;
     console.log(propAccessor);
     return [
-        "interpolate",
-        ["linear"],
-        ["to-number", ["get", propAccessor]],
-        minValue,
-        0.2,
-        maxValue,
-        1.0,
-      ];
-    // if (expType === "circleRadius") {
-    //   return [
-    //     "interpolate",
-    //     ["linear"],
-    //     ["zoom"],
-    //     8,
-    //     [
-    //       "*",
-    //       ["to-number", (1.25 / 3).toString()],
-    //       ["sqrt", ["to-number", ["get", propAccessor]]],
-    //     ],
-    //     15,
-    //     [
-    //       "*",
-    //       ["to-number", "1.25"],
-    //       ["sqrt", ["to-number", ["get", propAccessor]]],
-    //     ],
-    //   ];
-    // }
-    // if (expType === "iconSize") {
-    //   // Top-level zoom interpolation, with data-based multiplication at each zoom level
-    //   return [
-    //     "interpolate",
-    //     ["linear"],
-    //     ["zoom"],
-    //     8,
-    //     [
-    //       "*",
-    //       0.5,
-    //       [
-    //         "interpolate",
-    //         ["linear"],
-    //         ["to-number", ["get", propAccessor]],
-    //         minValue,
-    //         0.5,
-    //         maxValue,
-    //         10.0,
-    //       ],
-    //     ],
-    //     15,
-    //     [
-    //       "*",
-    //       1.0,
-    //       [
-    //         "interpolate",
-    //         ["linear"],
-    //         ["to-number", ["get", propAccessor]],
-    //         minValue,
-    //         0.2,
-    //         maxValue,
-    //         10.0,
-    //       ],
-    //     ],
-    //   ];
-    // }
-    // return null;
+      "interpolate",
+      ["linear"],
+      ["to-number", ["get", propAccessor]],
+      minValue,
+      4,
+      maxValue,
+      12,
+    ];
   }
 
   async setupIndicator(year: number | null): Promise<boolean> {
@@ -112,14 +55,12 @@ export class PointDataToMap extends DataToMap {
       )
     );
     this.maxDataValue = Math.max(
-      ...geojson.features.map(
-        (feature: any) => {
-          if(feature.properties.geoid === "overall") {
-            return -1;
-          }
-          return +feature.properties[propAccessor] || -1
+      ...geojson.features.map((feature: any) => {
+        if (feature.properties.geoid === "overall") {
+          return -1;
         }
-      )
+        return +feature.properties[propAccessor] || -1;
+      })
     );
 
     const map: Map = (this as any).map;
@@ -158,33 +99,18 @@ export class PointDataToMap extends DataToMap {
       });
 
       if (features.length === 0) {
-        map.setLayoutProperty(mainLayer, "icon-image", [
-          "literal",
-          (this as any).data.icons[0].name,
-        ]);
-        //map.setPaintProperty(mainLayer, "icon-halo-width", 0);
-
+        map.setPaintProperty(mainLayer, "circle-opacity", 0.5);
         this.removePopup();
-
         this.emitter?.emit(`feature-${this.side || "left"}-hovered`, null);
         return;
       } else {
-        map.setLayoutProperty(mainLayer, "icon-image", [
+        map.setPaintProperty(mainLayer, "circle-opacity", [
           "case",
           ["==", ["get", "geoid"], features[0].properties.geoid],
-          ["literal", (this as any).data.icons[0].name + "-invert"],
-          ["literal", (this as any).data.icons[0].name],
+          1,
+          0.5,
         ]);
-        // map.setPaintProperty(mainLayer, "icon-halo-width", [
-        //   "case",
-        //   ["==", ["get", "geoid"], features[0].properties.geoid],
-        //   0.1,
-        //   0,
-        // ]);
-        // const outlineColor =
-        //   this.arrasBranding.colors[this.data.style.colors.circle];
 
-        //map.setPaintProperty(mainLayer, "icon-halo-color", "#000");
         // Show popup with Vue component
         this.showPopup(
           event.lngLat,
@@ -209,17 +135,13 @@ export class PointDataToMap extends DataToMap {
     await super.setPaintAndLayoutProperties(year);
     const map = (this as any).map;
     if (!map) return false;
-
-    map.setLayoutProperty(
-      (this as any).data.layers.main,
-      "visibility",
-      "visible"
-    );
-    map.setLayoutProperty(
-      (this as any).data.layers.main,
-      "icon-size",
-      this.getExpression()
-    );
+    const mainLayer = (this as any).data.layers.main;
+    map.setLayoutProperty(mainLayer, "visibility", "visible");
+    map.setPaintProperty(mainLayer, "circle-radius", this.getExpression());
+    map.setPaintProperty(mainLayer, "circle-opacity", 0.5);
+    const data = (this as any).data;
+    const maxColor = this.arrasBranding.colors[data.style.max.color];
+    map.setPaintProperty(mainLayer, "circle-color", maxColor);
 
     return true;
   }

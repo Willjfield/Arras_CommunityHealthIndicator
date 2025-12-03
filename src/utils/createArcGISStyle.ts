@@ -4,7 +4,7 @@ export default async function createArcGISStyle(sitePath: string) {
   const USE_LOCAL_STYLE = true;
   if(USE_LOCAL_STYLE) {
     return await fetch(
-      sitePath + 'assets/arcgisStyleCopy.json'
+      sitePath + 'assets/localStyle.json'
     ).then((res) => res.json());
   }
   const _token = ARCGIS_TOKEN;
