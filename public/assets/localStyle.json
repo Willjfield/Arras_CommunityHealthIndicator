@@ -3907,7 +3907,7 @@
         "text-font": ["Ubuntu Light"],
         "text-letter-spacing": 0.08,
         "text-max-width": 6,
-        "text-size": {"stops": [[10, 10], [16, 13]]},
+        "text-size": 12,
         "text-allow-overlap": false,
         "text-padding": 15,
         "visibility": "visible"
@@ -4790,6 +4790,18 @@
         "text-size": 12
       },
       "paint": {"text-color": "#088"}
+    },
+    {
+      "id": "places-labels",
+      "type": "symbol",
+      "source": "places-source",
+      "maxzoom": 10,
+      "layout": {"visibility": "visible",
+        "text-field": "{NAME}",
+        "text-font": ["Noto Sans Regular"],
+        "text-size": 12
+      },
+      "paint": {"text-color": "#000"}
     }
   ],
   "id": "nvowjjl"
