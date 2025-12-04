@@ -83,10 +83,12 @@ const indicatorLevelStore = (storeName: 'left' | 'right') => {
 
             if (worker) {
                 const headerShortNames = indicator.google_sheets_data.headerShortNames;
-                const defaultYear = headerShortNames && headerShortNames.length > 0 
-                    ? headerShortNames.filter((year: string) => /^\d{4}$/.test(year)).sort((a: string, b: string) => Number(a) - Number(b))[0]
+                const defaultYears = headerShortNames && headerShortNames.length > 0 
+                    ? headerShortNames.filter((year: string) => /^\d{4}$/.test(year)).sort((a: string, b: string) => Number(a) - Number(b))
                     : null;
-                if (defaultYear !== null) {
+                    let defaultYear = null;
+                if (defaultYears !== null) {
+                    defaultYear = defaultYears[defaultYears.length - 1];
                     await worker.setupIndicator(defaultYear);
                 }
                 await setCurrentYear(defaultYear)

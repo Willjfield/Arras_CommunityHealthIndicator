@@ -134,7 +134,7 @@ const processData = (_feature: string | number | null) => {
   matchingRow = rows.find((_row: Record<string, any>) =>
     '' + _row.geoid === '' + currentGeoSelection
   )
-  console.log(matchingRow)
+  //console.log(matchingRow)
   if (!matchingRow) return []
   // Exfeature data for this indicator
 
