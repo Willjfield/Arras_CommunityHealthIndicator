@@ -451,4 +451,8 @@ onUnmounted(() => {
   right: 5px;
   bottom: 5px !important;
 }
+
+.maplibregl-compare-type-toggle.top{
+  top: 42px !important;
+}
 </style>

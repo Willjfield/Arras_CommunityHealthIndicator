@@ -143,7 +143,7 @@ const clearLocation = () => {
 .location-search-container {
   position: absolute;
     /* bottom: 205px; */
-    top: 60px;
+    top: 90px;
     left: 50%;
     transform: translateX(-50%);
     display: flex;

@@ -16,3 +16,20 @@ Learn more about the recommended Project Setup and IDE Support in the [Vue Docs 
 - Let's discuss creating a github team account for North Arrow
 - Hosting can be done through github or we can also create an account for Arras
 -- Basemap and Location services now use an API key created with the Arras ESRI account. Should fall into the free tier but they should be aware of it.
+
+
+BUG when I select median household income the year selector disappears
+BUG See - disconnected youth
+
+County label
+(new) can the maps be positioned a bit higher on the page so they are centered?
+place names over place shape
+Add theme title
+load maps on 2023
+popup formatting (size)
+
+(is no data pulling legend to zero?) and timeline responsive to dataset range
+pre-K enrollment update
+
+Tested_ is size of points
+Percent - should be color

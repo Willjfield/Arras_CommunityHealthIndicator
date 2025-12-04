@@ -61,7 +61,7 @@
       "field": "Median Household Income",
       "geolevel": "area",
       "default": false,
-      "has_pct": false,
+      "has_pct": true,
       "has_count": true,
       "totalAmntOf":"dollars",
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRxBdPEeiYzDaPP8ZRebLlTvX_OzEFwRL6c7zC45u0HES0ZlD5v2o8tUdL0xcBmYKTpCL_I4ALJoWNR/pub?gid=956489115&single=true&output=csv",

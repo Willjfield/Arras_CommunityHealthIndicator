@@ -80,7 +80,11 @@ const availableYears = computed(() => {
       .map((year: string) => Number(year.replace('Count_', '')))
       .sort((a: number, b: number) => a - b)
   }
-
+  if(yearColumns.length === 0) {
+    yearColumns = headerShortNames.filter((header: string) =>
+      /^\d{4}$/.test(header) && !isNaN(Number(header))
+    ).map((year: string) => Number(year)).sort((a: number, b: number) => a - b)
+  }
   return yearColumns
 })
 
@@ -105,11 +109,11 @@ const processData = (_feature: string | number | null) => {
   if (!raw_data) return []
   const headerShortNames = raw_data.headerShortNames
   const rows = raw_data.data
-  //console.log(props.side)
-  //console.log(raw_data)
+  console.log(props.side)
+  console.log(raw_data)
   //SET CURRENTGEO SELECTION TO HOVERED
   const currentGeoSelection = _feature || indicatorStore.getCurrentGeoSelection()
-
+  console.log('currentGeoSelection', currentGeoSelection)
   let matchingRow: Record<string, any> | undefined = undefined;
   const data: Array<{ year: number; value: number | null }> = []
   let yearColumns: number[] = []
@@ -130,6 +134,7 @@ const processData = (_feature: string | number | null) => {
   matchingRow = rows.find((_row: Record<string, any>) =>
     '' + _row.geoid === '' + currentGeoSelection
   )
+  console.log(matchingRow)
   if (!matchingRow) return []
   // Exfeature data for this indicator
 

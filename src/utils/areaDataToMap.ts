@@ -24,6 +24,7 @@ export class AreaDataToMap extends DataToMap {
 
     const map: Map = (this as any).map;
     const data: IndicatorConfig = (this as any).data;
+    //console.log(data);
     const source: any = map.getSource(data.source_name);
     const geojson = await source.getData();
     geojson.features = geojson.features.map((feature: any) => {

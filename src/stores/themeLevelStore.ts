@@ -15,10 +15,12 @@ export const useThemeLevelStore = defineStore('themeLevel', () => {
     const currentThemeShortName = ref<string | null>(null)
     const categoryConfigs = inject('categoryConfigs') as any
     const mainConfig = inject('mainConfig') as any
-
+    const mainConfigForCurrentTheme = ref<any>(null)
     async function setCurrentTheme(shortName: string) {
         currentThemeShortName.value = shortName
         currentThemeConfig.value = categoryConfigs[shortName] as any
+        mainConfigForCurrentTheme.value = mainConfig?.categories?.find((cat: any) => cat.query_str === shortName)
+        console.log(mainConfigForCurrentTheme.value)
         //Get data from google sheets and store along with all the indicators in categoryConfigs
         //const categoryConfigs: Record<string, any> = {};
         const currentIndicatorConfigs: IndicatorConfig[] | null = getAllCurrentThemeIndicators()
@@ -33,6 +35,10 @@ export const useThemeLevelStore = defineStore('themeLevel', () => {
         return currentThemeConfig.value
     }
 
+    function getMainConfigForCurrentTheme() {
+        return mainConfigForCurrentTheme.value
+    }
+
     function getAllCurrentThemeIndicators(): IndicatorConfig[] | null {
         const shortName = currentThemeShortName.value
         if (shortName) {
@@ -40,7 +46,7 @@ export const useThemeLevelStore = defineStore('themeLevel', () => {
             const indicators = categoryConfig?.indicators as IndicatorConfig[] || []
             
             // Get category style from mainConfig
-            const categoryStyle = mainConfig?.categories?.find((cat: any) => cat.query_str === shortName)?.style
+            const categoryStyle = mainConfigForCurrentTheme.value.style
             
             // Merge category style with each indicator's style
             return indicators.map((indicator: IndicatorConfig) => {
@@ -59,16 +65,6 @@ export const useThemeLevelStore = defineStore('themeLevel', () => {
                 // Merge category style with indicator style (indicator style takes precedence)
                 if (categoryStyle) {
                     indicator.style = categoryStyle
-                    // {
-                    //     ...categoryStyle,
-                    //     ...indicator.style,
-                    //     colors: {
-                    //         ...categoryStyle.colors,
-                    //         ...(indicator.style.colors || {})
-                    //     },
-                    //     min: indicator.style.min || categoryStyle.min,
-                    //     max: indicator.style.max || categoryStyle.max
-                    // }
                 }
                 
                 return indicator
@@ -76,6 +72,6 @@ export const useThemeLevelStore = defineStore('themeLevel', () => {
         }
         return null
     }
-    return { setCurrentTheme, getCurrentThemeConfig, getAllCurrentThemeIndicators }
+    return { setCurrentTheme, getMainConfigForCurrentTheme, getCurrentThemeConfig, getAllCurrentThemeIndicators }
 })
 
