@@ -172,8 +172,10 @@ const stats = computed(() => {
 
 .popup-container {
     /* min-width: 280px; */
-    max-width: 400px;
+    min-width: 280px;
+    max-width: 500px;
     padding: 0;
+    width: fit-content;
 }
 
 /* Cluster Message */
@@ -245,6 +247,7 @@ const stats = computed(() => {
 /* Stats Section */
 .stats-section {
     /* margin-bottom: 1rem; */
+    width: 100%;
 }
 
 .indicator-title {
@@ -258,8 +261,9 @@ const stats = computed(() => {
 
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(0px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     gap: 0.25rem;
+    width: 100%;
 }
 
 .stat-item {
@@ -268,6 +272,9 @@ const stats = computed(() => {
     border-radius: 6px;
     padding: 0.25rem;
     transition: all 0.2s ease;
+    min-width: 0;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
 }
 
 .stat-item:hover {

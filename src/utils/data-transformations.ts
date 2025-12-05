@@ -1,12 +1,20 @@
 function formatGoogleSheetData(csvString: string) {
   const rows = csvString.split("\n");
-  const shortNameRowIdx = rows.findIndex(
-    (row) => !row.includes("-") && row.includes("geoid")
+  console.log(rows);
+  let shortNameRowIdx = rows.findIndex(
+    (row) => !row.includes("-") && row.includes("geoid") && !row.includes(" ")
   );
-
+  console.log(shortNameRowIdx);
+  if(shortNameRowIdx === -1) {
+    shortNameRowIdx = rows.findIndex(
+      (row) => !row.includes("-") && row.includes("geoid")
+    );
+  }
+  console.log(shortNameRowIdx);
   const headerShortNames = rows[shortNameRowIdx]
     .split(",")
     .map((header) => header.trim());
+  console.log(headerShortNames);
   const labelRowIdx = 1 - shortNameRowIdx; //If shortNameRowIdx is 0, then labelRowIdx is 1, if shortNameRowIdx is 1, then labelRowIdx is 0
   const headerLabels = rows[labelRowIdx]
     .split(",")
@@ -26,7 +34,6 @@ function formatGoogleSheetData(csvString: string) {
           : value
       );
 
-    // console.log(values)
     return headerShortNames.reduce(
       (acc: Record<string, string>, header: string, index: number) => {
         acc[header] = values[index];
@@ -41,11 +48,12 @@ function formatGoogleSheetData(csvString: string) {
       row.geoid &&
       (row.geoid.includes("005700") || row.geoid.includes("002300"))
     ) {
+      // Using split/join to ensure compatibility with older JS/TS targets (replaceAll not supported in ES5)
       row.geoid = row.geoid
-        .replace("G", "")
-        .replace("g", "")
-        .replace("005700", "0570")
-        .replace("002300", "0230");
+        .split("G").join("")
+        .split("g").join("")
+        .split("005700").join("0570")
+        .split("002300").join("0230");
     }
     //Some data should be percentages but is not formatted correctly
     Object.keys(row).forEach((key) => {
@@ -68,85 +76,6 @@ function formatGoogleSheetData(csvString: string) {
   };
 }
 
-const svgToPng = async (
-  svg: string,
-  invertColors: boolean = false,
-  arrasBranding: any,
-  data: any
-): Promise<HTMLImageElement> => {
-  const SCALE_FACTOR = 0.667;
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(svg, "image/svg+xml");
-  const circle = doc.getElementsByClassName("bg-circle")[0] as HTMLElement;
-  const circleTransform = `translate(${SCALE_FACTOR * 25}%, ${
-    SCALE_FACTOR * 25
-  }%) scale(${SCALE_FACTOR})`;
-  const paths = doc.getElementsByTagName(
-    "path"
-  ) as HTMLCollectionOf<SVGPathElement>;
 
-  const pngColors = {
-    icon: arrasBranding.colors[data.style.colors.icon],
-    circle: arrasBranding.colors[data.style.colors.circle] + "cc",
-  };
-  if (invertColors) {
-    pngColors.icon = arrasBranding.colors[data.style.colors.icon];
-    pngColors.circle = arrasBranding.colors[data.style.colors.icon] + "70";
-  }
 
-  for (let path = 1; path < paths.length; path++) {
-    paths[path].setAttribute("fill", pngColors.icon);
-  }
-  if (circle) {
-    circle.style.transform = circleTransform;
-    circle.setAttribute("fill", pngColors.circle);
-  }
-  svg = doc.documentElement.outerHTML;
-
-  const svgBlob = new Blob([svg], { type: "image/svg+xml" });
-  const svgUrl = URL.createObjectURL(svgBlob);
-  const iconSize = 64;
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.crossOrigin = "anonymous";
-    img.onload = () => {
-      // Create a canvas to rasterize the SVG to PNG
-      const canvas = document.createElement("canvas");
-      // Use natural dimensions if available, otherwise default to 16x16
-      const width = iconSize; //img.naturalWidth || img.width || 16;
-      const height = iconSize; //img.naturalHeight || img.height || 16;
-      canvas.width = width;
-      canvas.height = height;
-
-      const ctx = canvas.getContext("2d");
-      if (!ctx) {
-        URL.revokeObjectURL(svgUrl);
-        reject(new Error("Could not get canvas context"));
-        return;
-      }
-
-      // Draw the SVG image to the canvas
-      ctx.drawImage(img, 0, 0, width, height);
-
-      // Create a new image element from the canvas PNG data URL
-      const pngImg = new Image();
-      pngImg.onload = () => {
-        URL.revokeObjectURL(svgUrl);
-        resolve(pngImg);
-      };
-      pngImg.onerror = (error) => {
-        URL.revokeObjectURL(svgUrl);
-        reject(error);
-      };
-      // Convert canvas to PNG data URL
-      pngImg.src = canvas.toDataURL("image/png");
-    };
-    img.onerror = (error) => {
-      URL.revokeObjectURL(svgUrl);
-      reject(error);
-    };
-    img.src = svgUrl;
-  });
-};
-
-export { formatGoogleSheetData, svgToPng };
+export { formatGoogleSheetData };

@@ -21,28 +21,22 @@ export class PointDataToMap extends DataToMap {
     this.arrasBranding = arrasBranding as any;
   }
 
-  getExpression() {
-    const minValue = this.minDataValue;
-    const maxValue = this.maxDataValue;
-    console.log(minValue, maxValue);
+  getSizeExpression() {
+    const minValue = 10;
+    const maxValue = 400;
 
-    const propAccessor = (this.data as any).has_count
-      ? `Count_${this.year}`
-      : `${this.year}`;
-    console.log(propAccessor);
+    // const propAccessor = (this.data as any).has_count
+    //   ? `Count_${this.year}`
+    //   : `${this.year}`;
     return [
-      "interpolate",
-      ["linear"],
-      ["to-number", ["get", propAccessor]],
-      minValue,
-      4,
-      maxValue,
-      12,
-    ];
+      "case",
+      ["has", `Tested_${this.year}`],
+      ["interpolate", ["linear"], ["to-number", ["get", `Tested_${this.year}`]], minValue, 3, maxValue, 20],
+      6
+    ]
   }
 
   async setupIndicator(year: number | null): Promise<boolean> {
-    //console.log(year);
     await super.setupIndicator?.(year);
     this.removeOldEvents();
     const geojson = this.generateGeojson();
@@ -99,7 +93,7 @@ export class PointDataToMap extends DataToMap {
       });
 
       if (features.length === 0) {
-        map.setPaintProperty(mainLayer, "circle-opacity", 0.5);
+        map.setPaintProperty(mainLayer, "circle-opacity", 0.75);
         this.removePopup();
         this.emitter?.emit(`feature-${this.side || "left"}-hovered`, null);
         return;
@@ -108,7 +102,7 @@ export class PointDataToMap extends DataToMap {
           "case",
           ["==", ["get", "geoid"], features[0].properties.geoid],
           1,
-          0.5,
+          0.75,
         ]);
 
         // Show popup with Vue component
@@ -137,11 +131,27 @@ export class PointDataToMap extends DataToMap {
     if (!map) return false;
     const mainLayer = (this as any).data.layers.main;
     map.setLayoutProperty(mainLayer, "visibility", "visible");
-    map.setPaintProperty(mainLayer, "circle-radius", this.getExpression());
-    map.setPaintProperty(mainLayer, "circle-opacity", 0.5);
-    const data = (this as any).data;
-    const maxColor = this.arrasBranding.colors[data.style.max.color];
-    map.setPaintProperty(mainLayer, "circle-color", maxColor);
+    map.setPaintProperty(mainLayer, "circle-radius", this.getSizeExpression());
+    map.setPaintProperty(mainLayer, "circle-opacity", 0.75);
+   // const sortKey = this.getSortKeyExpression();
+    map.setLayoutProperty(mainLayer, "circle-sort-key", 
+      ["case",
+        ["has", `Tested_${this.year}`],
+        ['/',1,["to-number", ["get", `Tested_${this.year}`]]],
+         ["has", `Count_${this.year}`],
+         ['/',1,["to-number", ["get", `Count_${this.year}`]]],
+         ["has", `${this.year}`],
+         ['/',1,["to-number", ["get", `${this.year}`]]],
+        0
+      ]
+    );
+
+   // const data = (this as any).data;
+    //const maxColor = this.arrasBranding.colors[data.style.max.color];
+    const circleColor = this.getGradientExpression();
+        map.setLayoutProperty(mainLayer, "visibility", "visible");
+
+    map.setPaintProperty(mainLayer, "circle-color", circleColor);
 
     return true;
   }
@@ -150,7 +160,6 @@ export class PointDataToMap extends DataToMap {
     super.generateGeojson();
     // Fix: Access private 'data' property through 'as any'
     const rawGoogleData = (this as any).data.google_sheets_data.data;
-    //console.log(rawGoogleData);
     const geojson = {
       type: "FeatureCollection",
       features: rawGoogleData.map((row: any) => {
@@ -164,7 +173,6 @@ export class PointDataToMap extends DataToMap {
         };
       }),
     };
-    console.log(geojson);
     return geojson;
   }
 }

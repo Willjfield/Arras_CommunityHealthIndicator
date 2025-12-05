@@ -61,7 +61,8 @@
       "layers": {
         "main": "point-data",
         "circle": false
-      }
+      },
+      "fill_color": ["interpolate", ["linear"], ["to-number", ["get", "1990"]]]
     },
     {
       "title": "3rd Grade ELA Readiness",
@@ -76,7 +77,8 @@
       "layers": {
         "main": "point-data",
         "circle": false
-      }
+      },
+      "fill_color": ["interpolate", ["linear"], ["to-number", ["get", "1990"]]]
     },
     {
       "title": "8th Grade Math Readiness",
@@ -91,7 +93,8 @@
       "layers": {
         "main": "point-data",
         "circle": false
-      }
+      },
+      "fill_color": ["interpolate", ["linear"], ["to-number", ["get", "1990"]]]
     },
     {
       "title": "8th Grade ELA Readiness",
@@ -106,7 +109,8 @@
       "layers": {
         "main": "point-data",
         "circle": false
-      }
+      },
+      "fill_color": ["interpolate", ["linear"], ["to-number", ["get", "1990"]]]
     },
     {
       "title": "High School Completion Rate",
@@ -121,7 +125,8 @@
       "layers": {
         "main": "point-data",
         "circle": false
-      }
+      },
+      "fill_color": ["interpolate", ["linear"], ["to-number", ["get", "1990"]]]
     },
     {
       "title": "High School Career Readiness",
@@ -136,7 +141,8 @@
       "layers": {
         "main": "point-data",
         "circle": false
-      }
+      },
+      "fill_color": ["interpolate", ["linear"], ["to-number", ["get", "1990"]]]
     },
     {
       "title": "High School College Readiness",
@@ -151,7 +157,8 @@
       "layers": {
         "main": "point-data",
         "circle": false
-      }
+      },
+      "fill_color": ["interpolate", ["linear"], ["to-number", ["get", "1990"]]]
     },
     {
       "title":"Disconnected Youth",
@@ -185,7 +192,8 @@
       "short_name": "kReadiness",
       "layers": {
         "main": "point-data"
-      }
+      },
+      "fill_color": ["interpolate", ["linear"], ["to-number", ["get", "1990"]]]
     }
   ]
 }

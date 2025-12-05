@@ -65,6 +65,57 @@ export class DataToMap {
 
   generateGeojson() {}
 
+  getGradientExpression() {
+    const data: IndicatorConfig = (this as any).data;
+    const { minValue, maxValue } = this.getMinMaxValues();
+    const minColor = this.arrasBranding.colors[data.style.min.color];
+    const maxColor = this.arrasBranding.colors[data.style.max.color];
+   
+    if (
+      !data ||
+      !data.layers ||
+      !data.layers.main ||
+      !data.style ||
+      !data.style.min ||
+      !data.style.max ||
+      !data.fill_color
+    ) {
+      console.error("Missing required data properties:", {
+        data,
+        layers: data?.layers,
+        style: data?.style,
+        fill_color: data?.fill_color,
+      });
+      return false;
+    }
+
+    // Replace the year string at the correct index with the selected year from this.year
+    if (
+      Array.isArray(data.fill_color) &&
+      data.fill_color.length > 2 &&
+      Array.isArray(data.fill_color[2]) &&
+      data.fill_color[2].length > 1 &&
+      Array.isArray(data.fill_color[2][1]) &&
+      data.fill_color[2][1].length > 1
+    ) {
+      data.fill_color[2][1][1] = String(this.year ?? -1);
+    } else {
+      console.warn('fill_color array does not match expected structure. Year not set.');
+    }
+
+    const fillColor = [
+      ...data.fill_color,
+      minValue,
+      minColor,
+      maxValue,
+      maxColor,
+    ];
+    if (!data.layers.main) {
+      console.error("data.layers.main is undefined");
+      return false;
+    }
+    return fillColor;
+  }
   hideLayers() {
     if (!this.map) return;
     if (this.data.layers.main) {
@@ -248,15 +299,16 @@ export class DataToMap {
 
       //todo: this has to get min and max from all the  years, not just this year
     const years = data.google_sheets_data.headerShortNames.filter((year: string) => /^\d{4}$/.test(year) && !isNaN(Number(year)));
-    console.log(years)
     let minValue = 9999999999999;
     let maxValue = 0;
+    console.log(years);
     for(let year=0; year<years.length; year++) {
-      const yearValues = data.google_sheets_data.data.filter((feature: any) => feature?.geoid !== "overall").map((feature: any) => feature[years[year] as string]);
-     // console.log(yearValues);
+      const yearValues = data.google_sheets_data.data
+      .filter((feature: any) => feature?.geoid !== "overall" && !feature?.geoid.includes("School District"))
+      .map((feature: any) => feature[years[year] as string])
+      .filter((value: any) => value !== null && value !== undefined && !isNaN(Number(value)) && value > 0);
       const thisyearMinValue = Math.min(...yearValues);
       const thisyearMaxValue = Math.max(...yearValues);
-      
       if(+thisyearMinValue < minValue) {
         minValue = +thisyearMinValue;
       }

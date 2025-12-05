@@ -79,7 +79,6 @@ function Compare(a, b, container, options) {
   this._clearSync = syncMove(a, b)
 
   this._onResize = function () {
-    //console.log('onResize')
     const swiperPosition
       = this.orientation === ORIENTATION.LEFT_RIGHT ? this._bounds.width / 2 : this._bounds.height / 2
     this._setPosition(swiperPosition)

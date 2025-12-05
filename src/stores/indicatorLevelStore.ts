@@ -23,7 +23,6 @@ const themeLevelStore = useThemeLevelStore()
 const indicatorLevelStore = (storeName: 'left' | 'right') => {
     const arrasBranding = ref<any>(inject('arrasBranding') as any)
     const sitePath = inject('sitePath') as string
-    //console.log(arrasBranding.colors)
     const currentThemeIndicators = themeLevelStore.getAllCurrentThemeIndicators()
     const currentIndicator = ref<IndicatorConfig | null>(null)
     const currentGeoSelection = ref<string | null>(null)
@@ -55,7 +54,6 @@ const indicatorLevelStore = (storeName: 'left' | 'right') => {
     async function setCurrentYear(year: number) {
         currentYear.value = +year
         if(worker) {
-           // console.log('setting year', year);
             await worker.setPaintAndLayoutProperties(year)
         }
     }

@@ -24,7 +24,7 @@ export class AreaDataToMap extends DataToMap {
 
     const map: Map = (this as any).map;
     const data: IndicatorConfig = (this as any).data;
-    //console.log(data);
+
     const source: any = map.getSource(data.source_name);
     const geojson = await source.getData();
     geojson.features = geojson.features.map((feature: any) => {
@@ -40,7 +40,7 @@ export class AreaDataToMap extends DataToMap {
       }
       return false;
     });
-    //console.log(geojson);
+
 
     if (source && typeof source.setData === "function") {
       source.setData(geojson);
@@ -159,41 +159,7 @@ export class AreaDataToMap extends DataToMap {
     const map = (this as any).map;
     if (!map) return false;
     const data = (this as any).data;
-    const { minValue, maxValue } = this.getMinMaxValues();
-    const minColor = this.arrasBranding.colors[data.style.min.color];
-    const maxColor = this.arrasBranding.colors[data.style.max.color];
-   
-    if (
-      !data ||
-      !data.layers ||
-      !data.layers.main ||
-      !data.style ||
-      !data.style.min ||
-      !data.style.max ||
-      !data.fill_color
-    ) {
-      console.error("Missing required data properties:", {
-        data,
-        layers: data?.layers,
-        style: data?.style,
-        fill_color: data?.fill_color,
-      });
-      return false;
-    }
-
-    data.fill_color[2][1][1] = "" + (this.year || -1);
-    const fillColor = [
-      ...data.fill_color,
-      minValue,
-      minColor,
-      maxValue,
-      maxColor,
-    ];
-    console.log(fillColor);
-    if (!data.layers.main) {
-      console.error("data.layers.main is undefined");
-      return false;
-    }
+    const fillColor = this.getGradientExpression();
     map.setPaintProperty(data.layers.main, "fill-color", fillColor);
     map.setLayoutProperty(data.layers.main, "visibility", "visible");
     return true;

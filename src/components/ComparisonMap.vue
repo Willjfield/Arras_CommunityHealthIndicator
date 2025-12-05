@@ -66,7 +66,6 @@ watch(() => props._type, (newType) => {
 
 onBeforeMount(() => { })
 onMounted(async () => {
-  console.log('mnt')
   // Ensure the container is properly initialized
   const sitePath = inject('sitePath') as string;
 

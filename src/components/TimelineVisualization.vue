@@ -109,11 +109,9 @@ const processData = (_feature: string | number | null) => {
   if (!raw_data) return []
   const headerShortNames = raw_data.headerShortNames
   const rows = raw_data.data
-  console.log(props.side)
-  console.log(raw_data)
+
   //SET CURRENTGEO SELECTION TO HOVERED
   const currentGeoSelection = _feature || indicatorStore.getCurrentGeoSelection()
-  console.log('currentGeoSelection', currentGeoSelection)
   let matchingRow: Record<string, any> | undefined = undefined;
   const data: Array<{ year: number; value: number | null }> = []
   let yearColumns: number[] = []
@@ -134,7 +132,7 @@ const processData = (_feature: string | number | null) => {
   matchingRow = rows.find((_row: Record<string, any>) =>
     '' + _row.geoid === '' + currentGeoSelection
   )
-  //console.log(matchingRow)
+
   if (!matchingRow) return []
   // Exfeature data for this indicator
 
@@ -303,8 +301,6 @@ const addFeatureLine = (feature: string) => {
 
   // Calculate scales
   const xScale = createXScale(data)
-  //const yScale = createYScale(validData)
-  //console.log(yScale)
 
   // Create line generator
   const line = d3.line<{ year: number; value: number | null }>()
