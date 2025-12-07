@@ -38,7 +38,7 @@ interface Props {
 
 const props = defineProps<Props>()
 const indicatorStore = useIndicatorLevelStore(props.side)
-const selectedIndicator = computed(() => indicatorStore.getCurrentIndicator())
+//const selectedIndicator = computed(() => indicatorStore.getCurrentIndicator())
 defineEmits<{
   indicatorChanged: [indicator: any, side: 'left' | 'right']
   close: []
