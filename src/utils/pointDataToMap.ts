@@ -30,8 +30,8 @@ export class PointDataToMap extends DataToMap {
     //   : `${this.year}`;
     return [
       "case",
-      ["has", `Tested_${this.year}`],
-      ["interpolate", ["linear"], ["to-number", ["get", `Tested_${this.year}`]], minValue, 3, maxValue, 20],
+      ["has", `Cohort_${this.year}`],
+      ["interpolate", ["linear"], ["to-number", ["get", `Cohort_${this.year}`]], minValue, 3, maxValue, 20],
       6
     ]
   }
@@ -136,8 +136,8 @@ export class PointDataToMap extends DataToMap {
    // const sortKey = this.getSortKeyExpression();
     map.setLayoutProperty(mainLayer, "circle-sort-key", 
       ["case",
-        ["has", `Tested_${this.year}`],
-        ['/',1,["to-number", ["get", `Tested_${this.year}`]]],
+        ["has", `Cohort_${this.year}`],
+        ['/',1,["to-number", ["get", `Cohort_${this.year}`]]],
          ["has", `Count_${this.year}`],
          ['/',1,["to-number", ["get", `Count_${this.year}`]]],
          ["has", `${this.year}`],

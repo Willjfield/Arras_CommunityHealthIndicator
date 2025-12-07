@@ -31,5 +31,5 @@ popup formatting (size)
 (is no data pulling legend to zero?) and timeline responsive to dataset range
 pre-K enrollment update
 
-Tested_ is size of points
+Cohort_ is size of points
 Percent - should be color

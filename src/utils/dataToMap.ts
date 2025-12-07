@@ -70,7 +70,8 @@ export class DataToMap {
     const { minValue, maxValue } = this.getMinMaxValues();
     const minColor = this.arrasBranding.colors[data.style.min.color];
     const maxColor = this.arrasBranding.colors[data.style.max.color];
-   
+    this.data.style.min.value = minValue;
+    this.data.style.max.value = maxValue;
     if (
       !data ||
       !data.layers ||
@@ -301,7 +302,6 @@ export class DataToMap {
     const years = data.google_sheets_data.headerShortNames.filter((year: string) => /^\d{4}$/.test(year) && !isNaN(Number(year)));
     let minValue = 9999999999999;
     let maxValue = 0;
-    console.log(years);
     for(let year=0; year<years.length; year++) {
       const yearValues = data.google_sheets_data.data
       .filter((feature: any) => feature?.geoid !== "overall" && !feature?.geoid.includes("School District"))
@@ -315,8 +315,15 @@ export class DataToMap {
       if(+thisyearMaxValue > maxValue) {
         maxValue = +thisyearMaxValue;
       }
+     
     }
-   
+    if(this.data.has_pct) {
+      
+      minValue = Math.max(minValue, 0);
+      maxValue = Math.min(maxValue, 100);
+      console.log('has pct', minValue, maxValue);
+      return { minValue, maxValue };
+    }
     return { minValue: Math.floor(minValue*.95), maxValue: Math.ceil(maxValue*1.05)};
   } 
 }

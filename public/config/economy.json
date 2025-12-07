@@ -2,7 +2,6 @@
   "indicators": [
     {
       "title": "Adults with Bachelor's Degree or Higher",
-      "field": "Adults with Bachelor's Degree or Higher",
       "geolevel": "area",
       "default": "left",
       "has_pct": true,
@@ -30,7 +29,6 @@
     },
     {
       "title": "Children in Concentrated Poverty",
-      "field": "Children in Concentrated Poverty",
       "geolevel": "area",
       "default": "right",
       "has_pct": true,
@@ -58,7 +56,6 @@
     },
     {
       "title": "Median Household Income",
-      "field": "Median Household Income",
       "geolevel": "area",
       "default": false,
       "has_pct": true,
@@ -87,7 +84,6 @@
     },
     {
       "title": "Housing cost burdened households (30% or more of income)",
-      "field": "Housing Burden",
       "geolevel": "area",
       "default": false,
       "has_pct": true,

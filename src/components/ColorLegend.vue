@@ -40,6 +40,8 @@ const indicatorDescription = computed(() => {
   return '%';
 })
 
+
+
 const minValue = computed(() => {
   return props.selectedIndicator?.style?.min?.value || 0
 })

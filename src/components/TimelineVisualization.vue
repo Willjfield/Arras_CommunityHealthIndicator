@@ -38,6 +38,7 @@ interface Props {
 
 const props = defineProps<Props>()
 const indicatorStore = useIndicatorLevelStore(props.side)
+const selectedIndicator = computed(() => indicatorStore.getCurrentIndicator())
 defineEmits<{
   indicatorChanged: [indicator: any, side: 'left' | 'right']
   close: []
@@ -424,18 +425,52 @@ const createXScale = (data: Array<{ year: number; value: number | null }>) => {
     .domain(years)
     .range(yearPositions)
 }
+const getMinMaxValues = () => {
+  const indicator = indicatorStore.getCurrentIndicator()
+    const data = indicator?.google_sheets_data;
+  if (!data) return { minValue: 0, maxValue: 100 }
+      //todo: this has to get min and max from all the  years, not just this year
+    const years = data.headerShortNames.filter((year: string) => /^\d{4}$/.test(year) && !isNaN(Number(year)));
+    let minValue = 9999999999999;
+    let maxValue = 0;
+    for(let year=0; year<years.length; year++) {
+      const yearValues = data.data
+      .filter((feature: any) => feature?.geoid !== "overall" && !feature?.geoid.includes("School District"))
+      .map((feature: any) => feature[years[year] as string])
+      .filter((value: any) => value !== null && value !== undefined && !isNaN(Number(value)) && value > 0)
+      .map((value: any) => Number(value));
+      //console.log(yearValues);
+      const thisyearMinValue = Math.min(...yearValues);
+      const thisyearMaxValue = Math.max(...yearValues);
+      if(+thisyearMinValue < minValue) {
+        minValue = +thisyearMinValue;
+      }
+      if(+thisyearMaxValue > maxValue) {
+        maxValue = +thisyearMaxValue;
+      }
+      // if(maxValue > 100){
+      //   console.log(years[year], maxValue);
+      // }
+    }
+    if(indicator?.has_pct) {
+      console.log('has pct', minValue, maxValue);
+      minValue = Math.max(minValue, 0);
+      maxValue = Math.min(maxValue, 100);
+      return { minValue, maxValue };
+    }
+   
+    return { minValue: Math.floor(minValue*.95), maxValue: Math.ceil(maxValue*1.05)};
+  } 
 
 const createYScale = (data: Array<{ year: number; value: number | null }>) => {
   const values = data.map(d => d.value!).filter(v => v !== null && !isNaN(v))
   if (values.length === 0) return d3.scaleLinear().domain([0, 100]).range([height - margin.bottom, margin.top])
 
-  const min = 0//Math.min(...values) - (10 * (indicatorStore.getCurrentIndicator()?.geolevel === 'area' ? 0 : 1))
-  const max = Math.max(100, Math.max(...values)) || 100;
-  //+ (10 * (indicatorStore.getCurrentIndicator()?.geolevel === 'area' ? 0 : 1))
-  const padding = (max - min) || 1
+  const { minValue, maxValue } = getMinMaxValues()
+  const padding = (maxValue - minValue) || 1
 
   return d3.scaleLinear()
-    .domain([Math.max(min - padding, 0), max])
+    .domain([Math.max(minValue - padding, 0), maxValue])
     .range([height + margin.bottom, margin.top])
 }
 

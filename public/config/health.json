@@ -2,7 +2,6 @@
   "indicators": [
     {
       "title": "Current Smokers Among Adults",
-      "field": "Current Smokers",
       "geolevel": "area",
       "default": "left",
       "has_pct": true,
@@ -30,7 +29,6 @@
     },
     {
       "title": "Working Age Adults with No Health Insurance",
-      "field": "Working Age Adults with No Health Insurance",
       "geolevel": "area",
       "default": "right",
       "has_pct": true,
@@ -58,7 +56,6 @@
     },
     {
       "title": "Food Insecurity",
-      "field": "Food Insecurity",
       "geolevel": "area",
       "default": false,
       "has_pct": true,
@@ -86,7 +83,6 @@
     },
     {
       "title": "Heart Disease Mortality Rate",
-      "field": "Heart Disease Mortality Rate",
       "geolevel": "area",
       "default": false,
       "has_pct": false,
@@ -114,7 +110,6 @@
     },
     {
       "title": "Low Birth Weight",
-      "field": "Low Birth Weight",
       "geolevel": "area",
       "default": false,
       "has_pct": true,
@@ -141,7 +136,6 @@
     },
     {
       "title": "Malignant Neoplasm Morality",
-      "field": "Malignant Neoplasm Morality",
       "geolevel": "area",
       "default": false,
       "has_pct": false,
@@ -169,7 +163,6 @@
     },
     {
       "title": "Mental Health Distress Among Adults",
-      "field": "Mental Health Distress Among Adults",
       "geolevel": "area",
       "default": false,
       "has_pct": true,

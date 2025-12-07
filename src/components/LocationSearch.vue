@@ -1,23 +1,9 @@
 <template>
   <div v-show="orientation === 'left-right'" class="location-search-container">
-    <v-autocomplete
-      v-model="selectedLocation"
-      :items="suggestions"
-      :loading="loading"
-      :search="searchQuery"
-      item-title="text"
-      return-object
-      placeholder="Location Search..."
-      variant="outlined"
-      density="compact"
-      hide-details
-      clearable
-      class="location-search-input"
-      @update:search="handleSearch"
-      @update:model-value="handleLocationSelect"
-      :menu-icon="null"
-      :append="false"
-    >
+    <v-autocomplete v-model="selectedLocation" :items="suggestions" :loading="loading" :search="searchQuery"
+      item-title="text" return-object placeholder="Location Search..." variant="outlined" density="compact" hide-details
+      clearable class="location-search-input" @update:search="handleSearch" @update:model-value="handleLocationSelect"
+      :menu-icon="null" :append="false">
       <template v-slot:prepend-inner>
         <v-icon icon="mdi-magnify" size="20"></v-icon>
       </template>
@@ -28,14 +14,7 @@
         </div>
       </template>
     </v-autocomplete>
-    <v-btn
-      v-if="selectedLocation"
-      icon
-      size="small"
-      variant="text"
-      class="clear-btn"
-      @click="clearLocation"
-    >
+    <v-btn v-if="selectedLocation" icon size="small" variant="text" class="clear-btn" @click="clearLocation">
       <v-icon icon="mdi-close" size="20"></v-icon>
     </v-btn>
   </div>
@@ -65,7 +44,7 @@ let searchTimeout: ReturnType<typeof setTimeout> | null = null
 const orientation = window.innerWidth > window.innerHeight ? 'left-right' : 'top-bottom'
 const handleSearch = (query: string | null) => {
   searchQuery.value = query || ''
-  
+
   if (searchTimeout) {
     clearTimeout(searchTimeout)
   }
@@ -82,7 +61,7 @@ const handleSearch = (query: string | null) => {
         `https://geocode-api.arcgis.com/arcgis/rest/services/World/GeocodeServer/suggest?countryCode=USA&text=${encodeURIComponent(query)}&f=json&token=${ARCGIS_TOKEN}`
       )
       const data = await response.json()
-      
+
       if (data.suggestions && data.suggestions.length > 0) {
         // Store suggestions with magicKey for later geocoding
         suggestions.value = data.suggestions.slice(0, 8).map((suggestion: any) => ({
@@ -108,16 +87,21 @@ const handleLocationSelect = async (location: GeocodeSuggestion | null) => {
     clearLocation()
     return
   }
-
+  const searchExtent = [
+     -81.49949753321685,
+    34.36189843611071,
+  -80.29608518159469,
+    35.167847980417804
+  ]
   // Geocode the selected suggestion
   try {
     const geocodeUrl = location.magicKey
-      ? `https://geocode-api.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?magicKey=${encodeURIComponent(location.magicKey)}&f=json&token=${ARCGIS_TOKEN}`
-      : `https://geocode-api.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?SingleLine=${encodeURIComponent(location.text)}&f=json&token=${ARCGIS_TOKEN}`
-    
+      ? `https://geocode-api.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?magicKey=${encodeURIComponent(location.magicKey)}&countryCode=USA&region=SouthCarolina&searchExtent=${searchExtent.join(',')}&f=json&token=${ARCGIS_TOKEN}`
+      : `https://geocode-api.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?SingleLine=${encodeURIComponent(location.text)}&countryCode=USA&region=SouthCarolina&searchExtent=${searchExtent.join(',')}&f=json&token=${ARCGIS_TOKEN}`
+
     const geocodeResponse = await fetch(geocodeUrl)
     const geocodeData = await geocodeResponse.json()
-    
+
     if (geocodeData.candidates && geocodeData.candidates.length > 0) {
       const candidate = geocodeData.candidates[0]
       // Emit event with location coordinates [longitude, latitude]
@@ -142,20 +126,21 @@ const clearLocation = () => {
 <style scoped>
 .location-search-container {
   position: absolute;
-    /* bottom: 205px; */
-    top: 90px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: rgba(255, 255, 255, 0.95);
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-    min-width: 150px;
-    z-index: 9999;
-    padding:0;
+  /* bottom: 205px; */
+  top: 90px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  min-width: 150px;
+  z-index: 9999;
+  padding: 0;
 }
+
 .location-search-container:focus-within {
   min-width: 250px;
 }
@@ -176,8 +161,8 @@ const clearLocation = () => {
 </style>
 
 <style>
-.location-search-input .v-field__input{
-  padding:0px;
+.location-search-input .v-field__input {
+  padding: 0px;
   padding-inline: 0px;
 }
 </style>

@@ -2,7 +2,6 @@
   "indicators": [
     {
       "title": "Percent of 3 and 4 Year Olds enrolled in Pre-K",
-      "field": "Percent of 3 and 4 Year Olds enrolled in Pre-K",
       "geolevel": "area",
       "default": "left",
       "has_pct": true,
@@ -17,8 +16,7 @@
       "fill_color": ["interpolate", ["linear"], ["to-number", ["get", "1990"]]]
     },
     {
-      "title": "Percent of Children (under 18 years) whose income in the past 12 months is below poverty level",
-      "field": "Percent of Children (under 18 years) whose income in the past 12 months is below poverty level",
+      "title": "Percent of families with children whose income in the past 12 months is below the federal poverty level",
       "geolevel": "area",
       "default": false,
       "has_pct": true,
@@ -33,8 +31,7 @@
       "fill_color": ["interpolate", ["linear"], ["to-number", ["get", "1990"]]]
     },
     {
-      "title": "Availability of quality childcare",
-      "field": "Availability of quality childcare",
+      "title": "Childcare Center Capacity",
       "geolevel": "point",
       "default": "right",
       "has_pct": false,
@@ -50,7 +47,6 @@
     },
     {
       "title": "3rd Grade Math Readiness",
-      "field": "3rd Grade Math Readiness",
       "geolevel": "point",
       "default": false,
       "has_pct": true,
@@ -66,7 +62,6 @@
     },
     {
       "title": "3rd Grade ELA Readiness",
-      "field": "3rd Grade ELA Readiness",
       "geolevel": "point",
       "default": false,
       "has_pct": true,
@@ -82,7 +77,6 @@
     },
     {
       "title": "8th Grade Math Readiness",
-      "field": "8th Grade Math Readiness",
       "geolevel": "point",
       "default": false,
       "has_pct": true,
@@ -98,7 +92,6 @@
     },
     {
       "title": "8th Grade ELA Readiness",
-      "field": "8th Grade ELA Readiness",
       "geolevel": "point",
       "default": false,
       "has_pct": true,
@@ -113,8 +106,7 @@
       "fill_color": ["interpolate", ["linear"], ["to-number", ["get", "1990"]]]
     },
     {
-      "title": "High School Completion Rate",
-      "field": "High School Completion Rate",
+      "title": "High School Graduation Rate",
       "geolevel": "point",
       "default": false,
       "has_pct": true,
@@ -130,7 +122,6 @@
     },
     {
       "title": "High School Career Readiness",
-      "field": "High School Career Readiness",
       "geolevel": "point",
       "default": false,
       "has_pct": true,
@@ -146,7 +137,6 @@
     },
     {
       "title": "High School College Readiness",
-      "field": "High School College Readiness",
       "geolevel": "point",
       "default": false,
       "has_pct": true,
@@ -162,7 +152,6 @@
     },
     {
       "title":"Disconnected Youth",
-      "field": "Disconnected Youth",
       "geolevel": "area",
       "default": false,
       "has_pct": true,
@@ -182,7 +171,6 @@
     },
     {
       "title": "Kindergarten Readiness",
-      "field": "Kindergarten Readiness",
       "geolevel": "point",
       "default": false,
       "has_pct": true,

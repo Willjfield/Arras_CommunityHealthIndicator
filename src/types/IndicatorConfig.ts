@@ -5,7 +5,6 @@ export interface Icon {
 export interface IndicatorConfig {
     ratePer: number;
     title: string;
-    field: string;
     short_name: string;
     geolevel: string;
     default: 'left' | 'right' | false;
