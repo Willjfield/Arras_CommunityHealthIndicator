@@ -297,9 +297,12 @@ export class DataToMap {
   
   getMinMaxValues() {
     const data: IndicatorConfig = (this as any).data;
-
+    
       //todo: this has to get min and max from all the  years, not just this year
-    const years = data.google_sheets_data.headerShortNames.filter((year: string) => /^\d{4}$/.test(year) && !isNaN(Number(year)));
+    let years = data.google_sheets_data.headerShortNames.filter((year: string) => /^\d{4}$/.test(year) && !isNaN(Number(year)));
+   if(years.length === 0) {
+    years = data.google_sheets_data.headerShortNames.filter((year: string) => year.startsWith('Count_'));
+   }
     let minValue = 9999999999999;
     let maxValue = 0;
     for(let year=0; year<years.length; year++) {
@@ -321,7 +324,6 @@ export class DataToMap {
       
       minValue = Math.max(minValue, 0);
       maxValue = Math.min(maxValue, 100);
-      console.log('has pct', minValue, maxValue);
       return { minValue, maxValue };
     }
     return { minValue: Math.floor(minValue*.95), maxValue: Math.ceil(maxValue*1.05)};

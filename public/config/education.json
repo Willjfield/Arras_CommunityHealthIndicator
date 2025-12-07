@@ -43,7 +43,8 @@
       "layers": {
         "main": "point-data",
         "circle": false
-      }
+      },
+      "fill_color": ["interpolate", ["linear"], ["to-number", ["get", "1990"]]]
     },
     {
       "title": "3rd Grade Math Readiness",

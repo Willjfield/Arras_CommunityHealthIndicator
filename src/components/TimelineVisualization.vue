@@ -453,7 +453,6 @@ const getMinMaxValues = () => {
       // }
     }
     if(indicator?.has_pct) {
-      console.log('has pct', minValue, maxValue);
       minValue = Math.max(minValue, 0);
       maxValue = Math.min(maxValue, 100);
       return { minValue, maxValue };

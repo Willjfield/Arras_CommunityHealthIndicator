@@ -1,20 +1,16 @@
 function formatGoogleSheetData(csvString: string) {
   const rows = csvString.split("\n");
-  console.log(rows);
   let shortNameRowIdx = rows.findIndex(
     (row) => !row.includes("-") && row.includes("geoid") && !row.includes(" ")
   );
-  console.log(shortNameRowIdx);
   if(shortNameRowIdx === -1) {
     shortNameRowIdx = rows.findIndex(
       (row) => !row.includes("-") && row.includes("geoid")
     );
   }
-  console.log(shortNameRowIdx);
   const headerShortNames = rows[shortNameRowIdx]
     .split(",")
     .map((header) => header.trim());
-  console.log(headerShortNames);
   const labelRowIdx = 1 - shortNameRowIdx; //If shortNameRowIdx is 0, then labelRowIdx is 1, if shortNameRowIdx is 1, then labelRowIdx is 0
   const headerLabels = rows[labelRowIdx]
     .split(",")
