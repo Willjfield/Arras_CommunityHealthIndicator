@@ -91,31 +91,14 @@ export class DataToMap {
     }
 
     // Replace the year string at the correct index with the selected year from this.year
-    if (
-      Array.isArray(data.fill_color) &&
-      data.fill_color.length > 2 &&
-      Array.isArray(data.fill_color[2]) &&
-      data.fill_color[2].length > 1 &&
-      Array.isArray(data.fill_color[2][1]) &&
-      data.fill_color[2][1].length > 1
-    ) {
-      data.fill_color[2][1][1] = String(this.year ?? -1);
-    } else {
-      console.warn('fill_color array does not match expected structure. Year not set.');
-    }
+    const fillExp = ["case", ["has", String(this.year ?? -1)], ["interpolate", ["linear"], ["to-number", ["get", String(this.year ?? -1)]],
+    minValue, minColor, maxValue, maxColor], "#0000"]
 
-    const fillColor = [
-      ...data.fill_color,
-      minValue,
-      minColor,
-      maxValue,
-      maxColor,
-    ];
     if (!data.layers.main) {
       console.error("data.layers.main is undefined");
       return false;
     }
-    return fillColor;
+    return fillExp;
   }
   hideLayers() {
     if (!this.map) return;

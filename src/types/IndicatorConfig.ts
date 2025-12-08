@@ -32,6 +32,6 @@ export interface IndicatorConfig {
             value: number;
         };
     };
-    fill_color: string[];
+    fill_color: any[];
     icons: Icon[];
 }

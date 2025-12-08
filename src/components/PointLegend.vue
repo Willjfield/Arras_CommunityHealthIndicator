@@ -25,7 +25,7 @@
               </td>
               <td style="text-align: center;"><span class="mid-label">{{ (maxValue / 2).toFixed(0) }} {{
                   indicatorDescription }}</span></td>
-              <td style="text-align: right;"><span class="max-label">{{ maxValue.toFixed(0) }} {{ indicatorDescription }}</span>
+              <td style="text-align: right;"><span class="max-label">{{ maxValue.toFixed(0) }} or more {{ indicatorDescription }}</span>
               </td>
             </tr>
           </tbody>

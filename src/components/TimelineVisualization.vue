@@ -431,16 +431,20 @@ const getMinMaxValues = () => {
     const data = indicator?.google_sheets_data;
   if (!data) return { minValue: 0, maxValue: 100 }
       //todo: this has to get min and max from all the  years, not just this year
-    const years = data.headerShortNames.filter((year: string) => /^\d{4}$/.test(year) && !isNaN(Number(year)));
+    let years = data.headerShortNames.filter((year: string) => /^\d{4}$/.test(year) && !isNaN(Number(year)));
+    if(years.length === 0) {
+      years = data.headerShortNames.filter((year: string) => year.startsWith('Count_')).sort((a: string, b: string) => Number(a.replace('Count_', '')) - Number(b.replace('Count_', '')));
+    }
     let minValue = 9999999999999;
     let maxValue = 0;
+
     for(let year=0; year<years.length; year++) {
       const yearValues = data.data
       .filter((feature: any) => feature?.geoid !== "overall" && !feature?.geoid.includes("School District"))
       .map((feature: any) => feature[years[year] as string])
       .filter((value: any) => value !== null && value !== undefined && !isNaN(Number(value)) && value > 0)
       .map((value: any) => Number(value));
-      //console.log(yearValues);
+      //console.log(years[year], yearValues);
       const thisyearMinValue = Math.min(...yearValues);
       const thisyearMaxValue = Math.max(...yearValues);
       if(+thisyearMinValue < minValue) {
@@ -601,8 +605,10 @@ onUnmounted(() => {
 
 .chart-label {
   font-weight: 600;
+  font-size: larger;
     /* color: #6b7280; */
     padding: 4px 8px;
+    padding-bottom: 0px;
     text-align: left;
     line-height: .9em;
     max-width: 95%;

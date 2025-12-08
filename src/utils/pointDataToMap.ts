@@ -25,15 +25,29 @@ export class PointDataToMap extends DataToMap {
     const minValue = 10;
     const maxValue = 400;
 
-    // const propAccessor = (this.data as any).has_count
-    //   ? `Count_${this.year}`
-    //   : `${this.year}`;
-    return [
+    let propAccessor = '';
+    if((this as any).data.has_count && (this as any).data.has_pct) {
+      propAccessor = `Cohort_${this.year}`;
+    }else {
+     propAccessor = `Count_${this.year}`;
+    }
+
+    const sizeExp = [
       "case",
-      ["has", `Cohort_${this.year}`],
-      ["interpolate", ["linear"], ["to-number", ["get", `Cohort_${this.year}`]], minValue, 3, maxValue, 20],
-      6
-    ]
+      ["has", propAccessor],
+      [
+        "interpolate",
+        ["linear"],
+        ["to-number", ["get", propAccessor]],
+        minValue,
+        3,
+        maxValue,
+        20,
+      ],
+      6,
+    ];
+    console.log(sizeExp);
+    return sizeExp;
   }
 
   async setupIndicator(year: number | null): Promise<boolean> {
@@ -133,25 +147,28 @@ export class PointDataToMap extends DataToMap {
     map.setLayoutProperty(mainLayer, "visibility", "visible");
     map.setPaintProperty(mainLayer, "circle-radius", this.getSizeExpression());
     map.setPaintProperty(mainLayer, "circle-opacity", 0.75);
-   // const sortKey = this.getSortKeyExpression();
-    map.setLayoutProperty(mainLayer, "circle-sort-key", 
-      ["case",
-        ["has", `Cohort_${this.year}`],
-        ['/',1,["to-number", ["get", `Cohort_${this.year}`]]],
-         ["has", `Count_${this.year}`],
-         ['/',1,["to-number", ["get", `Count_${this.year}`]]],
-         ["has", `${this.year}`],
-         ['/',1,["to-number", ["get", `${this.year}`]]],
-        0
-      ]
-    );
+    // const sortKey = this.getSortKeyExpression();
+    map.setLayoutProperty(mainLayer, "circle-sort-key", [
+      "case",
+      ["has", `Cohort_${this.year}`],
+      ["/", 1, ["to-number", ["get", `Cohort_${this.year}`]]],
+      ["has", `Count_${this.year}`],
+      ["/", 1, ["to-number", ["get", `Count_${this.year}`]]],
+      ["has", `${this.year}`],
+      ["/", 1, ["to-number", ["get", `${this.year}`]]],
+      0,
+    ]);
 
-   // const data = (this as any).data;
-    //const maxColor = this.arrasBranding.colors[data.style.max.color];
-    const circleColor = this.getGradientExpression();
-        map.setLayoutProperty(mainLayer, "visibility", "visible");
+    // const data = (this as any).data;
+    const maxColor = this.arrasBranding.colors[(this as any).data.style.max.color];
+    const circleColor =
+      (this as any).data.has_count && !(this as any).data.has_pct
+        ? maxColor
+        : this.getGradientExpression();
 
     map.setPaintProperty(mainLayer, "circle-color", circleColor);
+
+    map.setLayoutProperty(mainLayer, "visibility", "visible");
 
     return true;
   }

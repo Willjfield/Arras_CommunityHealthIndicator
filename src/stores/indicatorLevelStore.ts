@@ -28,6 +28,7 @@ const indicatorLevelStore = (storeName: 'left' | 'right') => {
     const currentGeoSelection = ref<string | null>(null)
     let map: maplibregl.Map | null = null
     const currentYear = ref<number | null>(null)
+    
     currentYear.value = 2023; //TODO get year from google sheets
     // Set the default indicator for the side
     const defaultForSide = currentThemeIndicators?.find((i: IndicatorConfig) => storeName.includes(i.default as string)) || null
@@ -51,10 +52,15 @@ const indicatorLevelStore = (storeName: 'left' | 'right') => {
         map = null
     }
 
-    async function setCurrentYear(year: number) {
-        currentYear.value = +year
+    async function setCurrentYear(year: number | string) {
+    
+        if(typeof year === 'string') {
+            year = +(year.replace(/[^0-9]/g, ''))
+        }
+
+        currentYear.value = year
         if(worker) {
-            await worker.setPaintAndLayoutProperties(year)
+            await worker.setPaintAndLayoutProperties(year as number)
         }
     }
     function getCurrentYear(): number | null {
@@ -81,14 +87,18 @@ const indicatorLevelStore = (storeName: 'left' | 'right') => {
 
             if (worker) {
                 const headerShortNames = indicator.google_sheets_data.headerShortNames;
-                const defaultYears = headerShortNames && headerShortNames.length > 0 
+                let defaultYears = headerShortNames && headerShortNames.length > 0 
                     ? headerShortNames.filter((year: string) => /^\d{4}$/.test(year)).sort((a: string, b: string) => Number(a) - Number(b))
                     : null;
+                if(!defaultYears || defaultYears.length === 0) {
+                    defaultYears = headerShortNames.filter((year: string) => year.startsWith('Count_')).sort((a: string, b: string) => Number(a.replace('Count_', '')) - Number(b.replace('Count_', '')));
+                }
                     let defaultYear = null;
                 if (defaultYears !== null) {
                     defaultYear = defaultYears[defaultYears.length - 1];
                     await worker.setupIndicator(defaultYear);
                 }
+                
                 await setCurrentYear(defaultYear)
                 setCurrentGeoSelection('overall')
                 emitter?.on(`feature-${storeName}-clicked`, (feature: string | null) => {

@@ -14,7 +14,7 @@
         "main": "tracts-harmonized-fill",
         "outline": "tracts-harmonized-outline"
       },
-      "fill_color": ["interpolate", ["linear"], ["to-number", ["get", "1990"]]]
+      "fill_color": ["case", ["has", "1990"], ["interpolate", ["linear"], ["to-number", ["get", "1990"]]], "#0000"]
     },
     {
       "title": "Percent of families with children whose income in the past 12 months is below the federal poverty level",
