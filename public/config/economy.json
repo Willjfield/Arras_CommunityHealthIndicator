@@ -3,6 +3,7 @@
     {
       "title": "Adults with Bachelor's Degree or Higher",
       "geolevel": "area",
+      "geotype": "tract",
       "default": "left",
       "has_pct": true,
       "has_count": true,
@@ -30,6 +31,7 @@
     {
       "title": "Children in Concentrated Poverty",
       "geolevel": "area",
+      "geotype": "tract",
       "default": "right",
       "has_pct": true,
       "has_count": true,
@@ -57,6 +59,7 @@
     {
       "title": "Median Household Income",
       "geolevel": "area",
+      "geotype": "tract",
       "default": false,
       "has_pct": true,
       "has_count": true,
@@ -85,6 +88,7 @@
     {
       "title": "Housing cost burdened households (30% or more of income)",
       "geolevel": "area",
+      "geotype": "tract",
       "default": false,
       "has_pct": true,
       "has_count": true,

@@ -17,7 +17,7 @@
                 <v-icon icon="mdi-map-marker" size="24" color="primary" class="header-icon"></v-icon>
                 <div class="header-content">
                     <h3 class="feature-name" v-if="properties.name">{{ properties.name }}</h3>
-                    <h3 class="feature-name" v-else-if="properties.geoid">ID: {{ properties.geoid }}</h3>
+                    <h3 class="feature-name" v-else-if="properties.geoid"> {{ currentIndicator?.geotype === 'tract' ? 'Census Tract Number' : currentIndicator?.geotype === 'county' ? 'County FIPS code' : 'ID' }}: {{ properties.geoid }}</h3>
                     <div v-if="properties.address" class="feature-address">
                         <v-icon icon="mdi-map-marker-outline" size="14" class="mr-1"></v-icon>
                         {{ decodeURIComponent(properties.address) }}
@@ -38,7 +38,7 @@
                     <template v-for="(stat) in stats" :key="stat.key">
                         <div 
                             v-if="!stat.key.startsWith('Count_')"
-                            :class="{ 'stat-item': true, 'stat-item-empty': stat.value == 0 || !stat.value }"
+                            :class="{ 'stat-item': true, 'stat-item-empty': isNaN(+stat.value) }"
                         >
                             <div class="stat-label">{{ stat.key }}                     
                                 <!-- <v-icon v-if="index > 0 
@@ -53,7 +53,7 @@
                                 icon="mdi-arrow-down-bold" class="ma-0" size="10" color="red"></v-icon>
                             -->
                             </div> 
-                            <div v-if="+stat.value > 0" class="stat-value percentage">
+                            <div v-if="!isNaN(+stat.value)" class="stat-value percentage">
                                 {{ (+stat.value).toFixed(1) }}%
                                 <span v-if="props.properties[`Count_${stat.key}`]" class="stat-total">
                                     ({{ props.properties[`Count_${stat.key}`] }} total)
@@ -69,11 +69,11 @@
                         <div 
                             v-if="stat.key.startsWith('Count_')"
                             class="stat-item"
-                            :class="{ 'stat-item-empty': stat.value == 0 || !stat.value }"
+                            :class="{ 'stat-item-empty': isNaN(+stat.value) }"
                         >
                             <div class="stat-label">{{ stat.key.split('_')[1] }}</div>
                             <div class="stat-value count">
-                                <span v-if="stat.value > 0">{{ stat.value }} total</span>
+                                <span v-if="!isNaN(+stat.value)">{{ stat.value }} total</span>
                                 <span v-else class="no-data">No data</span>
                             </div>
                         </div>

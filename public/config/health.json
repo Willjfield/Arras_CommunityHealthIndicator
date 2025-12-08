@@ -3,6 +3,7 @@
     {
       "title": "Current Smokers Among Adults",
       "geolevel": "area",
+      "geotype": "tract",
       "default": "left",
       "has_pct": true,
       "has_count": true,
@@ -30,6 +31,7 @@
     {
       "title": "Working Age Adults with No Health Insurance",
       "geolevel": "area",
+      "geotype": "tract",
       "default": "right",
       "has_pct": true,
       "has_count": true,
@@ -58,6 +60,7 @@
       "title": "Food Insecurity",
       "geolevel": "area",
       "default": false,
+      "geotype": "tract",
       "has_pct": true,
       "has_count": true,
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vSpN9_3frlzhn0QzhN3IVYxJ4T4n6RjdAG9mQfq_Tk0qF5AwRUo-CWraFTIWM5tyznNZxbRW8siUNLm/pub?gid=849801194&single=true&output=csv",
@@ -84,6 +87,7 @@
     {
       "title": "Heart Disease Mortality Rate",
       "geolevel": "area",
+      "geotype": "tract",
       "default": false,
       "has_pct": false,
       "has_count": true,
@@ -111,6 +115,7 @@
     {
       "title": "Low Birth Weight",
       "geolevel": "area",
+      "geotype": "county",
       "default": false,
       "has_pct": true,
       "has_count": true,
@@ -137,6 +142,7 @@
     {
       "title": "Malignant Neoplasm Morality",
       "geolevel": "area",
+      "geotype": "county",
       "default": false,
       "has_pct": false,
       "has_count": true,
@@ -164,6 +170,7 @@
     {
       "title": "Mental Health Distress Among Adults",
       "geolevel": "area",
+      "geotype": "tract",
       "default": false,
       "has_pct": true,
       "has_count": true,

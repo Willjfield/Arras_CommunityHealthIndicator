@@ -10,6 +10,7 @@
     "deploy-gh": "git push -d origin gh-pages; git subtree push --prefix dist origin gh-pages"
   },
   "dependencies": {
+    "@arcgis/map-components": "^4.34.9",
     "@mapbox/mapbox-gl-sync-move": "^0.3.1",
     "@mdi/font": "^7.4.47",
     "@types/d3": "^7.4.3",

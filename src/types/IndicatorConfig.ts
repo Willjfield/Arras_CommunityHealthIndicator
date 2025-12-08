@@ -5,6 +5,7 @@ export interface Icon {
 export interface IndicatorConfig {
     ratePer: number;
     title: string;
+    geotype: string | 'tract' | 'county' | 'school' | 'facility';
     short_name: string;
     geolevel: string;
     default: 'left' | 'right' | false;

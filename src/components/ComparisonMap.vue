@@ -80,6 +80,7 @@ onMounted(async () => {
       center: props._center,
       zoom: props._zoom,
       hash: true,
+      attributionControl: false,
       transformRequest: (url: string) => {
         // Handle ArcGIS tile requests (no modification needed)
         if (url.includes('arcgisonline.com') || url.includes('arcgis.com')) {
@@ -123,6 +124,7 @@ onMounted(async () => {
       style: rightStyle,
       center: props._center,
       zoom: props._zoom,
+      attributionControl: false,
       hash: true,
             canvasContextAttributes: {antialias: true} ,
       transformRequest: (url: string) => {
@@ -153,12 +155,16 @@ onMounted(async () => {
         return { url }
       }
     })
-    rightMap.addControl(new maplibregl.NavigationControl({
+    .addControl(new maplibregl.NavigationControl({
         visualizePitch: true,
         visualizeRoll: true,
         showZoom: true,
         showCompass: true
-    }));
+    }))
+    .addControl(new maplibregl.AttributionControl({
+        compact: true
+    }),'top-right');
+
     rightIndicatorLevelStore.initializeMap(rightMap, emitter)
     rightMap.on('mousemove', (e: any) => {
       if (!rightMap) return
@@ -191,14 +197,14 @@ const handleLocationSelected = (data: { coordinates: [number, number], text: str
       center: [lng, lat],
       zoom: Math.max(leftMap.getZoom(), 12),
       duration: 500,
-      padding: {top: 0, bottom:0, left: window.innerWidth * 0.5, right: 0}
+      padding: {top: 0, bottom:0, left: 0, right:window.innerWidth*.5}
     })
     leftMap.once('moveend', () => {
       rightMap?.flyTo({
         center: [lng, lat],
         zoom: Math.max(rightMap.getZoom(), 12),
         duration: 500,
-        padding: {top: 0, bottom:0, left: window.innerWidth * 0.5, right: 0}
+        padding: {top: 0, bottom:0, left: 0, right:window.innerWidth*.5}
       })
     })
   }
@@ -359,7 +365,7 @@ onUnmounted(() => {
 
 .pin-icon {
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
-
+  transform: translateX(50%);
 }
 
 .location-marker:hover .pin-icon {

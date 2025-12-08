@@ -5,7 +5,7 @@
     "esri": {
       "type": "vector",
       "url": "https://basemaps-api.arcgis.com/arcgis/rest/services/World_Basemap_v2/VectorTileServer",
-      "attribution": "Sources: Esri, TomTom, Garmin, FAO, NOAA, USGS, © OpenStreetMap contributors, and the GIS User Community",
+      "attribution": "Map by North Arrow Sources: Esri, TomTom, Garmin, FAO, NOAA, USGS, © OpenStreetMap contributors, and the GIS User Community",
       "copyrightText": "Sources: Esri, TomTom, Garmin, FAO, NOAA, USGS, © OpenStreetMap contributors, and the GIS User Community",
       "maxzoom": 16,
       "minzoom": 0,

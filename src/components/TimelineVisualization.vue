@@ -17,7 +17,7 @@
         <span v-show="!hoveredGeo" class="hovered-geo mx-2 font-italic font-weight-medium">Hover over a feature to see
           the
           timeline</span>
-        <span v-show="hoveredGeo" class="hovered-geo mx-2">Feature: {{ hoveredGeo }}<span class="hovered-color"
+        <span v-show="hoveredGeo" class="hovered-geo mx-0">{{ indicatorStore?.getCurrentIndicator()?.geotype === 'tract' ? 'Census Tract Number' : indicatorStore?.getCurrentIndicator()?.geotype === 'county' ? 'County FIPS code' : 'ID' }}: {{ hoveredGeo }}<span class="hovered-color"
             :style="{ border: `1px solid ${hoveredColorRef}` }"></span></span>
       </div>
       <svg ref="svg" class="timeline-chart"></svg>
