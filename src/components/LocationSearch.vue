@@ -21,6 +21,9 @@ onMounted(() => {
     text: event.detail.result.feature.text
   })
  })
+ searchComponent?.addEventListener('arcgisSelectCancel', () => {
+  emitter.emit('location-cleared')
+ })
 })
 
 </script>

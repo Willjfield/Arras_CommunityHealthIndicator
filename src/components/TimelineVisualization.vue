@@ -12,9 +12,10 @@
           <span class="selected-geo">{{ `${indicatorStore?.getCurrentIndicator()?.title || ''}
             (${indicatorStore.getCurrentGeoSelection()})` }}<span class="selected-color"
               :style="{ border: `1px solid ${selectedColorRef}` }"></span></span>
-
+            <v-divider></v-divider>
         </div>
-        <span v-show="!hoveredGeo" class="hovered-geo mx-2 font-italic font-weight-medium">Hover over a feature to see
+        
+        <span v-show="!hoveredGeo" class="hovered-geo mx-0 font-italic font-weight-medium">Hover over a feature to see
           the
           timeline</span>
         <span v-show="hoveredGeo" class="hovered-geo mx-0">{{ indicatorStore?.getCurrentIndicator()?.geotype === 'tract' ? 'Census Tract Number' : indicatorStore?.getCurrentIndicator()?.geotype === 'county' ? 'County FIPS code' : 'ID' }}: {{ hoveredGeo }}<span class="hovered-color"
@@ -45,7 +46,7 @@ defineEmits<{
 }>()
 
 const selectedColor = '#2563eb';
-const hoveredColor = '#8888';
+const hoveredColor = '#f80';
 const selectedColorRef = ref(selectedColor);
 const hoveredColorRef = ref(hoveredColor);
 
@@ -564,7 +565,7 @@ onUnmounted(() => {
   z-index: 1000;
   user-select: none;
   zoom: .9;
-  height: 154px; 
+  height: 200px; 
   bottom:5px;
 }
 
@@ -599,12 +600,12 @@ onUnmounted(() => {
 }
 
 .chart-label {
-  font-size: 12px;
   font-weight: 600;
-  color: #6b7280;
-  padding: 0 8px;
-  text-align: left;
-  line-height: 1.1em;
+    /* color: #6b7280; */
+    padding: 4px 8px;
+    text-align: left;
+    line-height: .9em;
+    max-width: 95%;
 }
 
 
@@ -630,12 +631,12 @@ onUnmounted(() => {
 }
 
 .timeline-chart {
-  width: 100%;
+  width: 95%;
   height: 100%;
   /* bottom: 0; */
   position: absolute;
-  left: 0;
-  top: 1.1em;
+  left: 2.5%;
+  /* top: 1.1em; */
 }
 
 /* D3 styles */
