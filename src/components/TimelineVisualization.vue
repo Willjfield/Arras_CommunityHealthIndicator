@@ -326,7 +326,7 @@ const createChart = () => {
         return d.value.toLocaleString() 
         + ' '
         + indicatorStore.getCurrentIndicator()?.totalAmntOf 
-        +' per '+ indicatorStore.getCurrentIndicator()?.geotype 
+        +' per '+ indicatorStore.getCurrentIndicator()?.ratePer.toLocaleString() || indicatorStore.getCurrentIndicator()?.geotype 
         + ' avg.';
       }
       return d.value.toLocaleString();
