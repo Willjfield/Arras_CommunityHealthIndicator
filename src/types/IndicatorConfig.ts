@@ -3,6 +3,7 @@ export interface Icon {
     filename?: string;
 }
 export interface IndicatorConfig {
+    totalAmntOf: any;
     ratePer: number;
     title: string;
     geotype: string | 'tract' | 'county' | 'school' | 'facility';
