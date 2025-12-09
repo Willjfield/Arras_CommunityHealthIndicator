@@ -5,6 +5,7 @@
         <span class="legend-title">{{ selectedIndicator?.title || 'Indicator' }}</span>
       </div>
       <div class="legend-content">
+      {{ minMaxCohortValues }}
         <table class="legend-icon-container">
           <tbody>
             <tr>
@@ -20,6 +21,7 @@
                   style="display: inline-block; width: 32px; height: 32px; border-radius: 50%;"
                   :style="{ backgroundColor: maxColor }" /></td>
             </tr>
+            
             <tr class="legend-labels">
               <td style="text-align: left;"><span class="min-label">{{ minValue.toFixed(0) }} {{ indicatorDescription }}</span>
               </td>
@@ -30,6 +32,32 @@
             </tr>
           </tbody>
         </table>
+        <table v-if="selectedIndicator?.geotype !== 'facility' && selectedIndicator?.has_pct" class="legend-icon-container">
+          <tbody>
+            <tr>
+              <td style="text-align: left;">
+                <span style="border: 1px solid #000; display: inline-block; width: 12px; height: 12px; border-radius: 50%;"
+                  :style="{ backgroundColor: minColor}"></span>
+              </td>
+              <td style="text-align: center;">
+                <span style="border: 1px solid #000;display: inline-block; width: 12px; height: 12px; border-radius: 50%;"
+                  :style="{ backgroundColor: middleColor }"></span>
+              </td>
+              <td style="text-align: right;"><span
+                  style="border: 1px solid #000;display: inline-block; width: 12px; height: 12px; border-radius: 50%;"
+                  :style="{ backgroundColor: maxColor }" /></td>
+            </tr>
+            <tr class="legend-labels">
+              <td style="text-align: left;"><span class="min-label">{{ minValue.toFixed(0) }} or less {{ indicatorDescription }}</span>
+              </td>
+              <td style="text-align: center;"><span class="mid-label">{{ (maxValue / 2).toFixed(0) }} {{
+                  indicatorDescription }}</span></td>
+              <td style="text-align: right;"><span class="max-label">{{ maxValue.toFixed(0) }} or more {{ indicatorDescription }}</span>
+              </td>
+            </tr>
+          </tbody>
+          
+        </table>
       </div>
     </div>
   </div>
@@ -37,19 +65,49 @@
 
 <script lang="ts" setup>
 import { computed, inject } from 'vue'
+import { useIndicatorLevelStore } from '../stores/indicatorLevelStore'
 const arrasBranding = inject('arrasBranding') as any
+
 interface Props {
   selectedIndicator: any
   side: 'left' | 'right'
 }
 
 const props = defineProps<Props>()
+  const indicatorLevelStore = useIndicatorLevelStore(props.side as 'left' | 'right')
+const currentIndicator = computed(() => {
+  return indicatorLevelStore.getCurrentIndicator()
+})
+const minMaxCohortValues = computed(() => {
+const cohortKeys = currentIndicator?.value?.google_sheets_data.headerShortNames.filter((n: string) => n.startsWith('Cohort'));
+const allFeatures = currentIndicator?.value?.google_sheets_data.data;
+let minCohortValue = 9999999999999;
+let maxCohortValue = 0;
+for(let i=0; i<cohortKeys.length; i++) {
+  const key = cohortKeys[i];
+  const values = allFeatures.map((feature: any) => +feature[key])
+  .filter((feature: any) => feature?.geoid !== "overall" && !feature?.geoid?.includes("statewide") && !feature?.geoid?.includes("School District"))
+  .filter((value: number) => !isNaN(value));
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  if(min < minCohortValue) {
+    minCohortValue = min;
+  }
+  if(max > maxCohortValue) {
+    maxCohortValue = max;
+  }
+}
+return { minCohortValue, maxCohortValue };
+})
 const indicatorDescription = computed(() => {
   if (props.selectedIndicator?.ratePer) {
     return 'per ' + (+ props.selectedIndicator?.ratePer).toLocaleString('en-US') + ' people';
   }
   if (props.selectedIndicator?.totalAmntOf) {
     return props.selectedIndicator?.totalAmntOf;
+  }
+  if(props.selectedIndicator?.geotype === 'school') {
+    return '% of students ready';
   }
   return '%';
 })
@@ -67,6 +125,73 @@ const maxColor = computed(() => {
     return arrasBranding.colors[colorName];
   }
   return '#000000';
+})
+
+const middleColor = computed(() => {
+  // Helper to convert hex to rgb
+  function hexToRgb(hex: string): { r: number, g: number, b: number } | null {
+    // Remove "#" if present
+    hex = hex.replace(/^#/, "");
+    if (hex.length === 3) {
+      // e.g. #03f -> #0033ff
+      hex = hex.split("").map(c => c + c).join("");
+    }
+    if (hex.length !== 6) return null;
+    const num = parseInt(hex, 16);
+    return { 
+      r: (num >> 16) & 255, 
+      g: (num >> 8) & 255, 
+      b: num & 255 
+    };
+  }
+
+  // Helper to convert rgb to hex
+  function rgbToHex({ r, g, b }: { r: number, g: number, b: number }): string {
+    return (
+      "#" +
+      [r, g, b]
+        .map(x => {
+          const hex = x.toString(16);
+          return hex.length === 1 ? "0" + hex : hex;
+        })
+        .join("")
+    );
+  }
+
+  return computed(() => {
+    const min = minColor.value;
+    const max = maxColor.value;
+    const rgbMin = hexToRgb(min);
+    const rgbMax = hexToRgb(max);
+    if (!rgbMin || !rgbMax) return "#000000";
+
+    const midwayRgb = {
+      r: Math.round((rgbMin.r + rgbMax.r) / 2),
+      g: Math.round((rgbMin.g + rgbMax.g) / 2),
+      b: Math.round((rgbMin.b + rgbMax.b) / 2),
+    };
+    return rgbToHex(midwayRgb);
+  }).value;
+})
+
+const minColor = computed(() => {
+  const colorName = props.selectedIndicator?.style?.min?.color;
+  if (colorName) {
+    return arrasBranding.colors[colorName];
+  }
+  return '#000000';
+})
+
+const minCohortValue = computed(() => {
+  console.log(currentIndicator.value);
+})
+
+const middleCohortValue = computed(() => {
+  return (maxCohortValue.value + minCohortValue.value) / 2;
+})
+
+const maxCohortValue = computed(() => {
+  return props.selectedIndicator?.style?.max?.value;
 })
 </script>
 
