@@ -75,7 +75,7 @@
   </main>
 </template>
 <script setup lang="ts">
-import { ref, inject, computed, watch } from 'vue'
+import { ref, inject, computed, watch, onBeforeMount } from 'vue'
 //import { onBeforeRouteLeave, type RouteLocationNormalized } from 'vue-router'
 import { useRouter } from 'vue-router'
 
@@ -92,6 +92,9 @@ watch(router.currentRoute, (newRoute, oldRoute) => {
       window.location.reload()
     }
 }, { immediate: true })
+onBeforeMount(() => {
+  document.body.style.zoom = window.innerWidth < 1280 ? '0.8' : '1';
+})
 </script>
 <style scoped>
 .sidebar {

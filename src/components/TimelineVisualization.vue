@@ -8,17 +8,10 @@
     <div ref="container" class="timeline-visualization">
       
       <div class="chart-label">
-        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-          <span class="selected-geo">{{
-          `${indicatorStore?.getCurrentIndicator()?.title || ''}`}}
-          <br/>
-            {{`(${indicatorStore.getCurrentGeoSelection()})` 
-            }}
-            <span class="selected-color"
-              :style="{ border: `2px solid ${selectedColorRef}` }"></span></span>
-            <v-divider></v-divider>
+        <div v-html="headerHTML" class="header-html">
         </div>
         
+        <v-divider></v-divider>
         <span v-show="!hoveredGeo" class="hovered-geo mx-0 font-italic font-weight-medium">Hover over a feature to see
           the
           timeline</span>
@@ -53,6 +46,26 @@ const selectedColor = '#2563eb';
 const hoveredColor = '#f80';
 const selectedColorRef = ref(selectedColor);
 const hoveredColorRef = ref(hoveredColor);
+
+const headerHTML = computed(() => {
+  const indicator = indicatorStore?.getCurrentIndicator()
+  const title = indicator?.title || ''
+  const geoSelection = indicatorStore.getCurrentGeoSelection() || ''
+  const geotype = indicator?.geotype || ''
+
+  const titleSize = title.length > 40 ? 'font-size: .8em;' : 'font-size: 1em;';
+  const line1 = `
+  <div class="selected-geo" style="${titleSize}">${title}</div>
+  `
+const line2 = geoSelection === 'overall' ? 
+  `<div class="selected-geo">Overall by ${geotype.charAt(0).toUpperCase() + geotype.slice(1)}</div>` 
+  : 
+  `<div class="selected-geo">(${geotype.charAt(0).toUpperCase() + geotype.slice(1)}: ${geoSelection})</div>`
+
+const swatch = `<span class="selected-color"
+style="border: 2px solid ${selectedColorRef.value}"></span>`
+  return `${line1}<br>${line2}${swatch}`
+})
 
 const container = ref<HTMLElement>()
 const svg = ref<SVGElement>()
@@ -301,7 +314,7 @@ const createChart = () => {
     .enter()
     .append('text')
     .attr('class', 'data-point-label')
-    .attr('x', d => xScale(d.year))
+    .attr('x', d => xScale(d.year) + 4)
     .attr('y', d => yScale(d.value!) + 10)
     .attr('text-anchor', 'left')
     .style('font-size', '9px')
@@ -750,13 +763,7 @@ onUnmounted(() => {
   fill: #d1d1d1;
 }
 
-.selected-color {
-  display: inline-block;
-  width: 20px;
-  height: 0;
-  margin-bottom: 2.5px;
-  margin-left: 5px;
-}
+
 
 /* .hovered-geo {
   display: inline-block;
@@ -799,5 +806,18 @@ onUnmounted(() => {
   right: 0;
   left: unset;
   width: 100% !important;
+}
+.selected-color {
+  display: inline-block;
+  width: 20px;
+  height: 0;
+  margin-bottom: 2.5px;
+  margin-left: 5px;
+}
+
+.selected-geo {
+  display: inline-block;
+  font-weight: bold;
+  font-size: .9em;
 }
 </style>
