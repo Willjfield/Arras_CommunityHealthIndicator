@@ -110,6 +110,7 @@ export class PointDataToMap extends DataToMap {
         map.setPaintProperty(mainLayer, "circle-opacity", 0.75);
         this.removePopup();
         this.emitter?.emit(`feature-${this.side || "left"}-hovered`, null);
+        this.emitter?.emit(`feature-name-${this.side || "left"}-hovered`, null);
         return;
       } else {
         map.setPaintProperty(mainLayer, "circle-opacity", [
@@ -129,6 +130,11 @@ export class PointDataToMap extends DataToMap {
         this.emitter?.emit(
           `feature-${this.side || "left"}-hovered`,
           features[0].properties.geoid
+        );
+
+        this.emitter?.emit(
+          `feature-name-${this.side || "left"}-hovered`,
+          features[0].properties.name
         );
       }
     };

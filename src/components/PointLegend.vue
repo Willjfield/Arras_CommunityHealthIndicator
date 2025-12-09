@@ -78,7 +78,10 @@ const currentIndicator = computed(() => {
   return indicatorLevelStore.getCurrentIndicator()
 })
 const minMaxCohortValues = computed(() => {
-const cohortKeys = currentIndicator?.value?.google_sheets_data.headerShortNames.filter((n: string) => n.startsWith('Cohort'));
+let cohortKeys = currentIndicator?.value?.google_sheets_data.headerShortNames.filter((n: string) => n.startsWith('Cohort'));
+if(cohortKeys.length === 0) {
+  cohortKeys = currentIndicator?.value?.google_sheets_data.headerShortNames.filter((n: string) => n.startsWith('Count_'));
+}
 const allFeatures = currentIndicator?.value?.google_sheets_data.data;
 let minCohortValue = 9999999999999;
 let maxCohortValue = 0;

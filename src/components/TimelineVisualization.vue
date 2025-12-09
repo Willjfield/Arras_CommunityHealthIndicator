@@ -4,18 +4,21 @@
       <IndicatorSelector :side="side" @indicator-changed="handleIndicatorChange" />
     </div>
     <v-select v-if="availableYears.length > 0" v-model="selectedYear" :items="availableYears" label="Year"
-      density="compact" variant="solo" elevation="0" hide-details class="year-selector" @update:model-value="handleYearChange"></v-select>
+      density="compact" variant="solo" elevation="0" hide-details class="year-selector"
+      @update:model-value="handleYearChange"></v-select>
     <div ref="container" class="timeline-visualization">
-      
+
       <div class="chart-label">
         <div v-html="headerHTML" class="header-html">
         </div>
-        
+
         <v-divider></v-divider>
         <span v-show="!hoveredGeo" class="hovered-geo mx-0 font-italic font-weight-medium">Hover over a feature to see
           the
           timeline</span>
-        <span v-show="hoveredGeo" class="hovered-geo mx-0">{{ indicatorStore?.getCurrentIndicator()?.geotype === 'tract' ? 'Census Tract Number' : indicatorStore?.getCurrentIndicator()?.geotype === 'county' ? 'County FIPS code' : 'ID' }}: {{ hoveredGeo }}<span class="hovered-color"
+        <span v-show="hoveredGeo" class="hovered-geo mx-0">{{ indicatorStore?.getCurrentIndicator()?.geotype === 'tract'
+          ? 'Census Tract Number' : indicatorStore?.getCurrentIndicator()?.geotype === 'county' ? 'County FIPS code' :
+          indicatorStore?.getCurrentIndicator()?.geotype === 'school' ? 'School' : 'ID' }}: {{ hoveredGeoName && hoveredGeoName.length > 0 ? hoveredGeoName : hoveredGeo }}<span class="hovered-color"
             :style="{ border: `2px solid ${hoveredColorRef}` }"></span></span>
       </div>
       <svg ref="svg" class="timeline-chart"></svg>
@@ -37,8 +40,9 @@ interface Props {
 const props = defineProps<Props>()
 const indicatorStore = useIndicatorLevelStore(props.side)
 const useRateForOverall = computed(() => {
-
-  return !indicatorStore.getCurrentIndicator()?.has_pct && indicatorStore.getCurrentIndicator()?.has_count && indicatorStore.getCurrentIndicator()?.totalAmntOf !== 'dollars'
+  if (!indicatorStore?.getCurrentIndicator()) return false;
+  if (indicatorStore?.getCurrentIndicator()?.short_name === 'childcare') return false;
+  return !indicatorStore?.getCurrentIndicator()?.has_pct && indicatorStore?.getCurrentIndicator()?.has_count && indicatorStore?.getCurrentIndicator()?.totalAmntOf !== 'dollars'
 })
 defineEmits<{
   indicatorChanged: [indicator: any, side: 'left' | 'right']
@@ -61,14 +65,20 @@ const headerHTML = computed(() => {
   const line1 = `
   <div class="selected-geo" style="${titleSize}">${title}</div>
   `
-const line2 = geoSelection.toLowerCase().includes("overall") ?
-  `<div class="selected-geo">Overall by ${geotype.charAt(0).toUpperCase() + geotype.slice(1)}</div>` 
-  : 
-  `<div class="selected-geo">(${geotype.charAt(0).toUpperCase() + geotype.slice(1)}: ${geoSelection})</div>`
+  const line2 = geoSelection.toLowerCase().includes("overall") ?
+    `<div class="selected-geo">Overall by ${geotype.charAt(0).toUpperCase() + geotype.slice(1)}</div>`
+    :
+    `<div class="selected-geo">(${geotype.charAt(0).toUpperCase() + geotype.slice(1)}: ${geoSelection})</div>`
 
-const swatch = `<span class="selected-color"
-style="border: 2px solid ${selectedColorRef.value}"></span>`
-  return `${line1}<br>${line2}${swatch}`
+  const data = indicator?.google_sheets_data;
+  const statewide = data?.data.find((feature: any) => feature?.geoid.toLowerCase() === "statewide");
+  let line2b = '';
+  if (statewide) {
+    line2b = `<div class="selected-geo">Statewide</div><span class="selected-color" style="border: 2px solid #7d7d7d"></span>`
+  }
+  const swatch = `<span class="selected-color" style="border: 2px solid ${selectedColorRef.value}"></span>`
+
+  return `${line1}<br>${line2}${swatch} ${line2b}`
 })
 
 //const container = ref<HTMLElement>()
@@ -103,7 +113,7 @@ const availableYears = computed(() => {
       .map((year: string) => Number(year.replace('Count_', '')))
       .sort((a: number, b: number) => a - b)
   }
-  if(yearColumns.length === 0) {
+  if (yearColumns.length === 0) {
     yearColumns = headerShortNames.filter((header: string) =>
       /^\d{4}$/.test(header) && !isNaN(Number(header))
     ).map((year: string) => Number(year)).sort((a: number, b: number) => a - b)
@@ -129,14 +139,14 @@ const processData = (_feature: string | number | null) => {
   const indicator = indicatorStore.getCurrentIndicator()
 
   const raw_data = indicator?.google_sheets_data
-  console.log(raw_data);
+
   if (!raw_data) return []
   const headerShortNames = raw_data.headerShortNames
   const rows = raw_data.data
-  console.log(rows);
+
   //SET CURRENTGEO SELECTION TO HOVERED
   const currentGeoSelection = _feature || indicatorStore.getCurrentGeoSelection()
-  console.log(currentGeoSelection);
+
   let matchingRow: Record<string, any> | undefined = undefined;
   const data: Array<{ year: number; value: number | null }> = []
   let yearColumns: number[] = []
@@ -157,20 +167,13 @@ const processData = (_feature: string | number | null) => {
   matchingRow = rows.find((_row: Record<string, any>) =>
     '' + _row.geoid === '' + currentGeoSelection
   )
-  console.log(matchingRow);
   if (!matchingRow) return []
   yearColumns.forEach((year: number) => {
     let yearValue = matchingRow?.[year.toString()]
-    console.log(yearValue);
     if (indicator?.has_count && !indicator?.has_pct) {
       yearValue = matchingRow?.['Count_' + year.toString()]
     }
-    console.log(yearValue);
-    if(yearValue == 0 || yearValue == null || yearValue == undefined || yearValue == "") {
-      console.log(indicator.title, year, yearValue);
-    }else{
-      console.log('all good');
-    }
+
     data.push({
       year,
       value: yearValue != null && yearValue !== "" ? Number(yearValue) : null
@@ -311,7 +314,7 @@ const createChart = () => {
           .attr('r', 4)
           .style('fill', '#2563eb')
 
-        
+
       }
     })
   // Highlight selected year
@@ -333,11 +336,11 @@ const createChart = () => {
     .style('fill', '#08f')
     .style('pointer-events', 'none')
     .text((d) => {
-      if(useRateForOverall.value) {
-        return d?.value?.toLocaleString() 
-        + ' '
-        + indicatorStore.getCurrentIndicator()?.totalAmntOf === 'dollars' ? '$' : '' 
-        +' per '+ indicatorStore.getCurrentIndicator()?.ratePer?.toLocaleString() || indicatorStore.getCurrentIndicator()?.geotype 
+      if (useRateForOverall.value) {
+        return d?.value?.toLocaleString()
+          + ' '
+          + indicatorStore.getCurrentIndicator()?.totalAmntOf === 'dollars' ? '$' : ''
+          + ' per ' + indicatorStore.getCurrentIndicator()?.ratePer?.toLocaleString() || indicatorStore.getCurrentIndicator()?.geotype
         + ' avg.';
       }
       return (indicatorStore.getCurrentIndicator()?.totalAmntOf === 'dollars' ? '$' : '') + d?.value?.toLocaleString();
@@ -346,13 +349,14 @@ const createChart = () => {
 
 }
 const hoveredGeo = ref('');
+const hoveredGeoName = ref('');
 const addFeatureLine = (feature: string) => {
   const statewide = feature.toLowerCase().includes("statewide")
-  console.log(statewide, feature);
+
   hoveredGeo.value = statewide ? hoveredGeo.value : feature;
   if (!svg.value) return
   const data = processData(feature)
-  console.log(data);
+
   if (data.length === 0) return
 
   svgElement = d3.select(svg.value)
@@ -371,25 +375,28 @@ const addFeatureLine = (feature: string) => {
     .y(d => yScale(d.value!))
     .curve(d3.curveMonotoneX)
 
-  d3.selectAll('.timeline-feature-line').remove()
   d3.selectAll('.data-feature-point').remove()
   d3.selectAll('.data-feature-point-label').remove()
-// d3.selectAll('.data-feature-point-label').remove()
+  d3.selectAll(`.timeline-feature-line`).remove()
+  if (statewide) {
+    d3.selectAll(`.${statewide ? 'statewide-' : ''}timeline-feature-line`).remove()
+  }
+
   // Add line
   svgElement.append('path')
     .datum(validData)
-    .attr('class', 'timeline-feature-line')
+    .attr('class', `${statewide ? 'statewide-' : ''}timeline-feature-line`)
     .attr('d', line)
     .style('fill', 'none')
     .style('stroke', statewide ? statewideColor : hoveredColor)
     .style('stroke-width', 1)
 
   // Add data points
-  const circles = svgElement.selectAll('.data-feature-point')
+  const circles = svgElement.selectAll(`.${statewide ? 'statewide-' : ''}data-feature-point`)
     .data(validData)
     .enter()
     .append('circle')
-    .attr('class', 'data-feature-point')
+    .attr('class', `${statewide ? 'statewide-' : ''}data-feature-point`)
     .attr('cx', d => xScale(d.year))
     .attr('cy', d => yScale(d.value!))
     .attr('r', 4)
@@ -415,7 +422,7 @@ const addFeatureLine = (feature: string) => {
           .transition()
           .duration(200)
           .attr('r', 4)
-          
+
       }
     })
   // Highlight selected year
@@ -424,27 +431,27 @@ const addFeatureLine = (feature: string) => {
     .attr('r', 5)
 
   // Add text labels next to feature circles
-  svgElement.selectAll('.data-feature-point-label')
+  svgElement.selectAll(`.${statewide ? 'statewide-' : ''}data-feature-point-label`)
     .data(validData)
     .enter()
     .append('text')
-    .attr('class', 'data-feature-point-label')
+    .attr('class', `${statewide ? 'statewide-' : ''}data-feature-point-label`)
     .attr('x', d => xScale(d.year))
     .attr('y', d => yScale(d.value!) - 8)
     .attr('text-anchor', 'left')
     .style('font-size', '9px')
     .style('font-weight', 'bold')
-    .style('fill', '#f80')
+    .style('fill', `${statewide ? '#7d7d7d' : '#f80'}`)
     .style('pointer-events', 'none')
     .text((d) => {
-      if(useRateForOverall.value) {
-        return d.value?.toLocaleString() 
-        + ' '
-        + indicatorStore.getCurrentIndicator()?.totalAmntOf === 'dollars' ? '$' : '' 
-        +' per '+ indicatorStore.getCurrentIndicator()?.ratePer.toLocaleString() || indicatorStore.getCurrentIndicator()?.geotype 
+      if (useRateForOverall.value) {
+        return d?.value?.toLocaleString()
+          + ' '
+          + indicatorStore?.getCurrentIndicator()?.totalAmntOf === 'dollars' ? '$' : ''
+          + ' per ' + indicatorStore?.getCurrentIndicator()?.ratePer?.toLocaleString() || indicatorStore?.getCurrentIndicator()?.geotype || ''
         + ' avg.';
       }
-      return (indicatorStore.getCurrentIndicator()?.totalAmntOf === 'dollars' ? '$' : '') + d.value?.toLocaleString() || '';
+      return (indicatorStore?.getCurrentIndicator()?.totalAmntOf === 'dollars' ? '$' : '') + d?.value?.toLocaleString() || '';
     })
 }
 const createAxisOnly = (data: Array<{ year: number; value: number | null }>) => {
@@ -516,43 +523,43 @@ const createXScale = (data: Array<{ year: number; value: number | null }>) => {
 }
 const getMinMaxValues = () => {
   const indicator = indicatorStore.getCurrentIndicator()
-    const data = indicator?.google_sheets_data;
+  const data = indicator?.google_sheets_data;
   if (!data) return { minValue: 0, maxValue: 100 }
-      //todo: this has to get min and max from all the  years, not just this year
-    let years = data.headerShortNames.filter((year: string) => /^\d{4}$/.test(year) && !isNaN(Number(year)));
-    if(years.length === 0) {
-      years = data.headerShortNames.filter((year: string) => year.startsWith('Count_')).sort((a: string, b: string) => Number(a.replace('Count_', '')) - Number(b.replace('Count_', '')));
-    }
-    let minValue = 9999999999999;
-    let maxValue = 0;
+  //todo: this has to get min and max from all the  years, not just this year
+  let years = data.headerShortNames.filter((year: string) => /^\d{4}$/.test(year) && !isNaN(Number(year)));
+  if (years.length === 0) {
+    years = data.headerShortNames.filter((year: string) => year.startsWith('Count_')).sort((a: string, b: string) => Number(a.replace('Count_', '')) - Number(b.replace('Count_', '')));
+  }
+  let minValue = 9999999999999;
+  let maxValue = 0;
 
-    for(let year=0; year<years.length; year++) {
-      const yearValues = data.data
+  for (let year = 0; year < years.length; year++) {
+    const yearValues = data.data
       .filter((feature: any) => feature?.geoid.toLowerCase() !== "overall" && !feature?.geoid.toLowerCase().includes("statewide") && !feature?.name?.toLowerCase().includes("school district"))
       .map((feature: any) => feature[years[year] as string])
       .filter((value: any) => value !== null && value !== undefined && !isNaN(Number(value)))
       .map((value: any) => Number(value));
-      //console.log(years[year], yearValues);
-      const thisyearMinValue = Math.min(...yearValues);
-      const thisyearMaxValue = Math.max(...yearValues);
-      if(+thisyearMinValue < minValue) {
-        minValue = +thisyearMinValue;
-      }
-      if(+thisyearMaxValue > maxValue) {
-        maxValue = +thisyearMaxValue;
-      }
-      // if(maxValue > 100){
-      //   console.log(years[year], maxValue);
-      // }
+    //console.log(years[year], yearValues);
+    const thisyearMinValue = Math.min(...yearValues);
+    const thisyearMaxValue = Math.max(...yearValues);
+    if (+thisyearMinValue < minValue) {
+      minValue = +thisyearMinValue;
     }
-    if(indicator?.has_pct && !indicator?.totalAmntOf) {
-      minValue = Math.max(minValue, 0);
-      maxValue = Math.min(maxValue, 100);
-      return { minValue, maxValue };
+    if (+thisyearMaxValue > maxValue) {
+      maxValue = +thisyearMaxValue;
     }
-   
-    return { minValue: Math.floor(minValue*.95), maxValue: Math.ceil(maxValue*1.05)};
-  } 
+    // if(maxValue > 100){
+    //   console.log(years[year], maxValue);
+    // }
+  }
+  if (indicator?.has_pct && !indicator?.totalAmntOf) {
+    minValue = Math.max(minValue, 0);
+    maxValue = Math.min(maxValue, 100);
+    return { minValue, maxValue };
+  }
+
+  return { minValue: Math.floor(minValue * .95), maxValue: Math.ceil(maxValue * 1.05) };
+}
 
 const createYScale = (data: Array<{ year: number; value: number | null }>) => {
   const values = data.map(d => d.value!).filter(v => v !== null && !isNaN(v))
@@ -571,6 +578,7 @@ const handleIndicatorChange = async () => {
   // Just recreate the chart
   nextTick(() => {
     createChart()
+    addFeatureLine('statewide')
   })
 }
 
@@ -579,6 +587,7 @@ watch([() => indicatorStore.getCurrentIndicator(), () => indicatorStore.getCurre
   () => {
     nextTick(() => {
       createChart()
+      addFeatureLine('statewide')
     })
   },
   { deep: true }
@@ -587,33 +596,39 @@ watch([() => indicatorStore.getCurrentIndicator(), () => indicatorStore.getCurre
 onMounted(() => {
   nextTick(() => {
     createChart()
-
-   // createChart('statewide')
   })
-  emitter.on('feature-left-hovered', (feature: string | null) => {
-    if (props.side === 'left') {
+  emitter.on(`feature-${props.side}-hovered`, (feature: string | null) => {
+    //if (props.side === 'left') {
       d3.selectAll('.timeline-feature-line').remove()
       d3.selectAll('.data-feature-point').remove()
       d3.selectAll('.data-feature-point-label').remove()
       if (feature === null) {
         hoveredGeo.value = ''
       } else {
+        hoveredGeo.value = feature;
         addFeatureLine(feature)
       }
-    }
+   // }
   })
-  emitter.on('feature-right-hovered', (feature: string | null) => {
-    if (props.side === 'right') {
-      d3.selectAll('.timeline-feature-line').remove()
-      d3.selectAll('.data-feature-point').remove()
-      d3.selectAll('.data-feature-point-label').remove()
-      if (feature === null) {
-        hoveredGeo.value = ''
+  emitter.on(`feature-name-${props.side}-hovered`, (feature: string | null) => {
+    if (feature === null) {
+        hoveredGeoName.value = ''
       } else {
-        addFeatureLine(feature)
+        hoveredGeoName.value = feature;
       }
-    }
   })
+  // emitter.on('feature-right-hovered', (feature: string | null) => {
+  //   if (props.side === 'right') {
+  //     d3.selectAll('.timeline-feature-line').remove()
+  //     d3.selectAll('.data-feature-point').remove()
+  //     d3.selectAll('.data-feature-point-label').remove()
+  //     if (feature === null) {
+  //       hoveredGeo.value = ''
+  //     } else {
+  //       addFeatureLine(feature)
+  //     }
+  //   }
+  // })
 })
 
 onUnmounted(() => {
@@ -661,8 +676,8 @@ onUnmounted(() => {
   z-index: 1000;
   user-select: none;
   /* zoom: .9; */
-  height: 200px; 
-  bottom:5px;
+  height: 200px;
+  bottom: 5px;
 }
 
 .timeline-header {
@@ -688,7 +703,7 @@ onUnmounted(() => {
 
 .left .timeline-visualization {
   left: 50%;
-    transform: translateX(-101%);
+  transform: translateX(-101%);
 }
 
 .right .timeline-visualization {
@@ -698,12 +713,12 @@ onUnmounted(() => {
 .chart-label {
   font-weight: 600;
   font-size: larger;
-    /* color: #6b7280; */
-    padding: 4px 8px;
-    padding-bottom: 0px;
-    text-align: left;
-    line-height: .9em;
-    max-width: 95%;
+  /* color: #6b7280; */
+  padding: 4px 8px;
+  padding-bottom: 0px;
+  text-align: left;
+  line-height: .9em;
+  max-width: 95%;
 }
 
 
@@ -759,6 +774,7 @@ onUnmounted(() => {
   stroke-width: 2;
 }
 
+:deep(.statewide-timeline-feature-line),
 :deep(.timeline-feature-line) {
   fill: none;
   stroke: #7d7d7d;
@@ -767,6 +783,13 @@ onUnmounted(() => {
 
 :deep(.data-point) {
   fill: #2563eb;
+  stroke: #fff;
+  stroke-width: 2;
+  cursor: pointer;
+}
+
+:deep(.statewide-data-feature-point) {
+  fill: #7d7d7d;
   stroke: #fff;
   stroke-width: 2;
   cursor: pointer;
@@ -781,6 +804,10 @@ onUnmounted(() => {
 
 :deep(.data-point:hover) {
   fill: #1d4ed8;
+}
+
+:deep(.statewide-data-feature-point:hover) {
+  fill: #7d7d7d;
 }
 
 :deep(.data-feature-point:hover) {
@@ -810,11 +837,13 @@ onUnmounted(() => {
   position: absolute;
   bottom: 5px;
 }
+
 .left .year-selector {
-    left: 5px;
+  left: 5px;
 }
+
 .right .year-selector {
-    left: calc(50% + 5px);
+  left: calc(50% + 5px);
 }
 </style>
 <style>
@@ -831,6 +860,7 @@ onUnmounted(() => {
   left: unset;
   width: 100% !important;
 }
+
 .selected-color {
   display: inline-block;
   width: 20px;
