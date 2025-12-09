@@ -36,7 +36,10 @@ interface Props {
 
 const props = defineProps<Props>()
 const indicatorStore = useIndicatorLevelStore(props.side)
-const useRateForOverall = computed(() => !indicatorStore.getCurrentIndicator()?.has_pct && indicatorStore.getCurrentIndicator()?.has_count)
+const useRateForOverall = computed(() => {
+
+  return !indicatorStore.getCurrentIndicator()?.has_pct && indicatorStore.getCurrentIndicator()?.has_count && indicatorStore.getCurrentIndicator()?.totalAmntOf !== 'dollars'
+})
 defineEmits<{
   indicatorChanged: [indicator: any, side: 'left' | 'right']
   close: []
@@ -152,14 +155,19 @@ const processData = (_feature: string | number | null) => {
   matchingRow = rows.find((_row: Record<string, any>) =>
     '' + _row.geoid === '' + currentGeoSelection
   )
-
+  console.log(matchingRow);
   if (!matchingRow) return []
-  // Exfeature data for this indicator
-
   yearColumns.forEach((year: number) => {
     let yearValue = matchingRow?.[year.toString()]
+    console.log(yearValue);
     if (indicator?.has_count && !indicator?.has_pct) {
       yearValue = matchingRow?.['Count_' + year.toString()]
+    }
+    console.log(yearValue);
+    if(yearValue == 0 || yearValue == null || yearValue == undefined || yearValue == "") {
+      console.log(indicator.title, year, yearValue);
+    }else{
+      console.log('all good');
     }
     data.push({
       year,
@@ -325,11 +333,11 @@ const createChart = () => {
       if(useRateForOverall.value) {
         return d.value.toLocaleString() 
         + ' '
-        + indicatorStore.getCurrentIndicator()?.totalAmntOf 
+        + indicatorStore.getCurrentIndicator()?.totalAmntOf === 'dollars' ? '$' : '' 
         +' per '+ indicatorStore.getCurrentIndicator()?.ratePer.toLocaleString() || indicatorStore.getCurrentIndicator()?.geotype 
         + ' avg.';
       }
-      return d.value.toLocaleString();
+      return (indicatorStore.getCurrentIndicator()?.totalAmntOf === 'dollars' ? '$' : '') + d.value.toLocaleString();
     })
 
 
@@ -339,7 +347,7 @@ const addFeatureLine = (feature: string) => {
   hoveredGeo.value = feature;
   if (!svg.value) return
   const data = processData(feature)
-
+ //console.log(data);
   if (data.length === 0) return
 
   svgElement = d3.select(svg.value)
@@ -348,7 +356,7 @@ const addFeatureLine = (feature: string) => {
 
   // Filter out null values for line chart
   const validData = data.filter(d => d.value !== null && d.value > -1)
-
+  //console.log(validData);
   // Calculate scales
   const xScale = createXScale(data)
 
@@ -423,7 +431,16 @@ const addFeatureLine = (feature: string) => {
     .style('font-weight', 'bold')
     .style('fill', '#f80')
     .style('pointer-events', 'none')
-    .text(d => d.value!.toLocaleString())
+    .text((d) => {
+      if(useRateForOverall.value) {
+        return d.value?.toLocaleString() 
+        + ' '
+        + indicatorStore.getCurrentIndicator()?.totalAmntOf === 'dollars' ? '$' : '' 
+        +' per '+ indicatorStore.getCurrentIndicator()?.ratePer.toLocaleString() || indicatorStore.getCurrentIndicator()?.geotype 
+        + ' avg.';
+      }
+      return (indicatorStore.getCurrentIndicator()?.totalAmntOf === 'dollars' ? '$' : '') + d.value?.toLocaleString() || '';
+    })
 }
 const createAxisOnly = (data: Array<{ year: number; value: number | null }>) => {
   const xScale = createXScale(data)

@@ -70,7 +70,7 @@
 
     },
     {
-      "title": "Low Birth Weight",
+      "title": "Percent of Births with Low Birth Weight",
       "geolevel": "area",
       "geotype": "county",
       "default": false,
@@ -104,7 +104,7 @@
 
     },
     {
-      "title": "Mental Health Distress Among Adults",
+      "title": "Percent of Adults with Mental Health Distress",
       "geolevel": "area",
       "geotype": "tract",
       "default": false,

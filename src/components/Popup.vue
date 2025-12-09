@@ -44,7 +44,7 @@
                             </div> 
                             <div v-if="!isNaN(+stat.value)" class="stat-value percentage">
                                 <span v-if="currentIndicator.totalAmntOf">
-                                    {{ (+stat.value).toLocaleString('en-US') }} {{ currentIndicator.totalAmntOf }}
+                                    {{currentIndicator.totalAmntOf === 'dollars' ? '$' : ''}}{{ (+stat.value).toLocaleString('en-US') }} {{ currentIndicator.totalAmntOf === 'dollars' ? '' : currentIndicator.totalAmntOf }}
                                 </span>
                                 <span v-else>{{ (+stat.value).toFixed(1) }}%
                                     
