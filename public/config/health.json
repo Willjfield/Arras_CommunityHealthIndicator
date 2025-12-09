@@ -14,19 +14,8 @@
         "main": "tracts-harmonized-fill",
         "outline": "tracts-harmonized-outline"
       },
-      "fill_color": [
-        "interpolate",
-        [
-          "linear"
-        ],
-        [
-          "to-number",
-          [
-            "get",
-            "1990"
-          ]
-        ]
-      ]
+      "fill_color": ["case", ["has", "1990"], ["interpolate", ["linear"], ["to-number", ["get", "1990"]]], "#0000"]
+
     },
     {
       "title": "Working Age Adults with No Health Insurance",
@@ -42,19 +31,8 @@
         "main": "tracts-harmonized-fill",
         "outline": "tracts-harmonized-outline"
       },
-      "fill_color": [
-        "interpolate",
-        [
-          "linear"
-        ],
-        [
-          "to-number",
-          [
-            "get",
-            "1990"
-          ]
-        ]
-      ]
+      "fill_color": ["case", ["has", "1990"], ["interpolate", ["linear"], ["to-number", ["get", "1990"]]], "#0000"]
+
     },
     {
       "title": "Food Insecurity",
@@ -70,19 +48,8 @@
         "main": "tracts-harmonized-fill",
         "outline": "tracts-harmonized-outline"
       },
-      "fill_color": [
-        "interpolate",
-        [
-          "linear"
-        ],
-        [
-          "to-number",
-          [
-            "get",
-            "1990"
-          ]
-        ]
-      ]
+      "fill_color": ["case", ["has", "1990"], ["interpolate", ["linear"], ["to-number", ["get", "1990"]]], "#0000"]
+
     },
     {
       "title": "Heart Disease Mortality Rate",
@@ -98,19 +65,8 @@
       "layers": {
         "main": "counties-data"
       },
-      "fill_color": [
-        "interpolate",
-        [
-          "linear"
-        ],
-        [
-          "to-number",
-          [
-            "get",
-            "1990"
-          ]
-        ]
-      ]
+      "fill_color": ["case", ["has", "1990"], ["interpolate", ["linear"], ["to-number", ["get", "1990"]]], "#0000"]
+
     },
     {
       "title": "Low Birth Weight",
@@ -125,19 +81,8 @@
       "layers": {
         "main": "counties-data"
       },
-      "fill_color": [
-        "interpolate",
-        [
-          "linear"
-        ],
-        [
-          "to-number",
-          [
-            "get",
-            "1990"
-          ]
-        ]
-      ]
+      "fill_color": ["case", ["has", "1990"], ["interpolate", ["linear"], ["to-number", ["get", "1990"]]], "#0000"]
+
     },
     {
       "title": "Malignant Neoplasm Morality",
@@ -153,19 +98,8 @@
       "layers": {
         "main": "counties-data"
       },
-      "fill_color": [
-        "interpolate",
-        [
-          "linear"
-        ],
-        [
-          "to-number",
-          [
-            "get",
-            "1990"
-          ]
-        ]
-      ]
+      "fill_color": ["case", ["has", "1990"], ["interpolate", ["linear"], ["to-number", ["get", "1990"]]], "#0000"]
+
     },
     {
       "title": "Mental Health Distress Among Adults",
@@ -181,19 +115,8 @@
         "main": "tracts-harmonized-fill",
         "outline": "tracts-harmonized-outline"
       },
-      "fill_color": [
-        "interpolate",
-        [
-          "linear"
-        ],
-        [
-          "to-number",
-          [
-            "get",
-            "1990"
-          ]
-        ]
-      ]
+      "fill_color": ["case", ["has", "1990"], ["interpolate", ["linear"], ["to-number", ["get", "1990"]]], "#0000"]
+
     }
   ]
 }

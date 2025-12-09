@@ -11,8 +11,8 @@
           }"></div>
         </div>
         <div class="legend-labels">
-          <span class="min-label">{{ minValue }} {{ indicatorDescription }}</span>
-          <span class="max-label">{{ maxValue }} {{ indicatorDescription }}</span>
+          <span class="min-label">{{ minValue.toLocaleString() }} {{ indicatorDescription }}</span>
+          <span class="max-label">{{ maxValue.toLocaleString() }} {{ indicatorDescription }}</span>
         </div>
       </div>
     </div>

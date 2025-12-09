@@ -30,7 +30,8 @@
         "main": "tracts-harmonized-fill",
         "outline": "tracts-harmonized-outline"
       },
-      "fill_color": ["interpolate", ["linear"], ["to-number", ["get", "1990"]]]
+            "fill_color": ["case", ["has", "1990"], ["interpolate", ["linear"], ["to-number", ["get", "1990"]]], "#0000"]
+
     },
     {
       "title": "Childcare Center Capacity",
@@ -47,7 +48,8 @@
         "main": "point-data",
         "circle": false
       },
-      "fill_color": ["interpolate", ["linear"], ["to-number", ["get", "1990"]]]
+            "fill_color": ["case", ["has", "1990"], ["interpolate", ["linear"], ["to-number", ["get", "1990"]]], "#0000"]
+
     },
     {
       "title": "3rd Grade Math Readiness",
@@ -63,7 +65,8 @@
         "main": "point-data",
         "circle": false
       },
-      "fill_color": ["interpolate", ["linear"], ["to-number", ["get", "1990"]]]
+            "fill_color": ["case", ["has", "1990"], ["interpolate", ["linear"], ["to-number", ["get", "1990"]]], "#0000"]
+
     },
     {
       "title": "3rd Grade ELA Readiness",
@@ -79,7 +82,8 @@
         "main": "point-data",
         "circle": false
       },
-      "fill_color": ["interpolate", ["linear"], ["to-number", ["get", "1990"]]]
+            "fill_color": ["case", ["has", "1990"], ["interpolate", ["linear"], ["to-number", ["get", "1990"]]], "#0000"]
+
     },
     {
       "title": "8th Grade Math Readiness",
@@ -95,7 +99,8 @@
         "main": "point-data",
         "circle": false
       },
-      "fill_color": ["interpolate", ["linear"], ["to-number", ["get", "1990"]]]
+            "fill_color": ["case", ["has", "1990"], ["interpolate", ["linear"], ["to-number", ["get", "1990"]]], "#0000"]
+
     },
     {
       "title": "8th Grade ELA Readiness",
@@ -111,7 +116,8 @@
         "main": "point-data",
         "circle": false
       },
-      "fill_color": ["interpolate", ["linear"], ["to-number", ["get", "1990"]]]
+            "fill_color": ["case", ["has", "1990"], ["interpolate", ["linear"], ["to-number", ["get", "1990"]]], "#0000"]
+
     },
     {
       "title": "High School Graduation Rate",
@@ -127,7 +133,8 @@
         "main": "point-data",
         "circle": false
       },
-      "fill_color": ["interpolate", ["linear"], ["to-number", ["get", "1990"]]]
+            "fill_color": ["case", ["has", "1990"], ["interpolate", ["linear"], ["to-number", ["get", "1990"]]], "#0000"]
+
     },
     {
       "title": "High School Career Readiness",
@@ -143,7 +150,8 @@
         "main": "point-data",
         "circle": false
       },
-      "fill_color": ["interpolate", ["linear"], ["to-number", ["get", "1990"]]]
+            "fill_color": ["case", ["has", "1990"], ["interpolate", ["linear"], ["to-number", ["get", "1990"]]], "#0000"]
+
     },
     {
       "title": "High School College Readiness",
@@ -159,7 +167,8 @@
         "main": "point-data",
         "circle": false
       },
-      "fill_color": ["interpolate", ["linear"], ["to-number", ["get", "1990"]]]
+            "fill_color": ["case", ["has", "1990"], ["interpolate", ["linear"], ["to-number", ["get", "1990"]]], "#0000"]
+
     },
     {
       "title":"Disconnected Youth",
@@ -194,7 +203,8 @@
       "layers": {
         "main": "point-data"
       },
-      "fill_color": ["interpolate", ["linear"], ["to-number", ["get", "1990"]]]
+            "fill_color": ["case", ["has", "1990"], ["interpolate", ["linear"], ["to-number", ["get", "1990"]]], "#0000"]
+
     }
   ]
 }

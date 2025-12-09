@@ -14,19 +14,8 @@
         "main": "tracts-harmonized-fill",
         "outline": "tracts-harmonized-outline"
       },
-      "fill_color": [
-        "interpolate",
-        [
-          "linear"
-        ],
-        [
-          "to-number",
-          [
-            "get",
-            "1990"
-          ]
-        ]
-      ]
+      "fill_color": ["case", ["has", "1990"], ["interpolate", ["linear"], ["to-number", ["get", "1990"]]], "#0000"]
+
     },
     {
       "title": "Children in Concentrated Poverty",
@@ -42,19 +31,8 @@
         "main": "tracts-harmonized-fill",
         "outline": "tracts-harmonized-outline"
       },
-      "fill_color": [
-        "interpolate",
-        [
-          "linear"
-        ],
-        [
-          "to-number",
-          [
-            "get",
-            "1990"
-          ]
-        ]
-      ]
+      "fill_color": ["case", ["has", "1990"], ["interpolate", ["linear"], ["to-number", ["get", "1990"]]], "#0000"]
+
     },
     {
       "title": "Median Household Income",
@@ -71,19 +49,8 @@
         "main": "tracts-harmonized-fill",
         "outline": "tracts-harmonized-outline"
       },
-      "fill_color": [
-        "interpolate",
-        [
-          "linear"
-        ],
-        [
-          "to-number",
-          [
-            "get",
-            "1990"
-          ]
-        ]
-      ]
+      "fill_color": ["case", ["has", "1990"], ["interpolate", ["linear"], ["to-number", ["get", "1990"]]], "#0000"]
+
     },
     {
       "title": "Housing cost burdened households (30% or more of income)",
@@ -99,19 +66,8 @@
         "main": "tracts-harmonized-fill",
         "outline": "tracts-harmonized-outline"
       },
-      "fill_color": [
-        "interpolate",
-        [
-          "linear"
-        ],
-        [
-          "to-number",
-          [
-            "get",
-            "1990"
-          ]
-        ]
-      ]
+      "fill_color": ["case", ["has", "1990"], ["interpolate", ["linear"], ["to-number", ["get", "1990"]]], "#0000"]
+
     }
   ]
 }

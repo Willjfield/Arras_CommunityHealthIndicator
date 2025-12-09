@@ -457,7 +457,7 @@ const getMinMaxValues = () => {
       //   console.log(years[year], maxValue);
       // }
     }
-    if(indicator?.has_pct) {
+    if(indicator?.has_pct && !indicator?.totalAmntOf) {
       minValue = Math.max(minValue, 0);
       maxValue = Math.min(maxValue, 100);
       return { minValue, maxValue };

@@ -2,7 +2,7 @@
     <v-main class="d-flex align-center justify-center" style="padding-top: 0px;">
         <v-container style="padding-top: 0px; height: 100%;">
             <v-card class="theme-title mt-2">
-                <v-card-title class="text-center pa-0 ma-0">
+                <v-card-title v-if="currentThemeConfig" class="text-center pa-0 ma-0">
                     <v-img inline :src="currentThemeConfig.icon" width="24" height="24" class="mr-2 title-theme-icon"></v-img>
                     {{ currentThemeConfig.title }}
                 </v-card-title>

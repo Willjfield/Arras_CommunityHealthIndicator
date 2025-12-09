@@ -303,7 +303,7 @@ export class DataToMap {
       }
      
     }
-    if(this.data.has_pct) {
+    if(this.data.has_pct && !this.data.totalAmntOf) {
       
       minValue = Math.max(minValue, 0);
       maxValue = Math.min(maxValue, 100);

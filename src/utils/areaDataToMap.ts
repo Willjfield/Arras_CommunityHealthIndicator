@@ -160,6 +160,7 @@ export class AreaDataToMap extends DataToMap {
     if (!map) return false;
     const data = (this as any).data;
     const fillColor = this.getGradientExpression();
+    console.log(fillColor);
     map.setPaintProperty(data.layers.main, "fill-color", fillColor);
     map.setLayoutProperty(data.layers.main, "visibility", "visible");
     return true;
