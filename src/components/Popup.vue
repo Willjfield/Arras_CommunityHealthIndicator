@@ -41,20 +41,14 @@
                             :class="{ 'stat-item': true, 'stat-item-empty': isNaN(+stat.value) }"
                         >
                             <div class="stat-label">{{ stat.key }}                     
-                                <!-- <v-icon v-if="index > 0 
-                                && index < stats.length
-                                && +stat.value > +(stats[index - 1].value)" 
-                                icon="mdi-arrow-up-bold" class="ma-0" size="10" color="green"></v-icon>
-                                <v-icon v-else-if="index > 0 
-                                && +stats[index - 1].value > 0
-                                && index < stats.length
-                                && +stat.value > 0
-                                && +stat.value < +(stats[index - 1].value)"
-                                icon="mdi-arrow-down-bold" class="ma-0" size="10" color="red"></v-icon>
-                            -->
                             </div> 
                             <div v-if="!isNaN(+stat.value)" class="stat-value percentage">
-                                {{ (+stat.value).toFixed(1) }}%
+                                <span v-if="currentIndicator.totalAmntOf">
+                                    {{ (+stat.value).toLocaleString('en-US') }} {{ currentIndicator.totalAmntOf }}
+                                </span>
+                                <span v-else>{{ (+stat.value).toFixed(1) }}%
+                                    
+                                </span>
                                 <span v-if="props.properties[`Count_${stat.key}`]" class="stat-total">
                                     ({{ props.properties[`Count_${stat.key}`] }} total)
                                 </span>
