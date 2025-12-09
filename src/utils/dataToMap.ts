@@ -290,7 +290,7 @@ export class DataToMap {
     let maxValue = 0;
     for(let year=0; year<years.length; year++) {
       const yearValues = data.google_sheets_data.data
-      .filter((feature: any) => feature?.geoid !== "overall" && !feature?.geoid.includes("School District"))
+      .filter((feature: any) => feature?.geoid.toLowerCase() !== "overall" && !feature?.geoid.toLowerCase().includes("statewide") && !feature?.name?.toLowerCase().includes("school district"))
       .map((feature: any) => feature[years[year] as string])
       .filter((value: any) => value !== null && value !== undefined && !isNaN(Number(value)) && value > 0);
       const thisyearMinValue = Math.min(...yearValues);

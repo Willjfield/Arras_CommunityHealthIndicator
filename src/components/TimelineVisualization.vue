@@ -47,6 +47,7 @@ defineEmits<{
 
 const selectedColor = '#2563eb';
 const hoveredColor = '#f80';
+const statewideColor = '#7d7d7d';
 const selectedColorRef = ref(selectedColor);
 const hoveredColorRef = ref(hoveredColor);
 
@@ -60,7 +61,7 @@ const headerHTML = computed(() => {
   const line1 = `
   <div class="selected-geo" style="${titleSize}">${title}</div>
   `
-const line2 = geoSelection === 'overall' ? 
+const line2 = geoSelection.toLowerCase().includes("overall") ?
   `<div class="selected-geo">Overall by ${geotype.charAt(0).toUpperCase() + geotype.slice(1)}</div>` 
   : 
   `<div class="selected-geo">(${geotype.charAt(0).toUpperCase() + geotype.slice(1)}: ${geoSelection})</div>`
@@ -70,7 +71,7 @@ style="border: 2px solid ${selectedColorRef.value}"></span>`
   return `${line1}<br>${line2}${swatch}`
 })
 
-const container = ref<HTMLElement>()
+//const container = ref<HTMLElement>()
 const svg = ref<SVGElement>()
 
 let svgElement: d3.Selection<SVGElement, unknown, null, undefined>
@@ -128,13 +129,14 @@ const processData = (_feature: string | number | null) => {
   const indicator = indicatorStore.getCurrentIndicator()
 
   const raw_data = indicator?.google_sheets_data
-
+  console.log(raw_data);
   if (!raw_data) return []
   const headerShortNames = raw_data.headerShortNames
   const rows = raw_data.data
-
+  console.log(rows);
   //SET CURRENTGEO SELECTION TO HOVERED
   const currentGeoSelection = _feature || indicatorStore.getCurrentGeoSelection()
+  console.log(currentGeoSelection);
   let matchingRow: Record<string, any> | undefined = undefined;
   const data: Array<{ year: number; value: number | null }> = []
   let yearColumns: number[] = []
@@ -182,6 +184,7 @@ const createChart = () => {
   if (!svg.value) return
 
   const data = processData(null)
+
   if (data.length === 0) return
 
   // Clear previous chart
@@ -344,10 +347,12 @@ const createChart = () => {
 }
 const hoveredGeo = ref('');
 const addFeatureLine = (feature: string) => {
-  hoveredGeo.value = feature;
+  const statewide = feature.toLowerCase().includes("statewide")
+  console.log(statewide, feature);
+  hoveredGeo.value = statewide ? hoveredGeo.value : feature;
   if (!svg.value) return
   const data = processData(feature)
- //console.log(data);
+  console.log(data);
   if (data.length === 0) return
 
   svgElement = d3.select(svg.value)
@@ -356,7 +361,7 @@ const addFeatureLine = (feature: string) => {
 
   // Filter out null values for line chart
   const validData = data.filter(d => d.value !== null && d.value > -1)
-  //console.log(validData);
+
   // Calculate scales
   const xScale = createXScale(data)
 
@@ -376,7 +381,7 @@ const addFeatureLine = (feature: string) => {
     .attr('class', 'timeline-feature-line')
     .attr('d', line)
     .style('fill', 'none')
-    .style('stroke', hoveredColor)
+    .style('stroke', statewide ? statewideColor : hoveredColor)
     .style('stroke-width', 1)
 
   // Add data points
@@ -388,7 +393,7 @@ const addFeatureLine = (feature: string) => {
     .attr('cx', d => xScale(d.year))
     .attr('cy', d => yScale(d.value!))
     .attr('r', 4)
-    .style('fill', hoveredColor)
+    .style('fill', statewide ? statewideColor : hoveredColor)
     .style('stroke', '#fff')
     .style('stroke-width', 1)
     .style('cursor', 'pointer')
@@ -523,7 +528,7 @@ const getMinMaxValues = () => {
 
     for(let year=0; year<years.length; year++) {
       const yearValues = data.data
-      .filter((feature: any) => feature?.geoid !== "overall" && !feature?.geoid.includes("School District"))
+      .filter((feature: any) => feature?.geoid.toLowerCase() !== "overall" && !feature?.geoid.toLowerCase().includes("statewide") && !feature?.name?.toLowerCase().includes("school district"))
       .map((feature: any) => feature[years[year] as string])
       .filter((value: any) => value !== null && value !== undefined && !isNaN(Number(value)))
       .map((value: any) => Number(value));
@@ -582,6 +587,8 @@ watch([() => indicatorStore.getCurrentIndicator(), () => indicatorStore.getCurre
 onMounted(() => {
   nextTick(() => {
     createChart()
+
+   // createChart('statewide')
   })
   emitter.on('feature-left-hovered', (feature: string | null) => {
     if (props.side === 'left') {

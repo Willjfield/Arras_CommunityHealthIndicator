@@ -64,7 +64,7 @@ export class PointDataToMap extends DataToMap {
     );
     this.maxDataValue = Math.max(
       ...geojson.features.map((feature: any) => {
-        if (feature.properties.geoid === "overall") {
+        if (feature.properties.geoid.toLowerCase().includes("overall") || feature.properties.geoid.toLowerCase().includes("statewide") || feature.properties.name.toLowerCase().includes("school district")) {
           return -1;
         }
         return +feature.properties[propAccessor] || -1;
