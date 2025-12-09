@@ -9,9 +9,13 @@
       
       <div class="chart-label">
         <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-          <span class="selected-geo">{{ `${indicatorStore?.getCurrentIndicator()?.title || ''}
-            (${indicatorStore.getCurrentGeoSelection()})` }}<span class="selected-color"
-              :style="{ border: `1px solid ${selectedColorRef}` }"></span></span>
+          <span class="selected-geo">{{
+          `${indicatorStore?.getCurrentIndicator()?.title || ''}`}}
+          <br/>
+            {{`(${indicatorStore.getCurrentGeoSelection()})` 
+            }}
+            <span class="selected-color"
+              :style="{ border: `2px solid ${selectedColorRef}` }"></span></span>
             <v-divider></v-divider>
         </div>
         
@@ -19,7 +23,7 @@
           the
           timeline</span>
         <span v-show="hoveredGeo" class="hovered-geo mx-0">{{ indicatorStore?.getCurrentIndicator()?.geotype === 'tract' ? 'Census Tract Number' : indicatorStore?.getCurrentIndicator()?.geotype === 'county' ? 'County FIPS code' : 'ID' }}: {{ hoveredGeo }}<span class="hovered-color"
-            :style="{ border: `1px solid ${hoveredColorRef}` }"></span></span>
+            :style="{ border: `2px solid ${hoveredColorRef}` }"></span></span>
       </div>
       <svg ref="svg" class="timeline-chart"></svg>
     </div>
@@ -39,7 +43,7 @@ interface Props {
 
 const props = defineProps<Props>()
 const indicatorStore = useIndicatorLevelStore(props.side)
-//const selectedIndicator = computed(() => indicatorStore.getCurrentIndicator())
+const useRateForOverall = computed(() => !indicatorStore.getCurrentIndicator()?.has_pct && indicatorStore.getCurrentIndicator()?.has_count)
 defineEmits<{
   indicatorChanged: [indicator: any, side: 'left' | 'right']
   close: []
@@ -106,6 +110,7 @@ const handleYearChange = (year: number) => {
 const processData = (_feature: string | number | null) => {
 
   const indicator = indicatorStore.getCurrentIndicator()
+
   const raw_data = indicator?.google_sheets_data
 
   if (!raw_data) return []
@@ -188,7 +193,9 @@ const createChart = () => {
     .tickPadding(8)
 
   const yAxis = d3.axisLeft(yScale)
-    .tickFormat(d => d.toLocaleString())
+    .tickFormat((d) => {
+      return d.toLocaleString().replace(',000', 'K');
+    })
     .tickSize(-width + margin.left + margin.right)
     .tickPadding(2)
     .ticks(5)
@@ -279,12 +286,40 @@ const createChart = () => {
           .duration(200)
           .attr('r', 4)
           .style('fill', '#2563eb')
+
+        
       }
     })
   // Highlight selected year
   circles.filter(d => d.year === indicatorStore.getCurrentYear())
     .style('fill', '#dc2626')
     .attr('r', 5)
+
+  // Add text labels next to circles
+  svgElement.selectAll('.data-point-label')
+    .data(validData)
+    .enter()
+    .append('text')
+    .attr('class', 'data-point-label')
+    .attr('x', d => xScale(d.year))
+    .attr('y', d => yScale(d.value!) + 10)
+    .attr('text-anchor', 'left')
+    .style('font-size', '9px')
+    .style('font-weight', 'bold')
+    .style('fill', '#08f')
+    .style('pointer-events', 'none')
+    .text((d) => {
+      if(useRateForOverall.value) {
+        return d.value.toLocaleString() 
+        + ' '
+        + indicatorStore.getCurrentIndicator()?.totalAmntOf 
+        +' per '+ indicatorStore.getCurrentIndicator()?.geotype 
+        + ' avg.';
+      }
+      return d.value.toLocaleString();
+    })
+
+
 }
 const hoveredGeo = ref('');
 const addFeatureLine = (feature: string) => {
@@ -312,6 +347,8 @@ const addFeatureLine = (feature: string) => {
 
   d3.selectAll('.timeline-feature-line').remove()
   d3.selectAll('.data-feature-point').remove()
+  d3.selectAll('.data-feature-point-label').remove()
+// d3.selectAll('.data-feature-point-label').remove()
   // Add line
   svgElement.append('path')
     .datum(validData)
@@ -352,12 +389,28 @@ const addFeatureLine = (feature: string) => {
           .transition()
           .duration(200)
           .attr('r', 4)
+          
       }
     })
   // Highlight selected year
   circles.filter(d => d.year === indicatorStore.getCurrentYear())
     .style('fill', '#dc2626')
     .attr('r', 5)
+
+  // Add text labels next to feature circles
+  svgElement.selectAll('.data-feature-point-label')
+    .data(validData)
+    .enter()
+    .append('text')
+    .attr('class', 'data-feature-point-label')
+    .attr('x', d => xScale(d.year))
+    .attr('y', d => yScale(d.value!) - 8)
+    .attr('text-anchor', 'left')
+    .style('font-size', '9px')
+    .style('font-weight', 'bold')
+    .style('fill', '#f80')
+    .style('pointer-events', 'none')
+    .text(d => d.value!.toLocaleString())
 }
 const createAxisOnly = (data: Array<{ year: number; value: number | null }>) => {
   const xScale = createXScale(data)
@@ -406,7 +459,7 @@ const createXScale = (data: Array<{ year: number; value: number | null }>) => {
 
   // Create custom scale with variable spacing
   const yearPositions: number[] = []
-  let currentPos = margin.left
+  let currentPos = margin.left + 5
 
   for (let i = 0; i < years.length; i++) {
     yearPositions.push(currentPos)
@@ -442,7 +495,7 @@ const getMinMaxValues = () => {
       const yearValues = data.data
       .filter((feature: any) => feature?.geoid !== "overall" && !feature?.geoid.includes("School District"))
       .map((feature: any) => feature[years[year] as string])
-      .filter((value: any) => value !== null && value !== undefined && !isNaN(Number(value)) && value > 0)
+      .filter((value: any) => value !== null && value !== undefined && !isNaN(Number(value)))
       .map((value: any) => Number(value));
       //console.log(years[year], yearValues);
       const thisyearMinValue = Math.min(...yearValues);
@@ -504,6 +557,7 @@ onMounted(() => {
     if (props.side === 'left') {
       d3.selectAll('.timeline-feature-line').remove()
       d3.selectAll('.data-feature-point').remove()
+      d3.selectAll('.data-feature-point-label').remove()
       if (feature === null) {
         hoveredGeo.value = ''
       } else {
@@ -515,6 +569,7 @@ onMounted(() => {
     if (props.side === 'right') {
       d3.selectAll('.timeline-feature-line').remove()
       d3.selectAll('.data-feature-point').remove()
+      d3.selectAll('.data-feature-point-label').remove()
       if (feature === null) {
         hoveredGeo.value = ''
       } else {
@@ -568,7 +623,7 @@ onUnmounted(() => {
   cursor: move;
   z-index: 1000;
   user-select: none;
-  zoom: .9;
+  /* zoom: .9; */
   height: 200px; 
   bottom:5px;
 }
