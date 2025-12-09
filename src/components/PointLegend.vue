@@ -5,7 +5,7 @@
         <span class="legend-title">{{ selectedIndicator?.title || 'Indicator' }}</span>
       </div>
       <div class="legend-content">
-      {{ minMaxCohortValues }}
+    
         <table class="legend-icon-container">
           <tbody>
             <tr>
@@ -23,11 +23,10 @@
             </tr>
             
             <tr class="legend-labels">
-              <td style="text-align: left;"><span class="min-label">{{ minValue.toFixed(0) }} {{ indicatorDescription }}</span>
+              <td style="text-align: left;"><span class="min-label">{{minMaxCohortValues.minCohortValue.toFixed(0) }} {{ selectedIndicator?.cohort_type }} total</span>
               </td>
-              <td style="text-align: center;"><span class="mid-label">{{ (maxValue / 2).toFixed(0) }} {{
-                  indicatorDescription }}</span></td>
-              <td style="text-align: right;"><span class="max-label">{{ maxValue.toFixed(0) }} or more {{ indicatorDescription }}</span>
+              <td style="text-align: center;"><span class="mid-label">{{ (minMaxCohortValues.maxCohortValue / 2).toFixed(0) }} {{ selectedIndicator?.cohort_type }} total</span></td>
+              <td style="text-align: right;"><span class="max-label"> {{ minMaxCohortValues.maxCohortValue.toFixed(0) }} or more {{ selectedIndicator?.cohort_type }} total</span>
               </td>
             </tr>
           </tbody>
@@ -85,11 +84,14 @@ let minCohortValue = 9999999999999;
 let maxCohortValue = 0;
 for(let i=0; i<cohortKeys.length; i++) {
   const key = cohortKeys[i];
-  const values = allFeatures.map((feature: any) => +feature[key])
-  .filter((feature: any) => feature?.geoid !== "overall" && !feature?.geoid?.includes("statewide") && !feature?.geoid?.includes("School District"))
-  .filter((value: number) => !isNaN(value));
+  const values = allFeatures
+  .filter((feature: any) => feature[key] !== null && feature[key] !== undefined && feature[key] !== '' && !isNaN(Number(feature[key])) && !feature?.geoid.toLowerCase().includes("overall") && !feature?.geoid?.toLowerCase().includes("statewide") && !feature?.name?.toLowerCase().includes("school district"))
+  .map((feature: any) => +feature[key])
+  .filter((value: number) => !isNaN(value))
+  
   const min = Math.min(...values);
   const max = Math.max(...values);
+  console.log(key, min, max);
   if(min < minCohortValue) {
     minCohortValue = min;
   }
@@ -182,17 +184,6 @@ const minColor = computed(() => {
   return '#000000';
 })
 
-const minCohortValue = computed(() => {
-  console.log(currentIndicator.value);
-})
-
-const middleCohortValue = computed(() => {
-  return (maxCohortValue.value + minCohortValue.value) / 2;
-})
-
-const maxCohortValue = computed(() => {
-  return props.selectedIndicator?.style?.max?.value;
-})
 </script>
 
 <style scoped>

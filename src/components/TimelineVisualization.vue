@@ -331,13 +331,13 @@ const createChart = () => {
     .style('pointer-events', 'none')
     .text((d) => {
       if(useRateForOverall.value) {
-        return d.value.toLocaleString() 
+        return d?.value?.toLocaleString() 
         + ' '
         + indicatorStore.getCurrentIndicator()?.totalAmntOf === 'dollars' ? '$' : '' 
-        +' per '+ indicatorStore.getCurrentIndicator()?.ratePer.toLocaleString() || indicatorStore.getCurrentIndicator()?.geotype 
+        +' per '+ indicatorStore.getCurrentIndicator()?.ratePer?.toLocaleString() || indicatorStore.getCurrentIndicator()?.geotype 
         + ' avg.';
       }
-      return (indicatorStore.getCurrentIndicator()?.totalAmntOf === 'dollars' ? '$' : '') + d.value.toLocaleString();
+      return (indicatorStore.getCurrentIndicator()?.totalAmntOf === 'dollars' ? '$' : '') + d?.value?.toLocaleString();
     })
 
 
