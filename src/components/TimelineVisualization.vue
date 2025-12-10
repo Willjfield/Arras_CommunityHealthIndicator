@@ -198,9 +198,9 @@ const createChart = () => {
     .attr('height', height)
 
   // Filter out null values for line chart
-  const validData = data.filter(d => d.value !== null && d.value > -1).map(d => ({
+  const validData: Array<{ year: number; value: number | null }> = data.filter(d => d.value !== null && d.value > -1).map(d => ({
     year: d.year,
-    value: Math.round(d.value!)
+    value: d.value?.toFixed(2) ? Number(d.value?.toFixed(2)) : null
   }))
 
   if (validData.length === 0) {
@@ -443,7 +443,7 @@ const addFeatureLine = (feature: string) => {
     .attr('height', 12)
     .style('fill', '#fff')
     .style('opacity', 0.75)
-    
+
     svgElement.selectAll(`.${statewide ? 'statewide-' : ''}data-feature-point-label`)
     .data(validData)
     .enter()
