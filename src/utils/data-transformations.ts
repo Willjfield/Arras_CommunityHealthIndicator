@@ -37,11 +37,11 @@ function formatGoogleSheetData(csvString: string) {
       });
 
     return headerShortNames.reduce(
-      (acc: Record<string, string | null>, header: string, index: number) => {
-        acc[header] = values[index];
+      (acc: Record<string, string | undefined>, header: string, index: number) => {
+        acc[header] = values[index] || undefined;
         return acc;
       },
-      {} as Record<string, string | null>
+      {} as Record<string, string | undefined>
     );
   });
   console.log(data);

@@ -139,7 +139,7 @@ export class AreaDataToMap extends DataToMap {
         layers: [mainLayer],
       });
 
-      if (features.length === 0) {
+      if (features.length === 0 || features[0].properties.geoid === this.selectedGeography) {
         this.emitter?.emit(
           `feature-${this.side || "left"}-clicked`,
           null as any
@@ -150,6 +150,8 @@ export class AreaDataToMap extends DataToMap {
         }
         return;
       }
+
+
 
       map.setPaintProperty(data.layers.outline, "line-color", [
         "case",

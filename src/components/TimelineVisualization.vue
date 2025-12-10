@@ -377,6 +377,7 @@ const addFeatureLine = (feature: string) => {
 
   d3.selectAll(`.${props.side} .data-feature-point`).remove()
   d3.selectAll(`.${props.side} .data-feature-point-label`).remove()
+  d3.selectAll(`.${props.side} .data-feature-point-label-background`).remove()
   d3.selectAll(`.${props.side} .timeline-feature-line`).remove()
   if (statewide) {
     d3.selectAll(`.${props.side} ${statewide ? 'statewide-' : ''}timeline-feature-line`).remove()
@@ -432,6 +433,17 @@ const addFeatureLine = (feature: string) => {
 
   // Add text labels next to feature circles
   svgElement.selectAll(`.${statewide ? 'statewide-' : ''}data-feature-point-label`)
+    .data(validData)
+    .enter()
+    .append('rect')
+    .attr('class', `${statewide ? 'statewide-' : ''}data-feature-point-label-background`)
+    .attr('x', d => xScale(d.year) - 6)
+    .attr('y', d => yScale(d.value!) - 24)
+    .attr('width', 40)
+    .attr('height', 12)
+    .style('fill', '#fff')
+    .style('opacity', 0.75)
+    svgElement.selectAll(`.${statewide ? 'statewide-' : ''}data-feature-point-label`)
     .data(validData)
     .enter()
     .append('text')
@@ -568,7 +580,7 @@ const createYScale = (data: Array<{ year: number; value: number | null }>) => {
   if (values.length === 0) return d3.scaleLinear().domain([0, 100]).range([height - margin.bottom, margin.top])
 
   const { minValue, maxValue } = getMinMaxValues()
-  const padding = (maxValue - minValue) || 1
+  //const padding = (maxValue - minValue) || 1
   //todo: Math.max(minValue - padding, 0)
   return d3.scaleLinear()
     .domain([minValue, maxValue])
@@ -604,6 +616,7 @@ onMounted(() => {
       d3.selectAll('.timeline-feature-line').remove()
       d3.selectAll('.data-feature-point').remove()
       d3.selectAll('.data-feature-point-label').remove()
+      d3.selectAll('.data-feature-point-label-background').remove()
       if (feature === null) {
         hoveredGeo.value = ''
       } else {
