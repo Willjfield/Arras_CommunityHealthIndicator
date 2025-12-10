@@ -77,10 +77,10 @@
 
             <!-- More Info Expansion Panel -->
             <div v-if="moreInfo.length > 0" class="more-info-section">
-                <v-expansion-panels variant="accordion" class="info-panels">
+                <v-expansion-panels color="primary" variant="accordion" class="info-panels">
                     <v-expansion-panel>
                         <v-expansion-panel-title class="info-panel-title">
-                            <v-icon icon="mdi-information-outline" size="18" class="mr-2"></v-icon>
+                            <v-icon icon="mdi-information-outline" size="18" class="mx-2"></v-icon>
                             <span>More Information</span>
                             <span class="info-hint">(Click to expand)</span>
                         </v-expansion-panel-title>
@@ -340,7 +340,7 @@ const stats = computed(() => {
 
 .info-hint {
     font-size: 0.75rem;
-    color: #94a3b8;
+    color: #ededed;
     font-weight: 400;
     margin-left: 0.5rem;
 }
