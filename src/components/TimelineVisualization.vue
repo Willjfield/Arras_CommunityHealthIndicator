@@ -443,6 +443,7 @@ const addFeatureLine = (feature: string) => {
     .attr('height', 12)
     .style('fill', '#fff')
     .style('opacity', 0.75)
+    
     svgElement.selectAll(`.${statewide ? 'statewide-' : ''}data-feature-point-label`)
     .data(validData)
     .enter()

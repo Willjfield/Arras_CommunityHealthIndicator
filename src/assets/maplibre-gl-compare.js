@@ -70,7 +70,8 @@ function Compare(a, b, container, options) {
     )
   }
 
-  this._bounds = b.getContainer().getBoundingClientRect()
+  this._bounds = a.getContainer().getBoundingClientRect()
+ // console.log(this._bounds)
   const swiperPosition
     = this.orientation === ORIENTATION.LEFT_RIGHT ? this._bounds.width / 2 : this._bounds.height / 2
 
@@ -83,6 +84,7 @@ function Compare(a, b, container, options) {
       = this.orientation === ORIENTATION.LEFT_RIGHT ? this._bounds.width / 2 : this._bounds.height / 2
     this._setPosition(swiperPosition)
     this._bounds = a.getContainer().getBoundingClientRect()
+   
     a.triggerRepaint()
     b.triggerRepaint()
     this.switchType(this?.options?.type || 'slider')
@@ -223,17 +225,20 @@ Compare.prototype = {
       x,
       this.orientation === ORIENTATION.LEFT_RIGHT ? this._bounds.width : this._bounds.height,
     )
+    x = x/document.body.style.zoom
     const pos = this.orientation === ORIENTATION.TOP_BOTTOM
       ? 'translate(0, ' + x + 'px)'
       : 'translate(' + x + 'px, 0)'
     this._controlContainer.style.transform = pos
     this._controlContainer.style.WebkitTransform = pos
+   
+    const height = this._bounds.height/document.body.style.zoom
     const clipA = this.orientation === ORIENTATION.TOP_BOTTOM
       ? 'rect(0, 999em, ' + x + 'px, 0)'
-      : 'rect(0, ' + x + 'px, ' + this._bounds.height + 'px, 0)'
+      : 'rect(0, ' + x + 'px, ' + height + 'px, 0)'
     const clipB = this.orientation === ORIENTATION.TOP_BOTTOM
-      ? 'rect(' + x + 'px, 999em, ' + this._bounds.height + 'px,0)'
-      : 'rect(0, 999em, ' + this._bounds.height + 'px,' + x + 'px)'
+      ? 'rect(' + x + 'px, 999em, ' + height + 'px,0)'
+      : 'rect(0, 999em, ' + height + 'px,' + x + 'px)'
 
     this._mapA.getContainer().style.clip = clipA
     this._mapB.getContainer().style.clip = clipB
@@ -322,6 +327,7 @@ Compare.prototype = {
       this._swiper.removeEventListener('mousedown', this._onDown)
       this._swiper.removeEventListener('touchstart', this._onDown)
     } else {
+      
       this._controlContainer.style.display = 'inline-block'
       //b.getContainer().style.left = '-12px'
       b.getContainer().style.transform = 'none'

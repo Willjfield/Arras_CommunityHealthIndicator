@@ -52,7 +52,9 @@
           </div>
           <div class="loading-text">
             <h2 class="loading-title">Loading Community Health Data</h2>
-            <p class="loading-subtitle">Please wait while we prepare your map...</p>
+            <!-- <p class="loading-subtitle">Please wait while we prepare your map...</p> -->
+            {{ `Loading ${categories.find((c:any) => router.options.history.state.current?.toString().includes(c.query_str))?.title} data...` }}
+            <p class="loading-subtitle">If this takes too long, please refresh the page.</p>
           </div>
           <div class="progress-container">
             <v-progress-circular 
@@ -77,7 +79,6 @@
 <script setup lang="ts">
 import { ref, inject, computed, watch, onBeforeMount } from 'vue'
 import { useRouter } from 'vue-router'
-
 const router = useRouter()
 const drawer = ref(false)
 

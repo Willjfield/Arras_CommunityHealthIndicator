@@ -70,6 +70,6 @@ export const useThemeLevelStore = defineStore('themeLevel', () => {
         }
         return null
     }
-    return { setCurrentTheme, getMainConfigForCurrentTheme, getCurrentThemeConfig, getAllCurrentThemeIndicators }
+    return { setCurrentTheme, getMainConfigForCurrentTheme, getCurrentThemeConfig, getAllCurrentThemeIndicators, currentThemeConfig }
 })
 
