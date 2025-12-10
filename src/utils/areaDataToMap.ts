@@ -27,6 +27,7 @@ export class AreaDataToMap extends DataToMap {
    * Updates the map source with enriched feature properties
    */
   async setupIndicator(year: number | null): Promise<boolean> {
+    console.log(this.side, 'areaDataToMap setupIndicator')
     await super.setupIndicator?.(year);
     this.removeOldEvents();
 

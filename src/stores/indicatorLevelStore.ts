@@ -33,6 +33,8 @@ const indicatorLevelStore = (storeName: 'left' | 'right') => {
     const currentGeoSelection = ref<string | null>(null)
     let map: maplibregl.Map | null = null
     const currentYear = ref<number | null>(DEFAULT_YEAR)
+    const minValue = ref<number | null>(null)
+    const maxValue = ref<number | null>(null)
     
     // Set the default indicator for this side (left or right)
     const defaultForSide = currentThemeIndicators?.find(
@@ -67,6 +69,8 @@ const indicatorLevelStore = (storeName: 'left' | 'right') => {
         currentYear.value = year
         if(worker) {
             await worker.setPaintAndLayoutProperties(year as number)
+            // Note: min/max values are calculated across all years in setupIndicator,
+            // so they don't need to be updated when year changes
         }
     }
     function getCurrentYear(): number | null {
@@ -100,7 +104,7 @@ const indicatorLevelStore = (storeName: 'left' | 'right') => {
                 worker.hideLayers();
                 worker = null;
             }
-
+            console.log(storeName)
             // Create new worker for this indicator
             worker = createDataToMapWorker(
                 indicator,
@@ -132,7 +136,11 @@ const indicatorLevelStore = (storeName: 'left' | 'right') => {
                 let defaultYear = null;
                 if (defaultYears !== null && defaultYears.length > 0) {
                     defaultYear = defaultYears[defaultYears.length - 1];
+                    console.log(storeName, 'setting indicator', defaultYear)
                     await worker.setupIndicator(defaultYear);
+                    // Update min/max values from worker after setup
+                    minValue.value = (worker as any).minValue ?? null;
+                    maxValue.value = (worker as any).maxValue ?? null;
                 }
                 
                 await setCurrentYear(defaultYear);
@@ -152,7 +160,15 @@ const indicatorLevelStore = (storeName: 'left' | 'right') => {
         return currentIndicator.value || null
     }
 
-    return { setIndicatorFromIndicatorShortName, getCurrentIndicator, initializeMap, removeMap, setCurrentYear, getCurrentYear, getCurrentGeoSelection, setCurrentGeoSelection }
+    function getMinValue(): number | null {
+        return minValue.value
+    }
+
+    function getMaxValue(): number | null {
+        return maxValue.value
+    }
+
+    return { setIndicatorFromIndicatorShortName, getCurrentIndicator, initializeMap, removeMap, setCurrentYear, getCurrentYear, getCurrentGeoSelection, setCurrentGeoSelection, getMinValue, getMaxValue, minValue, maxValue }
 }
 
 // This is where the difference is to make unique stores:

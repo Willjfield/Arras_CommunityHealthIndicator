@@ -22,6 +22,9 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { inject } from 'vue'
+import { storeToRefs } from 'pinia'
+import { useIndicatorLevelStore } from '../stores/indicatorLevelStore'
+
 const arrasBranding = inject('arrasBranding') as any
 interface Props {
   selectedIndicator: any
@@ -29,6 +32,10 @@ interface Props {
 }
 
 const props = defineProps<Props>()
+
+const indicatorLevelStore = useIndicatorLevelStore(props.side)
+// Use storeToRefs to get reactive refs from the store
+const { minValue: storeMinValue, maxValue: storeMaxValue } = storeToRefs(indicatorLevelStore)
 
 const indicatorDescription = computed(() => {
   if(props.selectedIndicator?.ratePer) {
@@ -40,14 +47,14 @@ const indicatorDescription = computed(() => {
   return '%';
 })
 
-
-
 const minValue = computed(() => {
-  return props.selectedIndicator?.style?.min?.value || 0
+  // Get min value from store (side-specific), fallback to indicator config default
+  return storeMinValue.value ?? props.selectedIndicator?.style?.min?.value ?? 0
 })
 
 const maxValue = computed(() => {
-  return props.selectedIndicator?.style?.max?.value || 100
+  // Get max value from store (side-specific), fallback to indicator config default
+  return storeMaxValue.value ?? props.selectedIndicator?.style?.max?.value ?? 100
 })
 
 const minColor = computed(() => {

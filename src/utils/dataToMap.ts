@@ -66,12 +66,11 @@ export class DataToMap {
 
   async setupIndicator(year: number | null): Promise<boolean> {
     this.year = year || this.year || null;
-    
+    console.log(this.side, 'setupIndicator')
     const { minValue, maxValue } = this.getMinMaxValues();
     this.minValue = minValue;
     this.maxValue = maxValue;
-    this.data.style.min.value = minValue;
-    this.data.style.max.value = maxValue;
+    // Don't mutate shared indicator config - values are stored in instance properties
     return true;
   }
 
@@ -87,11 +86,12 @@ export class DataToMap {
    */
   getGradientExpression() {
     const data = this.data;
-    const { minValue, maxValue } = this.getMinMaxValues();
+    // Use instance properties if available, otherwise calculate
+    const minValue = this.minValue ?? this.getMinMaxValues().minValue;
+    const maxValue = this.maxValue ?? this.getMinMaxValues().maxValue;
     const minColor = this.arrasBranding.colors[data.style.min.color];
     const maxColor = this.arrasBranding.colors[data.style.max.color];
-    this.data.style.min.value = minValue;
-    this.data.style.max.value = maxValue;
+    // Don't mutate shared indicator config - values are stored in instance properties
     
     if (
       !data ||
