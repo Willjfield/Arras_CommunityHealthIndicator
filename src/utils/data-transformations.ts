@@ -51,18 +51,7 @@ function formatGoogleSheetData(csvString: string) {
         .split("005700").join("0570")
         .split("002300").join("0230");
     }
-    //Some data should be percentages but is not formatted correctly
-    Object.keys(row).forEach((key) => {
-      if (
-        !key.includes("Count_") &&
-        row[key] &&
-        !isNaN(Number(row[key])) &&
-        Number(row[key]) > 0 &&
-        Number(row[key]) < 1
-      ) {
-        row[key] = (Number(row[key]) * 100).toString();
-      }
-    });
+   
   });
 
   return {
