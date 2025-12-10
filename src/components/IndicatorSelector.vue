@@ -23,19 +23,12 @@ const indicatorStore = useIndicatorLevelStore(props.side)
 const themeLevelStore = useThemeLevelStore()
 const emitter = inject('mitt') as any
 
-const emit = defineEmits<{
-  //indicatorChanged: [indicator: any, side: 'left' | 'right']
-}>()
-
 const handleIndicatorChange = async (indicator: any) => {
-  console.log(props.side)
-  console.log(indicator)
   await indicatorStore.setIndicatorFromIndicatorShortName(indicator.short_name, emitter)
 
   // Emit event for parent component
   //emit('indicatorChanged', [indicator, props.side])
   emitter?.emit(`indicator-changed-${props.side}`, indicator, props.side)
-  console.log(`indicator-changed-${props.side}`, indicator, props.side)
 }
 
 // Expose the indicatorStore so parent can access it if needed

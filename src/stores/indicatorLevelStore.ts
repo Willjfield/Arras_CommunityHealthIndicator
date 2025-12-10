@@ -104,7 +104,6 @@ const indicatorLevelStore = (storeName: 'left' | 'right') => {
                 worker.hideLayers();
                 worker = null;
             }
-            console.log(storeName)
             // Create new worker for this indicator
             worker = createDataToMapWorker(
                 indicator,
@@ -136,7 +135,6 @@ const indicatorLevelStore = (storeName: 'left' | 'right') => {
                 let defaultYear = null;
                 if (defaultYears !== null && defaultYears.length > 0) {
                     defaultYear = defaultYears[defaultYears.length - 1];
-                    console.log(storeName, 'setting indicator', defaultYear)
                     await worker.setupIndicator(defaultYear);
                     // Update min/max values from worker after setup
                     minValue.value = (worker as any).minValue ?? null;

@@ -47,11 +47,11 @@
                   :style="{ backgroundColor: maxColor }" /></td>
             </tr>
             <tr class="legend-labels">
-              <td style="text-align: left;"><span class="min-label">{{ minValue.toFixed(0) }} or less {{ indicatorDescription }}</span>
+              <td style="text-align: left;"><span class="min-label">{{ minValue.toFixed(0) }} {{minValue === 0 ? '' : 'or less'}} {{ indicatorDescription }}</span>
               </td>
               <td style="text-align: center;"><span class="mid-label">{{ (maxValue / 2).toFixed(0) }} {{
                   indicatorDescription }}</span></td>
-              <td style="text-align: right;"><span class="max-label">{{ maxValue.toFixed(0) }} or more {{ indicatorDescription }}</span>
+              <td style="text-align: right;"><span class="max-label">{{ maxValue.toFixed(0) }} {{maxValue === 100 ? '' : 'or more'}} {{ indicatorDescription }}</span>
               </td>
             </tr>
           </tbody>
@@ -94,7 +94,6 @@ for(let i=0; i<cohortKeys.length; i++) {
   
   const min = Math.min(...values);
   const max = Math.max(...values);
-  console.log(key, min, max);
   if(min < minCohortValue) {
     minCohortValue = min;
   }

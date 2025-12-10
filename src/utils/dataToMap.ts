@@ -1,5 +1,5 @@
 import type { IndicatorConfig } from "../types/IndicatorConfig";
-import type { Map } from "maplibre-gl";
+import type { Map, MapGeoJSONFeature } from "maplibre-gl";
 import type { Emitter } from "mitt";
 import maplibregl from "maplibre-gl";
 import { createApp, type App, reactive } from "vue";
@@ -29,8 +29,8 @@ export class DataToMap {
   protected popup: any = null;
   protected frozenPopup: boolean = false;
   protected popupApp: App | null = null;
-  protected highlightedGeoid: string | null = null;
-  protected lastPopupGeoid: string | null = null;
+  protected highlightedGeoid: string | null | MapGeoJSONFeature = null;
+  protected lastPopupGeoid: string | null | MapGeoJSONFeature = null;
   protected popupProperties: ReturnType<typeof reactive> | null = null;
   protected arrasBranding: any;
   protected sitePath: string;
@@ -66,7 +66,6 @@ export class DataToMap {
 
   async setupIndicator(year: number | null): Promise<boolean> {
     this.year = year || this.year || null;
-    console.log(this.side, 'setupIndicator')
     const { minValue, maxValue } = this.getMinMaxValues();
     this.minValue = minValue;
     this.maxValue = maxValue;
