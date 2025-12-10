@@ -33,3 +33,12 @@ pre-K enrollment update
 
 Cohort_ is size of points
 Percent - should be color
+--------------------
+multiplied by 100
+vehicles?
+rm - unemployment
+---------------------
+children in pov - is it finished?
+Housing burdened - check 2023 count - seems to be percent * 100
+
+overall - transparent where there's no value, popups should be grayed out, children in pov finished?

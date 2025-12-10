@@ -329,9 +329,9 @@ const createChart = () => {
     .append('text')
     .attr('class', 'data-point-label')
     .attr('x', d => xScale(d.year) + 4)
-    .attr('y', d => yScale(d.value!) + 10)
+    .attr('y', d => yScale(d.value!) + 12)
     .attr('text-anchor', 'left')
-    .style('font-size', '9px')
+    .style('font-size', '12px')
     .style('font-weight', 'bold')
     .style('fill', '#08f')
     .style('pointer-events', 'none')
@@ -339,11 +339,11 @@ const createChart = () => {
       if (useRateForOverall.value) {
         return d?.value?.toLocaleString()
           + ' '
-          + indicatorStore.getCurrentIndicator()?.totalAmntOf === 'dollars' ? '$' : ''
-          + ' per ' + indicatorStore.getCurrentIndicator()?.ratePer?.toLocaleString() || indicatorStore.getCurrentIndicator()?.geotype
+          + indicatorStore?.getCurrentIndicator()?.totalAmntOf === 'dollars' ? '$' : ''
+          + ' per ' + indicatorStore?.getCurrentIndicator()?.ratePer?.toLocaleString() || indicatorStore?.getCurrentIndicator()?.geotype || ''
         + ' avg.';
       }
-      return (indicatorStore.getCurrentIndicator()?.totalAmntOf === 'dollars' ? '$' : '') + d?.value?.toLocaleString();
+      return (indicatorStore?.getCurrentIndicator()?.totalAmntOf === 'dollars' ? '$' : '') + (d?.value?.toLocaleString() || '') +  (indicatorStore?.getCurrentIndicator()?.has_pct && !indicatorStore?.getCurrentIndicator()?.totalAmntOf ? '%' : '');
     })
 
 
@@ -375,11 +375,11 @@ const addFeatureLine = (feature: string) => {
     .y(d => yScale(d.value!))
     .curve(d3.curveMonotoneX)
 
-  d3.selectAll('.data-feature-point').remove()
-  d3.selectAll('.data-feature-point-label').remove()
-  d3.selectAll(`.timeline-feature-line`).remove()
+  d3.selectAll(`.${props.side} .data-feature-point`).remove()
+  d3.selectAll(`.${props.side} .data-feature-point-label`).remove()
+  d3.selectAll(`.${props.side} .timeline-feature-line`).remove()
   if (statewide) {
-    d3.selectAll(`.${statewide ? 'statewide-' : ''}timeline-feature-line`).remove()
+    d3.selectAll(`.${props.side} ${statewide ? 'statewide-' : ''}timeline-feature-line`).remove()
   }
 
   // Add line
@@ -437,9 +437,9 @@ const addFeatureLine = (feature: string) => {
     .append('text')
     .attr('class', `${statewide ? 'statewide-' : ''}data-feature-point-label`)
     .attr('x', d => xScale(d.year))
-    .attr('y', d => yScale(d.value!) - 8)
+    .attr('y', d => yScale(d.value!) - 12)
     .attr('text-anchor', 'left')
-    .style('font-size', '9px')
+    .style('font-size', '12px')
     .style('font-weight', 'bold')
     .style('fill', `${statewide ? '#7d7d7d' : '#f80'}`)
     .style('pointer-events', 'none')
@@ -451,7 +451,7 @@ const addFeatureLine = (feature: string) => {
           + ' per ' + indicatorStore?.getCurrentIndicator()?.ratePer?.toLocaleString() || indicatorStore?.getCurrentIndicator()?.geotype || ''
         + ' avg.';
       }
-      return (indicatorStore?.getCurrentIndicator()?.totalAmntOf === 'dollars' ? '$' : '') + d?.value?.toLocaleString() || '';
+      return (indicatorStore?.getCurrentIndicator()?.totalAmntOf === 'dollars' ? '$' : '') + (d?.value?.toLocaleString() || '') +  (indicatorStore?.getCurrentIndicator()?.has_pct && !indicatorStore?.getCurrentIndicator()?.totalAmntOf ? '%' : '');
     })
 }
 const createAxisOnly = (data: Array<{ year: number; value: number | null }>) => {
@@ -535,7 +535,9 @@ const getMinMaxValues = () => {
 
   for (let year = 0; year < years.length; year++) {
     const yearValues = data.data
-      .filter((feature: any) => feature?.geoid.toLowerCase() !== "overall" && !feature?.geoid.toLowerCase().includes("statewide") && !feature?.name?.toLowerCase().includes("school district"))
+    .filter((feature: any) => !feature?.name?.toLowerCase().includes("school district"))
+
+      //.filter((feature: any) => feature?.geoid.toLowerCase() !== "overall" && !feature?.geoid.toLowerCase().includes("statewide") && !feature?.name?.toLowerCase().includes("school district"))
       .map((feature: any) => feature[years[year] as string])
       .filter((value: any) => value !== null && value !== undefined && !isNaN(Number(value)))
       .map((value: any) => Number(value));
@@ -562,14 +564,14 @@ const getMinMaxValues = () => {
 }
 
 const createYScale = (data: Array<{ year: number; value: number | null }>) => {
-  const values = data.map(d => d.value!).filter(v => v !== null && !isNaN(v))
+  const values = data.map(d => d.value!).filter(v => v !== null && v !== undefined && !isNaN(+v))
   if (values.length === 0) return d3.scaleLinear().domain([0, 100]).range([height - margin.bottom, margin.top])
 
   const { minValue, maxValue } = getMinMaxValues()
   const padding = (maxValue - minValue) || 1
-
+  //todo: Math.max(minValue - padding, 0)
   return d3.scaleLinear()
-    .domain([Math.max(minValue - padding, 0), maxValue])
+    .domain([minValue, maxValue])
     .range([height + margin.bottom, margin.top])
 }
 
@@ -847,6 +849,7 @@ onUnmounted(() => {
 }
 </style>
 <style>
+ 
 .orientation-top-bottom .color-legend.right {
   top: calc(50% + 3rem);
 }

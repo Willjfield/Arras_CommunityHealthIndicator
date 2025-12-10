@@ -3,10 +3,13 @@ function formatGoogleSheetData(csvString: string) {
   let shortNameRowIdx = rows.findIndex(
     (row) => !row.includes("-") && row.includes("geoid") && !row.includes(" ")
   );
-  if(shortNameRowIdx === -1) {
+  if (shortNameRowIdx === -1) {
     shortNameRowIdx = rows.findIndex(
       (row) => !row.includes("-") && row.includes("geoid")
     );
+  }
+  if (!rows[shortNameRowIdx] || !rows[shortNameRowIdx].split) {
+    console.error("No short name row found", csvString);
   }
   const headerShortNames = rows[shortNameRowIdx]
     .split(",")
@@ -24,20 +27,24 @@ function formatGoogleSheetData(csvString: string) {
           ? value.trim()
           : value.trim().toLowerCase()
       )
-      .map((value: string) =>
-        !isNaN(Number(value)) && value.includes(".")
+      .map((value: string) => {
+        if (!value || value.length === 0) {
+          return undefined;
+        }
+        return !isNaN(Number(value)) && value.includes(".")
           ? Number(value).toFixed(2)
-          : value
-      );
+          : value;
+      });
 
     return headerShortNames.reduce(
-      (acc: Record<string, string>, header: string, index: number) => {
+      (acc: Record<string, string | null>, header: string, index: number) => {
         acc[header] = values[index];
         return acc;
       },
-      {} as Record<string, string>
+      {} as Record<string, string | null>
     );
   });
+  console.log(data);
   //IPUMS data has extra zeros in the geoid, we need to remove them
   data.forEach((row) => {
     if (
@@ -46,12 +53,15 @@ function formatGoogleSheetData(csvString: string) {
     ) {
       // Using split/join to ensure compatibility with older JS/TS targets (replaceAll not supported in ES5)
       row.geoid = row.geoid
-        .split("G").join("")
-        .split("g").join("")
-        .split("005700").join("0570")
-        .split("002300").join("0230");
+        .split("G")
+        .join("")
+        .split("g")
+        .join("")
+        .split("005700")
+        .join("0570")
+        .split("002300")
+        .join("0230");
     }
-   
   });
 
   return {
@@ -60,7 +70,5 @@ function formatGoogleSheetData(csvString: string) {
     data,
   };
 }
-
-
 
 export { formatGoogleSheetData };

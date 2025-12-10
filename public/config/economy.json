@@ -9,13 +9,17 @@
       "has_count": true,
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vQLH2WHaIW_W1rCEHkcCALW2GFVgr20hRmIu2DOKyETmKi3-vMDv0dF5WFbLU47By9gDXSeTdA4oJH6/pub?gid=936536633&single=true&output=csv",
       "source_name": "tracts-harmonized",
-      "short_name": "bachelors",
+      "short_name": "bachelor_degree",
       "layers": {
         "main": "tracts-harmonized-fill",
         "outline": "tracts-harmonized-outline"
       },
-      "fill_color": ["case", ["has", "1990"], ["interpolate", ["linear"], ["to-number", ["get", "1990"]]], "#0000"]
-
+      "fill_color": [
+        "case",
+        ["has", "1990"],
+        ["interpolate", ["linear"], ["to-number", ["get", "1990"]]],
+        "#0000"
+      ]
     },
     {
       "title": "Children in Concentrated Poverty",
@@ -31,8 +35,12 @@
         "main": "tracts-harmonized-fill",
         "outline": "tracts-harmonized-outline"
       },
-      "fill_color": ["case", ["has", "1990"], ["interpolate", ["linear"], ["to-number", ["get", "1990"]]], "#0000"]
-
+      "fill_color": [
+        "case",
+        ["has", "1990"],
+        ["interpolate", ["linear"], ["to-number", ["get", "1990"]]],
+        "#0000"
+      ]
     },
     {
       "title": "Median Household Income",
@@ -41,7 +49,7 @@
       "default": false,
       "has_pct": true,
       "has_count": true,
-      "totalAmntOf":"dollars",
+      "totalAmntOf": "dollars",
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRxBdPEeiYzDaPP8ZRebLlTvX_OzEFwRL6c7zC45u0HES0ZlD5v2o8tUdL0xcBmYKTpCL_I4ALJoWNR/pub?gid=956489115&single=true&output=csv",
       "source_name": "tracts-harmonized",
       "short_name": "hh-income",
@@ -49,8 +57,12 @@
         "main": "tracts-harmonized-fill",
         "outline": "tracts-harmonized-outline"
       },
-      "fill_color": ["case", ["has", "1990"], ["interpolate", ["linear"], ["to-number", ["get", "1990"]]], "#0000"]
-
+      "fill_color": [
+        "case",
+        ["has", "1990"],
+        ["interpolate", ["linear"], ["to-number", ["get", "1990"]]],
+        "#0000"
+      ]
     },
     {
       "title": "Housing cost burdened households (30% or more of income)",
@@ -66,8 +78,138 @@
         "main": "tracts-harmonized-fill",
         "outline": "tracts-harmonized-outline"
       },
-      "fill_color": ["case", ["has", "1990"], ["interpolate", ["linear"], ["to-number", ["get", "1990"]]], "#0000"]
-
+      "fill_color": [
+        "case",
+        ["has", "1990"],
+        ["interpolate", ["linear"], ["to-number", ["get", "1990"]]],
+        "#0000"
+      ]
+    },
+    {
+      "title": "% adults (ages 25+) with a high school diploma or equivalent",
+      "geolevel": "area",
+      "geotype": "tract",
+      "default": false,
+      "has_pct": true,
+      "has_count": true,
+      "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vQfEBRwU2Zwqtbt3hzpobMszogf7jUrvcxHIXbAmzaNlTGafpTgroY3P0wJyXr9FRy8QJbJJyBLoBeR/pub?gid=1453198124&single=true&output=csv",
+      "source_name": "tracts-harmonized",
+      "short_name": "hs_grads",
+      "layers": {
+        "main": "tracts-harmonized-fill",
+        "outline": "tracts-harmonized-outline"
+      },
+      "fill_color": [
+        "case",
+        ["has", "1990"],
+        ["interpolate", ["linear"], ["to-number", ["get", "1990"]]],
+        "#0000"
+      ]
+    },
+    {
+      "title": "Workers with long commutes (45 minutes or more)",
+      "geolevel": "area",
+      "geotype": "tract",
+      "default": false,
+      "has_pct": true,
+      "has_count": true,
+      "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vT67ITh6KidlwFKzHeQNGkKULuRnRhp2T6KzAUnVUgfo9m0VD26KcpOVJL1pmqk7TDetCNUXNChn_hl/pub?gid=175542881&single=true&output=csv",
+      "source_name": "tracts-harmonized",
+      "short_name": "long_commute",
+      "layers": {
+        "main": "tracts-harmonized-fill",
+        "outline": "tracts-harmonized-outline"
+      },
+      "fill_color": [
+        "case",
+        ["has", "1990"],
+        ["interpolate", ["linear"], ["to-number", ["get", "1990"]]],
+        "#0000"
+      ]
+    },
+    {
+      "title": "Percent of people living in poverty",
+      "geolevel": "area",
+      "geotype": "tract",
+      "default": false,
+      "has_pct": true,
+      "has_count": true,
+      "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRnru_GVIY34kQpl2sYDTCXMFWT_GGtaq6qU9YGKbTIwXdiqI63GdfhVUmzSaDaHUz9pFreEcWXRHJ3/pub?gid=1994802547&single=true&output=csv",
+      "source_name": "tracts-harmonized",
+      "short_name": "people_in_pov",
+      "layers": {
+        "main": "tracts-harmonized-fill",
+        "outline": "tracts-harmonized-outline"
+      },
+      "fill_color": [
+        "case",
+        ["has", "1990"],
+        ["interpolate", ["linear"], ["to-number", ["get", "1990"]]],
+        "#0000"
+      ]
+    },
+    {
+      "title": "Working population (civilians in workforce) living below the poverty line",
+      "geolevel": "area",
+      "geotype": "tract",
+      "default": false,
+      "has_pct": true,
+      "has_count": true,
+      "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vS4ioVC9PmujjHYlkLhZUNYF22RmqsGOXEgPzKvOwVb5OWWr0Q6Tm6OpMhnyyxte9u0d38mp5fYxbDv/pub?gid=1087215282&single=true&output=csv",
+      "source_name": "tracts-harmonized",
+      "short_name": "workforce_in_pov",
+      "layers": {
+        "main": "tracts-harmonized-fill",
+        "outline": "tracts-harmonized-outline"
+      },
+      "fill_color": [
+        "case",
+        ["has", "1990"],
+        ["interpolate", ["linear"], ["to-number", ["get", "1990"]]],
+        "#0000"
+      ]
+    },
+    {
+      "title": "Unemployment Rate",
+      "geolevel": "area",
+      "geotype": "tract",
+      "default": false,
+      "has_pct": true,
+      "has_count": true,
+      "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vQerb-iOq-zzpATcIUQ43K34qWDe1bE4gHBRQJYhSjLxeMOm83ALT3FVcGqihxt_1k4qBRhQ0WocHRB/pub?gid=1933545590&single=true&output=csv",
+      "source_name": "tracts-harmonized",
+      "short_name": "unemployment_rate",
+      "layers": {
+        "main": "tracts-harmonized-fill",
+        "outline": "tracts-harmonized-outline"
+      },
+      "fill_color": [
+        "case",
+        ["has", "1990"],
+        ["interpolate", ["linear"], ["to-number", ["get", "1990"]]],
+        "#0000"
+      ]
+    },
+    {
+      "title": "Substandard housing units",
+      "geolevel": "area",
+      "geotype": "tract",
+      "default": false,
+      "has_pct": true,
+      "has_count": true,
+      "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRnL5GlWMLotD1OY_nU_L712aq6VcN6r5I6S0g5D_CC5TceMqofVscOxlnioXwgjTvoDzUOoMtCJNAG/pub?gid=1379297340&single=true&output=csv",
+      "source_name": "tracts-harmonized",
+      "short_name": "substandard_housing",
+      "layers": {
+        "main": "tracts-harmonized-fill",
+        "outline": "tracts-harmonized-outline"
+      },
+      "fill_color": [
+        "case",
+        ["has", "1990"],
+        ["interpolate", ["linear"], ["to-number", ["get", "1990"]]],
+        "#0000"
+      ]
     }
   ]
 }
