@@ -3,8 +3,13 @@ import { DataToMap } from "./dataToMap";
 import type { Map } from "maplibre-gl";
 import type { Emitter } from "mitt";
 
-//import { toRaw } from "vue";
+/**
+ * Handles area-based (polygon) data visualization on maps
+ * Extends DataToMap to provide area-specific functionality like fill colors and outlines
+ */
 export class AreaDataToMap extends DataToMap {
+  selectedGeography: string | null = null;
+
   constructor(
     data: IndicatorConfig,
     map: Map,
@@ -13,17 +18,21 @@ export class AreaDataToMap extends DataToMap {
     arrasBranding?: any,
     sitePath?: string
   ) {
-    super(data, map, side, emitter, arrasBranding as any, sitePath);
+    super(data, map, side, emitter, arrasBranding, sitePath);
     this.selectedGeography = null;
   }
-  selectedGeography: string | null;
 
+  /**
+   * Sets up the indicator by merging Google Sheets data with GeoJSON features
+   * Updates the map source with enriched feature properties
+   */
   async setupIndicator(year: number | null): Promise<boolean> {
     await super.setupIndicator?.(year);
     this.removeOldEvents();
 
-    const map: Map = (this as any).map;
-    const data: IndicatorConfig = (this as any).data;
+    // Access protected map property through type assertion
+    const map = (this as any).map as Map;
+    const data = this.data;
 
     const source: any = map.getSource(data.source_name);
     const geojson = await source.getData();
@@ -56,12 +65,16 @@ export class AreaDataToMap extends DataToMap {
     super.removeOldEvents();
   }
 
+  /**
+   * Adds event handlers for mouse interactions on area features
+   * Handles hover highlighting, popup display, and click selection
+   */
   addNewEvents() {
     super.addNewEvents();
-    const map = (this as any).map;
-    const mainLayer = (this as any).data.layers.main;
+    const map = (this as any).map as Map;
+    const mainLayer = this.data.layers.main;
     if (!map) return;
-    const data = (this as any).data;
+    const data = this.data;
 
     this.events.mousemove = (event: any) => {
       // Create popup once
@@ -154,18 +167,31 @@ export class AreaDataToMap extends DataToMap {
   }
 
  
+  /**
+   * Applies paint and layout properties to area layers
+   * Sets fill color gradient based on data values and makes layers visible
+   */
   async setPaintAndLayoutProperties(year: number | null) {
     await super.setPaintAndLayoutProperties(year);
-    const map = (this as any).map;
+    const map = (this as any).map as Map;
     if (!map) return false;
-    const data = (this as any).data;
+    const data = this.data;
     const fillColor = this.getGradientExpression();
-    console.log(fillColor);
+    
+    if (!fillColor) {
+      console.error("Failed to generate gradient expression");
+      return false;
+    }
+    
     map.setPaintProperty(data.layers.main, "fill-color", fillColor);
     map.setLayoutProperty(data.layers.main, "visibility", "visible");
     return true;
   }
 
+  /**
+   * Area data uses existing GeoJSON sources, so this is a no-op
+   * The GeoJSON is already loaded from the map style
+   */
   generateGeojson() {
     super.generateGeojson();
   }

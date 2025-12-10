@@ -2,6 +2,15 @@ import type { IndicatorConfig } from "../types/IndicatorConfig";
 import { DataToMap } from "./dataToMap";
 import { type Map } from "maplibre-gl";
 import type { Emitter } from "mitt";
+import {
+  POINT_SIZE_MIN,
+  POINT_SIZE_MAX,
+  POINT_SIZE_VALUE_MIN,
+  POINT_SIZE_VALUE_MAX,
+  CIRCLE_OPACITY_DEFAULT,
+  CIRCLE_OPACITY_HOVER,
+  EXCLUDED_GEO_PATTERNS,
+} from "../constants";
 
 export class PointDataToMap extends DataToMap {
   maxDataValue: number;
@@ -21,15 +30,19 @@ export class PointDataToMap extends DataToMap {
     this.arrasBranding = arrasBranding as any;
   }
 
+  /**
+   * Generates a MapLibre GL expression for circle radius based on data values
+   * Uses Cohort_ prefix if both count and percentage are available, otherwise Count_ prefix
+   * @returns MapLibre expression array for circle-radius property
+   */
   getSizeExpression() {
-    const minValue = 10;
-    const maxValue = 400;
-
+    const data = this.data;
     let propAccessor = '';
-    if((this as any).data.has_count && (this as any).data.has_pct) {
+    
+    if (data.has_count && data.has_pct) {
       propAccessor = `Cohort_${this.year}`;
-    }else {
-     propAccessor = `Count_${this.year}`;
+    } else {
+      propAccessor = `Count_${this.year}`;
     }
 
     const sizeExp = [
@@ -39,14 +52,14 @@ export class PointDataToMap extends DataToMap {
         "interpolate",
         ["linear"],
         ["to-number", ["get", propAccessor]],
-        minValue,
-        3,
-        maxValue,
-        20,
+        POINT_SIZE_VALUE_MIN,
+        POINT_SIZE_MIN,
+        POINT_SIZE_VALUE_MAX,
+        POINT_SIZE_MAX,
       ],
-      6,
+      POINT_SIZE_MIN + 3, // Default size when no data
     ];
-    console.log(sizeExp);
+    
     return sizeExp;
   }
 
@@ -59,20 +72,25 @@ export class PointDataToMap extends DataToMap {
       : `${this.year}`;
     this.minDataValue = Math.min(
       ...geojson.features.map(
-        (feature: any) => +feature.properties[propAccessor] || 9999999999999
+        (feature: any) => +feature.properties[propAccessor] || Number.MAX_SAFE_INTEGER
       )
     );
     this.maxDataValue = Math.max(
       ...geojson.features.map((feature: any) => {
-        if (feature.properties.geoid.toLowerCase().includes("overall") || feature.properties.geoid.toLowerCase().includes("statewide") || feature.properties.name.toLowerCase().includes("school district")) {
+        const geoid = feature.properties.geoid?.toLowerCase() || '';
+        const name = feature.properties.name?.toLowerCase() || '';
+        const isExcluded = EXCLUDED_GEO_PATTERNS.some(pattern => 
+          geoid.includes(pattern) || name.includes(pattern)
+        );
+        if (isExcluded) {
           return -1;
         }
         return +feature.properties[propAccessor] || -1;
       })
     );
 
-    const map: Map = (this as any).map;
-    const data: IndicatorConfig = (this as any).data;
+    const map = (this as any).map as Map;
+    const data = this.data;
     const source: any = await map.getSource(data.source_name);
 
     if (source && typeof source.setData === "function") {
@@ -89,15 +107,16 @@ export class PointDataToMap extends DataToMap {
     super.removeOldEvents();
   }
 
+  /**
+   * Adds event handlers for mouse interactions on point features
+   * Handles hover highlighting, popup display, and click to freeze/unfreeze popup
+   */
   addNewEvents() {
     super.addNewEvents();
-    const map = (this as any).map;
-    const mainLayer = (this as any).data.layers.main;
+    const map = (this as any).map as Map;
+    const mainLayer = this.data.layers.main;
 
     if (!map) return;
-
-    // Create popup once
-    //this.createPopupIfNeeded();
 
     this.events.mousemove = (event: any) => {
       if (this.frozenPopup) return;
@@ -107,7 +126,7 @@ export class PointDataToMap extends DataToMap {
       });
 
       if (features.length === 0) {
-        map.setPaintProperty(mainLayer, "circle-opacity", 0.75);
+        map.setPaintProperty(mainLayer, "circle-opacity", CIRCLE_OPACITY_DEFAULT);
         this.removePopup();
         this.emitter?.emit(`feature-${this.side || "left"}-hovered`, null);
         this.emitter?.emit(`feature-name-${this.side || "left"}-hovered`, null);
@@ -116,8 +135,8 @@ export class PointDataToMap extends DataToMap {
         map.setPaintProperty(mainLayer, "circle-opacity", [
           "case",
           ["==", ["get", "geoid"], features[0].properties.geoid],
-          1,
-          0.75,
+          CIRCLE_OPACITY_HOVER,
+          CIRCLE_OPACITY_DEFAULT,
         ]);
 
         // Show popup with Vue component
@@ -145,15 +164,20 @@ export class PointDataToMap extends DataToMap {
     map.on("click", this.events.click);
   }
 
+  /**
+   * Applies paint and layout properties to point layers
+   * Sets circle radius, color, opacity, and sort key based on data values
+   */
   async setPaintAndLayoutProperties(year: number | null) {
     await super.setPaintAndLayoutProperties(year);
-    const map = (this as any).map;
+    const map = (this as any).map as Map;
     if (!map) return false;
-    const mainLayer = (this as any).data.layers.main;
+    const mainLayer = this.data.layers.main;
     map.setLayoutProperty(mainLayer, "visibility", "visible");
     map.setPaintProperty(mainLayer, "circle-radius", this.getSizeExpression());
-    map.setPaintProperty(mainLayer, "circle-opacity", 0.75);
-    // const sortKey = this.getSortKeyExpression();
+    map.setPaintProperty(mainLayer, "circle-opacity", CIRCLE_OPACITY_DEFAULT);
+    
+    // Set sort key to ensure larger circles render on top
     map.setLayoutProperty(mainLayer, "circle-sort-key", [
       "case",
       ["has", `Cohort_${this.year}`],
@@ -165,10 +189,9 @@ export class PointDataToMap extends DataToMap {
       0,
     ]);
 
-    // const data = (this as any).data;
-    const maxColor = this.arrasBranding.colors[(this as any).data.style.max.color];
+    const maxColor = this.arrasBranding.colors[this.data.style.max.color];
     const circleColor =
-      (this as any).data.has_count && !(this as any).data.has_pct
+      this.data.has_count && !this.data.has_pct
         ? maxColor
         : this.getGradientExpression();
 
@@ -179,10 +202,14 @@ export class PointDataToMap extends DataToMap {
     return true;
   }
 
+  /**
+   * Generates GeoJSON from Google Sheets data
+   * Converts tabular data with lat/lng coordinates into GeoJSON Point features
+   * @returns GeoJSON FeatureCollection with Point geometries
+   */
   generateGeojson() {
     super.generateGeojson();
-    // Fix: Access private 'data' property through 'as any'
-    const rawGoogleData = (this as any).data.google_sheets_data.data;
+    const rawGoogleData = this.data.google_sheets_data.data;
     const geojson = {
       type: "FeatureCollection",
       features: rawGoogleData.map((row: any) => {

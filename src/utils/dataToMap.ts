@@ -5,11 +5,23 @@ import maplibregl from "maplibre-gl";
 import { createApp, type App, reactive } from "vue";
 import Popup from "../components/Popup.vue";
 import vuetify from "../plugins/vuetify.js";
-//import useIndicatorLevelStore from "../stores/indicatorLevelStore.js";
+import {
+  YEAR_PATTERN,
+  COUNT_PREFIX,
+  EXCLUDED_GEO_PATTERNS,
+  MIN_PERCENTAGE,
+  MAX_PERCENTAGE,
+  MIN_MULTIPLIER,
+  MAX_MULTIPLIER,
+} from "../constants";
 
+/**
+ * Base class for mapping indicator data to MapLibre GL maps
+ * Handles common functionality for both area and point-based visualizations
+ */
 export class DataToMap {
   readonly data: IndicatorConfig;
-  private readonly map: Map;
+  protected readonly map: Map;
   protected readonly emitter?: Emitter<any>;
   events: { click: any; mousemove: any; mouseleave: any };
   year: number | null;
@@ -63,15 +75,24 @@ export class DataToMap {
     return true;
   }
 
+  /**
+   * Generates GeoJSON from data
+   * Overridden by subclasses (AreaDataToMap uses existing sources, PointDataToMap generates from coordinates)
+   */
   generateGeojson() {}
 
+  /**
+   * Generates a MapLibre GL expression for gradient fill color based on data values
+   * @returns MapLibre expression array or false if data is invalid
+   */
   getGradientExpression() {
-    const data: IndicatorConfig = (this as any).data;
+    const data = this.data;
     const { minValue, maxValue } = this.getMinMaxValues();
     const minColor = this.arrasBranding.colors[data.style.min.color];
     const maxColor = this.arrasBranding.colors[data.style.max.color];
     this.data.style.min.value = minValue;
     this.data.style.max.value = maxValue;
+    
     if (
       !data ||
       !data.layers ||
@@ -90,9 +111,21 @@ export class DataToMap {
       return false;
     }
 
-    // Replace the year string at the correct index with the selected year from this.year
-    const fillExp = ["case", ["has", String(this.year ?? -1)], ["interpolate", ["linear"], ["to-number", ["get", String(this.year ?? -1)]],
-    minValue, minColor, maxValue, maxColor], "#0000"]
+    // Create MapLibre expression: interpolate color based on year value
+    const fillExp = [
+      "case",
+      ["has", String(this.year ?? -1)],
+      [
+        "interpolate",
+        ["linear"],
+        ["to-number", ["get", String(this.year ?? -1)]],
+        minValue,
+        minColor,
+        maxValue,
+        maxColor
+      ],
+      "#0000"
+    ];
 
     if (!data.layers.main) {
       console.error("data.layers.main is undefined");
@@ -100,6 +133,10 @@ export class DataToMap {
     }
     return fillExp;
   }
+  /**
+   * Hides all layers associated with this indicator
+   * Used when switching indicators or cleaning up
+   */
   hideLayers() {
     if (!this.map) return;
     if (this.data.layers.main) {
@@ -149,12 +186,16 @@ export class DataToMap {
       this.popup = null;
     }
   }
+  /**
+   * Adds base event handlers for mouse interactions
+   * Subclasses override this to add their specific event handling
+   */
   addNewEvents() {
     this.events.mouseleave = () => {
-      if(this.frozenPopup || !this.popup) return;
+      if (this.frozenPopup || !this.popup) return;
       this.removePopup();
     };
-    const mainLayer = (this as any).data.layers.main;
+    const mainLayer = this.data.layers.main;
     this.map.on("mouseleave", mainLayer, this.events.mouseleave);
 
     this.events.mousemove = (event: any) => {
@@ -179,23 +220,32 @@ export class DataToMap {
     this.map.on("mousemove", this.events.mousemove);
   }
 
+  /**
+   * Creates a MapLibre popup instance if one doesn't exist
+   * Popup is reused across interactions to improve performance
+   */
   protected createPopupIfNeeded() {
     if (!this.popup) {
       this.popup = new maplibregl.Popup({
         closeButton: true,
         closeOnClick: false,
         closeOnMove: false,
-        // offset: this.side === 'right' ? [-10, 0] : [10, 0],
-        // anchor: this.side as 'left' | 'right' | undefined,
         focusAfterOpen: false,
       });
     }
   }
 
+  /**
+   * Shows a popup at the specified location with feature properties
+   * Optimizes performance by reusing Vue app instances when the same feature is hovered
+   * @param lngLat - Map coordinates where popup should appear
+   * @param properties - Feature properties to display in popup
+   * @param side - Which map side ('left' or 'right') for unique container ID
+   */
   protected showPopup(lngLat: any, properties: any, side: "left" | "right") {
     if (!this.map) return;
 
-    // Get the geoid from properties (could be properties.geoid or properties.id, etc.)
+    // Get the geoid from properties to detect if we're hovering the same feature
     const currentGeoid = properties?.geoid || properties?.id || null;
     const geoidChanged = currentGeoid !== this.lastPopupGeoid;
 
@@ -231,10 +281,11 @@ export class DataToMap {
         }).use(vuetify);
         this.popupApp.mount(popupContainer);
 
-        // Update last geoid
+        // Update last geoid to track which feature is currently displayed
         this.lastPopupGeoid = currentGeoid;
       } else {
         // Same geoid - just update the reactive properties by copying new values
+        // This avoids unnecessary Vue component recreation
         if (this.popupProperties) {
           Object.assign(this.popupProperties, properties);
         }
@@ -242,6 +293,10 @@ export class DataToMap {
     }
   }
 
+  /**
+   * Removes the popup from the map and cleans up Vue app instance
+   * Called when mouse leaves a feature or when switching indicators
+   */
   protected removePopup() {
     if (this.popupApp) {
       this.popupApp.unmount();
@@ -255,60 +310,98 @@ export class DataToMap {
     this.popupProperties = null;
   }
 
+  /**
+   * Sets basic paint and layout properties for map layers
+   * Makes main and outline layers visible
+   * Subclasses override this to add their specific styling
+   * @param year - The year to apply properties for
+   * @returns Promise resolving to true on success, false on failure
+   */
   async setPaintAndLayoutProperties(year: number | null) {
     if (!this.map) return false;
     this.year = year || this.year || null;
 
-      if (this.map && this.data.layers.main) {
-        this.map.setLayoutProperty(
-          this.data.layers.main,
-          "visibility",
-          "visible"
-        );
-      }
-      if (this.map && this.data.layers.outline) {
-        this.map.setLayoutProperty(
-          this.data.layers.outline,
-          "visibility",
-          "visible"
-        );
-      }
-      return true;
-    
+    if (this.map && this.data.layers.main) {
+      this.map.setLayoutProperty(
+        this.data.layers.main,
+        "visibility",
+        "visible"
+      );
+    }
+    if (this.map && this.data.layers.outline) {
+      this.map.setLayoutProperty(
+        this.data.layers.outline,
+        "visibility",
+        "visible"
+      );
+    }
+    return true;
   }
 
-  
+  /**
+   * Calculates min and max values across all years in the dataset
+   * Filters out excluded geographies (overall, statewide, school districts)
+   * @returns Object with minValue and maxValue
+   */
   getMinMaxValues() {
-    const data: IndicatorConfig = (this as any).data;
+    const data = this.data;
     
-      //todo: this has to get min and max from all the  years, not just this year
-    let years = data.google_sheets_data.headerShortNames.filter((year: string) => /^\d{4}$/.test(year) && !isNaN(Number(year)));
-   if(years.length === 0) {
-    years = data.google_sheets_data.headerShortNames.filter((year: string) => year.startsWith('Count_'));
-   }
-    let minValue = 9999999999999;
-    let maxValue = 0;
-    for(let year=0; year<years.length; year++) {
-      const yearValues = data.google_sheets_data.data
-      .filter((feature: any) => feature?.geoid.toLowerCase() !== "overall" && !feature?.geoid.toLowerCase().includes("statewide") && !feature?.name?.toLowerCase().includes("school district"))
-      .map((feature: any) => feature[years[year] as string])
-      .filter((value: any) => value !== null && value !== undefined && !isNaN(Number(value)) && value > 0);
-      const thisyearMinValue = Math.min(...yearValues);
-      const thisyearMaxValue = Math.max(...yearValues);
-      if(+thisyearMinValue < minValue) {
-        minValue = +thisyearMinValue;
-      }
-      if(+thisyearMaxValue > maxValue) {
-        maxValue = +thisyearMaxValue;
-      }
-     
+    // Find year columns - either 4-digit years or Count_ prefixed columns
+    let years = data.google_sheets_data.headerShortNames.filter(
+      (year: string) => YEAR_PATTERN.test(year) && !isNaN(Number(year))
+    );
+    if (years.length === 0) {
+      years = data.google_sheets_data.headerShortNames.filter(
+        (year: string) => year.startsWith(COUNT_PREFIX)
+      );
     }
-    if(this.data.has_pct && !this.data.totalAmntOf) {
+    
+    let minValue = Number.MAX_SAFE_INTEGER;
+    let maxValue = 0;
+    
+    // Calculate min/max across all years
+    for (let yearIdx = 0; yearIdx < years.length; yearIdx++) {
+      const yearColumn = years[yearIdx] as string;
+      const yearValues = data.google_sheets_data.data
+        .filter((feature: any) => {
+          const geoid = feature?.geoid?.toLowerCase() || '';
+          const name = feature?.name?.toLowerCase() || '';
+          return !EXCLUDED_GEO_PATTERNS.some(pattern => 
+            geoid.includes(pattern) || name.includes(pattern)
+          );
+        })
+        .map((feature: any) => feature[yearColumn])
+        .filter((value: any) => 
+          value !== null && 
+          value !== undefined && 
+          !isNaN(Number(value)) && 
+          Number(value) > 0
+        );
       
-      minValue = Math.max(minValue, 0);
-      maxValue = Math.min(maxValue, 100);
+      if (yearValues.length === 0) continue;
+      
+      const thisYearMinValue = Math.min(...yearValues);
+      const thisYearMaxValue = Math.max(...yearValues);
+      
+      if (thisYearMinValue < minValue) {
+        minValue = thisYearMinValue;
+      }
+      if (thisYearMaxValue > maxValue) {
+        maxValue = thisYearMaxValue;
+      }
+    }
+    
+    // Clamp percentage values to 0-100 range
+    if (this.data.has_pct && !this.data.totalAmntOf) {
+      minValue = Math.max(minValue, MIN_PERCENTAGE);
+      maxValue = Math.min(maxValue, MAX_PERCENTAGE);
       return { minValue, maxValue };
     }
-    return { minValue: Math.floor(minValue*.95), maxValue: Math.ceil(maxValue*1.05)};
+    
+    // Apply multipliers to provide visual padding
+    return {
+      minValue: Math.floor(minValue * MIN_MULTIPLIER),
+      maxValue: Math.ceil(maxValue * MAX_MULTIPLIER)
+    };
   } 
 }

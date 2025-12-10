@@ -6,7 +6,12 @@ import { createDataToMapWorker } from '../utils/dataToMapWorkerFactory.ts'
 import type { PointDataToMap } from '../utils/pointDataToMap.ts'
 import type { AreaDataToMap } from '../utils/areaDataToMap.ts'
 import type { Emitter } from 'mitt'
-//import axios from 'axios'
+import { DEFAULT_YEAR, DEFAULT_GEO_SELECTION } from '../constants'
+
+/**
+ * Store interface for indicator-level state management
+ * Each map side (left/right) has its own instance of this store
+ */
 export interface IndicatorLevelStore {
     currentIndicator: IndicatorConfig | null
     currentIndicatorData: any
@@ -19,7 +24,7 @@ export interface IndicatorLevelStore {
 }
 
 const themeLevelStore = useThemeLevelStore()
-//const sitePath = process.env.NODE_ENV === 'production' ? '/Arras_CommunityHealthIndicator/' : ''
+
 const indicatorLevelStore = (storeName: 'left' | 'right') => {
     const arrasBranding = ref<any>(inject('arrasBranding') as any)
     const sitePath = inject('sitePath') as string
@@ -27,11 +32,12 @@ const indicatorLevelStore = (storeName: 'left' | 'right') => {
     const currentIndicator = ref<IndicatorConfig | null>(null)
     const currentGeoSelection = ref<string | null>(null)
     let map: maplibregl.Map | null = null
-    const currentYear = ref<number | null>(null)
+    const currentYear = ref<number | null>(DEFAULT_YEAR)
     
-    currentYear.value = 2023; //TODO get year from google sheets
-    // Set the default indicator for the side
-    const defaultForSide = currentThemeIndicators?.find((i: IndicatorConfig) => storeName.includes(i.default as string)) || null
+    // Set the default indicator for this side (left or right)
+    const defaultForSide = currentThemeIndicators?.find(
+      (i: IndicatorConfig) => storeName.includes(i.default as string)
+    ) || null
 
     function initializeMap(_map: maplibregl.Map, emitter?: Emitter<any>) {
         map = _map
@@ -66,49 +72,80 @@ const indicatorLevelStore = (storeName: 'left' | 'right') => {
     function getCurrentYear(): number | null {
         return currentYear.value
     }
+    /**
+     * Gets the currently selected geography
+     * @returns Lowercase geography identifier, defaults to DEFAULT_GEO_SELECTION
+     */
     function getCurrentGeoSelection(): string | null {
-        return currentGeoSelection.value?.toLowerCase() || 'overall' //overall is default
+        return currentGeoSelection.value?.toLowerCase() || DEFAULT_GEO_SELECTION
     }
     function setCurrentGeoSelection(geoSelection: string) {
         currentGeoSelection.value = geoSelection?.toLowerCase() || null
     }
+    /**
+     * Sets the current indicator by short name and initializes the map worker
+     * Finds the latest available year from the data and sets it as default
+     */
     async function setIndicatorFromIndicatorShortName(indicatorShortName: string, emitter?: Emitter<any>) {
-        const indicator = currentThemeIndicators?.find((i: IndicatorConfig) => i.short_name === indicatorShortName) || null
+        const indicator = currentThemeIndicators?.find(
+            (i: IndicatorConfig) => i.short_name === indicatorShortName
+        ) || null
+        
         if (indicator) {
             currentIndicator.value = indicator
 
-            if(worker) {
+            // Clean up existing worker
+            if (worker) {
                 worker.removeOldEvents();
                 worker.hideLayers();
-                worker=null;
+                worker = null;
             }
 
-            worker = createDataToMapWorker(indicator, map, storeName as 'left' | 'right' | null, emitter, arrasBranding.value, sitePath);
+            // Create new worker for this indicator
+            worker = createDataToMapWorker(
+                indicator,
+                map,
+                storeName as 'left' | 'right' | null,
+                emitter,
+                arrasBranding.value,
+                sitePath
+            );
 
             if (worker) {
+                // Find available years - prefer 4-digit years, fallback to Count_ prefixed columns
                 const headerShortNames = indicator.google_sheets_data.headerShortNames;
                 let defaultYears = headerShortNames && headerShortNames.length > 0 
-                    ? headerShortNames.filter((year: string) => /^\d{4}$/.test(year)).sort((a: string, b: string) => Number(a) - Number(b))
+                    ? headerShortNames
+                        .filter((year: string) => /^\d{4}$/.test(year))
+                        .sort((a: string, b: string) => Number(a) - Number(b))
                     : null;
-                if(!defaultYears || defaultYears.length === 0) {
-                    defaultYears = headerShortNames.filter((year: string) => year.startsWith('Count_')).sort((a: string, b: string) => Number(a.replace('Count_', '')) - Number(b.replace('Count_', '')));
+                    
+                if (!defaultYears || defaultYears.length === 0) {
+                    defaultYears = headerShortNames
+                        .filter((year: string) => year.startsWith('Count_'))
+                        .sort((a: string, b: string) => 
+                            Number(a.replace('Count_', '')) - Number(b.replace('Count_', ''))
+                        );
                 }
-                    let defaultYear = null;
-                if (defaultYears !== null) {
+                
+                // Use the latest year as default
+                let defaultYear = null;
+                if (defaultYears !== null && defaultYears.length > 0) {
                     defaultYear = defaultYears[defaultYears.length - 1];
                     await worker.setupIndicator(defaultYear);
                 }
                 
-                await setCurrentYear(defaultYear)
-                setCurrentGeoSelection('overall')
+                await setCurrentYear(defaultYear);
+                setCurrentGeoSelection(DEFAULT_GEO_SELECTION);
+                
+                // Listen for geography selection events
                 emitter?.on(`feature-${storeName}-clicked`, (feature: string | null) => {
-                    setCurrentGeoSelection(feature || 'overall')
-                })
+                    setCurrentGeoSelection(feature || DEFAULT_GEO_SELECTION);
+                });
             }
         } else {
-            currentIndicator.value = null
+            currentIndicator.value = null;
         }
-
     }
 
     function getCurrentIndicator(): IndicatorConfig | null {

@@ -76,11 +76,9 @@
 </template>
 <script setup lang="ts">
 import { ref, inject, computed, watch, onBeforeMount } from 'vue'
-//import { onBeforeRouteLeave, type RouteLocationNormalized } from 'vue-router'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
-//const hovered = ref(false)
 const drawer = ref(false)
 
 const mainConfig = inject('mainConfig') as any;

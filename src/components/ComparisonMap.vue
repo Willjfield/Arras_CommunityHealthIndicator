@@ -19,17 +19,16 @@
 import maplibregl from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { inject, onBeforeMount, onMounted, onUnmounted, ref, watch } from 'vue'
-//import { indicators } from '../assets/indicators.json'
 import Compare from '../assets/maplibre-gl-compare.js'
-//import Compare from 'maplibre-gl-compare-plus';
 import '../assets/maplibre-gl-compare.css';
 import TimelineVisualization from './TimelineVisualization.vue'
-//import '../assets/maplibre-gl-compare.css'
 import { useIndicatorLevelStore } from '../stores/indicatorLevelStore'
 import ColorLegend from './ColorLegend.vue'
 import PointLegend from './PointLegend.vue'
 import type { Emitter } from 'mitt'
 import createArcGISStyle from '../utils/createArcGISStyle'
+import { createMapRequestTransform } from '../utils/mapRequestTransform'
+import { MIN_ZOOM_ON_LOCATION, LOCATION_FLY_DURATION_MS, RIGHT_PADDING_RATIO } from '../constants'
 
 const mapContainerLeft = ref<HTMLElement>()
 let leftMap: maplibregl.Map | null = null
@@ -68,92 +67,35 @@ onBeforeMount(() => { })
 onMounted(async () => {
   // Ensure the container is properly initialized
   const sitePath = inject('sitePath') as string;
+  const transformRequest = createMapRequestTransform(sitePath);
 
   const leftStyle = await createArcGISStyle(sitePath) as any
   const rightStyle = await createArcGISStyle(sitePath) as any
 
   if (mapContainerLeft.value) {
-
     leftMap = new maplibregl.Map({
-      container: mapContainerLeft.value, // use ref instead of string id
+      container: mapContainerLeft.value,
       style: leftStyle,
       center: props._center,
       zoom: props._zoom,
       hash: true,
       attributionControl: false,
-      transformRequest: (url: string) => {
-        // Handle ArcGIS tile requests (no modification needed)
-        if (url.includes('arcgisonline.com') || url.includes('arcgis.com')) {
-          return { url }
-        }
-        // If this is a local resource (starts with '/'), prepend sitePath
-        if (url.startsWith('/')) {
-          return {
-            url: sitePath + url
-          }
-        }
-        // If this is an absolute URL on the same origin, insert the base path
-        if (sitePath && typeof window !== 'undefined') {
-          const origin = window.location.origin;
-          if (url.startsWith(origin + '/') && !url.includes(sitePath)) {
-            // Insert the base path after the origin
-            const path = url.substring(origin.length);
-            // Ensure proper path joining (avoid double slashes)
-            const basePath = sitePath.endsWith('/') ? sitePath.slice(0, -1) : sitePath;
-            const cleanPath = path.startsWith('/') ? path : '/' + path;
-            return {
-              url: origin + basePath + cleanPath
-            }
-          }
-        }
-        return { url }
-      }
+      transformRequest
     })
 
     leftIndicatorLevelStore.initializeMap(leftMap, emitter)
-    leftMap.on('mousemove', (e: any) => {
-      if (!leftMap) return
-      const features = leftMap.queryRenderedFeatures(e.point, {})
-      if (features.length === 0) return
-    })
   }
 
   if (mapContainerRight.value) {
     rightMap = new maplibregl.Map({
-      container: mapContainerRight.value, // use ref instead of string id
+      container: mapContainerRight.value,
       style: rightStyle,
       center: props._center,
       zoom: props._zoom,
       attributionControl: false,
       hash: true,
-            canvasContextAttributes: {antialias: true} ,
-      transformRequest: (url: string) => {
-        // Handle ArcGIS tile requests (no modification needed)
-        if (url.includes('arcgisonline.com') || url.includes('arcgis.com')) {
-          return { url }
-        }
-        // If this is a local resource (starts with '/'), prepend sitePath
-        if (url.startsWith('/')) {
-          return {
-            url: sitePath + url
-          }
-        }
-        // If this is an absolute URL on the same origin, insert the base path
-        if (sitePath && typeof window !== 'undefined') {
-          const origin = window.location.origin;
-          if (url.startsWith(origin + '/') && !url.includes(sitePath)) {
-            // Insert the base path after the origin
-            const path = url.substring(origin.length);
-            // Ensure proper path joining (avoid double slashes)
-            const basePath = sitePath.endsWith('/') ? sitePath.slice(0, -1) : sitePath;
-            const cleanPath = path.startsWith('/') ? path : '/' + path;
-            return {
-              url: origin + basePath + cleanPath
-            }
-          }
-        }
-        return { url }
-      }
+      canvasContextAttributes: { antialias: true },
+      transformRequest
     })
     .addControl(new maplibregl.NavigationControl({
         visualizePitch: true,
@@ -166,11 +108,6 @@ onMounted(async () => {
     }),'top-right');
 
     rightIndicatorLevelStore.initializeMap(rightMap, emitter)
-    rightMap.on('mousemove', (e: any) => {
-      if (!rightMap) return
-      const features = rightMap.queryRenderedFeatures(e.point, {})
-      if (features.length === 0) return
-    })
   }
 
   if (leftMap && rightMap) {
@@ -188,25 +125,40 @@ onMounted(async () => {
   emitter.on('location-cleared', handleLocationCleared)
 })
 
+/**
+ * Handles location selection from search
+ * Centers both maps on the selected coordinates
+ */
 const handleLocationSelected = (data: { coordinates: [number, number], text: string }) => {
-  const [lng, lat] = data.coordinates
+  const [lng, lat] = data.coordinates;
 
   // Center both maps on the location
   if (leftMap) {
     leftMap.flyTo({
       center: [lng, lat],
-      zoom: Math.max(leftMap.getZoom(), 12),
-      duration: 500,
-      padding: {top: 0, bottom:0, left: 0, right:window.innerWidth*.5}
-    })
+      zoom: Math.max(leftMap.getZoom(), MIN_ZOOM_ON_LOCATION),
+      duration: LOCATION_FLY_DURATION_MS,
+      padding: {
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: window.innerWidth * RIGHT_PADDING_RATIO
+      }
+    });
+    
     leftMap.once('moveend', () => {
       rightMap?.flyTo({
         center: [lng, lat],
-        zoom: Math.max(rightMap.getZoom(), 12),
-        duration: 500,
-        padding: {top: 0, bottom:0, left: 0, right:window.innerWidth*.5}
-      })
-    })
+        zoom: Math.max(rightMap.getZoom(), MIN_ZOOM_ON_LOCATION),
+        duration: LOCATION_FLY_DURATION_MS,
+        padding: {
+          top: 0,
+          bottom: 0,
+          left: 0,
+          right: window.innerWidth * RIGHT_PADDING_RATIO
+        }
+      });
+    });
   }
 
   // Remove existing markers
@@ -220,7 +172,10 @@ const handleLocationSelected = (data: { coordinates: [number, number], text: str
     rightMarker = null
   }
 
-  // Create marker element with close button
+  /**
+   * Creates a marker element with a pin icon and click handler
+   * Clicking the marker clears the location selection
+   */
   const createMarkerElement = () => {
     const el = document.createElement('div')
     el.className = 'location-marker'
@@ -268,14 +223,18 @@ const handleLocationSelected = (data: { coordinates: [number, number], text: str
   }
 }
 
+/**
+ * Removes location markers from both maps
+ * Called when location search is cleared
+ */
 const handleLocationCleared = () => {
   if (leftMarker) {
-    leftMarker.remove()
-    leftMarker = null
+    leftMarker.remove();
+    leftMarker = null;
   }
   if (rightMarker) {
-    rightMarker.remove()
-    rightMarker = null
+    rightMarker.remove();
+    rightMarker = null;
   }
 }
 
