@@ -72,6 +72,7 @@
                     :key="cat.title"
                   >
                     <v-btn
+                      @click="navigateToMap(cat.query_str)"
                       :to="`/map?theme=${cat.query_str}`"
                       :disabled="!cat.enabled"
                       block
@@ -99,9 +100,26 @@
 </template>
 <script setup lang="ts">
 import { inject, computed } from 'vue';
+import { onBeforeRouteLeave } from 'vue-router';
+import { useThemeLevelStore } from '../stores/themeLevelStore';
+import { useRouter } from 'vue-router';
 
 const mainConfig = inject('mainConfig') as any;
 const categories = computed(() => mainConfig?.categories || []);
+const router = useRouter();
+// onBeforeRouteLeave(async (to: any, from: any, next: any) => {
+//   await useThemeLevelStore().setCurrentTheme(to.query.theme as string)
+//   next()
+// })
+
+async function navigateToMap(queryStr: string) {
+  //console.log('navigateToMap', queryStr)
+  const success = await useThemeLevelStore().setCurrentTheme(queryStr)
+  if(!success){
+    return
+  }
+  await router.push(`/map?theme=${queryStr}`)
+}
 </script>
 
 <style scoped>

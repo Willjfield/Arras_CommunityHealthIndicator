@@ -49,7 +49,31 @@ export default {
     watch: {},
     async beforeRouteEnter(to, from, next) {
         document.getElementById('loading').style.display = 'flex'
-       await useThemeLevelStore().setCurrentTheme(to.query.theme)
+       const success = await useThemeLevelStore().setCurrentTheme(to.query.theme)
+       if(!success){
+        next(false)
+        return
+       }
+        next(true)
+    },
+    async beforeRouteUpdate(to, from, next) {
+        // Handle route updates when component is reused (e.g., theme query param changes)
+        if (to.query.theme !== from.query.theme) {
+            document.getElementById('loading').style.display = 'flex'
+            const success = await useThemeLevelStore().setCurrentTheme(to.query.theme)
+            if(!success){
+                document.getElementById('loading').style.display = 'none'
+                next(false)
+                return
+            }
+            // Hide loading after a brief delay to ensure theme is fully loaded
+            await this.$nextTick()
+            document.getElementById('loading').style.display = 'none'
+        }
+        next()
+    },
+    async beforeRouteLeave(to, from, next) {
+        await useThemeLevelStore().setCurrentTheme()
         next()
     },
     mounted() {

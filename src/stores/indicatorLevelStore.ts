@@ -28,7 +28,6 @@ const themeLevelStore = useThemeLevelStore()
 const indicatorLevelStore = (storeName: 'left' | 'right') => {
     const arrasBranding = ref<any>(inject('arrasBranding') as any)
     const sitePath = inject('sitePath') as string
-    const currentThemeIndicators = themeLevelStore.getAllCurrentThemeIndicators()
     const currentIndicator = ref<IndicatorConfig | null>(null)
     const currentGeoSelection = ref<string | null>(null)
     let map: maplibregl.Map | null = null
@@ -36,14 +35,19 @@ const indicatorLevelStore = (storeName: 'left' | 'right') => {
     const minValue = ref<number | null>(null)
     const maxValue = ref<number | null>(null)
     
-    // Set the default indicator for this side (left or right)
-    const defaultForSide = currentThemeIndicators?.find(
-      (i: IndicatorConfig) => storeName.includes(i.default as string)
-    ) || null
+    // Helper function to get current theme indicators dynamically
+    function getCurrentThemeIndicators() {
+        return themeLevelStore.getAllCurrentThemeIndicators()
+    }
 
     function initializeMap(_map: maplibregl.Map, emitter?: Emitter<any>) {
         map = _map
         _map.on('load', async () => {
+            // Get current theme indicators dynamically when map loads
+            const currentThemeIndicators = getCurrentThemeIndicators()
+            const defaultForSide = currentThemeIndicators?.find(
+                (i: IndicatorConfig) => storeName.includes(i.default as string)
+            ) || null
             await setIndicatorFromIndicatorShortName(defaultForSide?.short_name || '', emitter)
         })
     }
@@ -91,6 +95,8 @@ const indicatorLevelStore = (storeName: 'left' | 'right') => {
      * Finds the latest available year from the data and sets it as default
      */
     async function setIndicatorFromIndicatorShortName(indicatorShortName: string, emitter?: Emitter<any>) {
+        // Get current theme indicators dynamically
+        const currentThemeIndicators = getCurrentThemeIndicators()
         const indicator = currentThemeIndicators?.find(
             (i: IndicatorConfig) => i.short_name === indicatorShortName
         ) || null

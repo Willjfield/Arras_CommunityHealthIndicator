@@ -23,6 +23,7 @@ import Compare from '../assets/maplibre-gl-compare.js'
 import '../assets/maplibre-gl-compare.css';
 import TimelineVisualization from './TimelineVisualization.vue'
 import { useIndicatorLevelStore } from '../stores/indicatorLevelStore'
+import { useThemeLevelStore } from '../stores/themeLevelStore'
 import ColorLegend from './ColorLegend.vue'
 import PointLegend from './PointLegend.vue'
 import type { Emitter } from 'mitt'
@@ -51,6 +52,7 @@ orientation.value = window.innerWidth > window.innerHeight ? 'left-right' : 'top
 
 const leftIndicatorLevelStore = useIndicatorLevelStore('left')
 const rightIndicatorLevelStore = useIndicatorLevelStore('right')
+const themeLevelStore = useThemeLevelStore()
 
 const emitter = inject('mitt') as Emitter<any>
 
@@ -61,6 +63,31 @@ let _compare: Compare | null = null
 // Watch for changes in props._type and execute function based on value
 watch(() => props._type, (newType) => {
   if (_compare) _compare.switchType(newType)
+})
+
+// Watch for theme changes and reinitialize indicators
+watch(() => themeLevelStore.currentThemeShortName, async (newThemeShortName, oldThemeShortName) => {
+  // Only reinitialize if theme actually changed and maps are loaded
+  if (newThemeShortName && newThemeShortName !== oldThemeShortName && leftMap && rightMap && leftMap.loaded() && rightMap.loaded()) {
+    const currentThemeIndicators = themeLevelStore.getAllCurrentThemeIndicators()
+    if (currentThemeIndicators) {
+      // Get default indicators for each side
+      const defaultForLeft = currentThemeIndicators.find(
+        (i: any) => 'left'.includes(i.default as string)
+      )
+      const defaultForRight = currentThemeIndicators.find(
+        (i: any) => 'right'.includes(i.default as string)
+      )
+      
+      // Reinitialize indicators
+      if (defaultForLeft) {
+        await leftIndicatorLevelStore.setIndicatorFromIndicatorShortName(defaultForLeft.short_name, emitter)
+      }
+      if (defaultForRight) {
+        await rightIndicatorLevelStore.setIndicatorFromIndicatorShortName(defaultForRight.short_name, emitter)
+      }
+    }
+  }
 })
 
 onBeforeMount(() => { })

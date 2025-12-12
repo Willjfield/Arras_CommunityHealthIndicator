@@ -16,17 +16,27 @@ export const useThemeLevelStore = defineStore('themeLevel', () => {
     const categoryConfigs = inject('categoryConfigs') as any
     const mainConfig = inject('mainConfig') as any
     const mainConfigForCurrentTheme = ref<any>(null)
-    async function setCurrentTheme(shortName: string) {
+    async function setCurrentTheme(shortName?: string): Promise<boolean> {
+        if(!shortName){
+            currentThemeShortName.value = null
+            currentThemeConfig.value = null
+            mainConfigForCurrentTheme.value = null
+            return true
+        }
         currentThemeShortName.value = shortName
         currentThemeConfig.value = categoryConfigs[shortName] as any
         mainConfigForCurrentTheme.value = mainConfig?.categories?.find((cat: any) => cat.query_str === shortName)
+        console.log('mainConfigForCurrentTheme', mainConfigForCurrentTheme.value)
         //Get data from google sheets and store along with all the indicators in categoryConfigs
         const currentIndicatorConfigs: IndicatorConfig[] | null = getAllCurrentThemeIndicators()
         if (currentIndicatorConfigs) {
             await Promise.all(currentIndicatorConfigs.map(async (indicator: IndicatorConfig) => {
                 indicator.google_sheets_data = formatGoogleSheetData((await axios.get(indicator.google_sheets_url)).data as any)
             }));
+        }else{
+            return false
         }
+        return true
     }
 
     function getCurrentThemeConfig() {
@@ -70,6 +80,6 @@ export const useThemeLevelStore = defineStore('themeLevel', () => {
         }
         return null
     }
-    return { setCurrentTheme, getMainConfigForCurrentTheme, getCurrentThemeConfig, getAllCurrentThemeIndicators, currentThemeConfig }
+    return { setCurrentTheme, getMainConfigForCurrentTheme, getCurrentThemeConfig, getAllCurrentThemeIndicators, currentThemeConfig, currentThemeShortName }
 })
 
