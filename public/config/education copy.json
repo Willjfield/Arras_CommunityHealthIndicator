@@ -24,7 +24,7 @@
       "has_pct": true,
       "has_count": false,
       "geotype": "tract",
-      "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ31UKtCZqM93lG3ER486EZBJP9sbYKjU35nFFMZezi5LaMnSG6IyPKIhaWcJ24QI3biVBq8JcwY-OV/pub?gid=0&single=true&output=csv",
+      "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRT9sRzNbN3RA9jfOSwV8VWN8-QCyd60ejnfQhNSS8MQkGn8u-BSXbIxkzwAFtE6CzVfv5Jr8nzMs7T/pub?gid=622872564&single=true&output=csv",
       "source_name": "tracts-harmonized",
       "short_name": "poverty",
       "layers": {

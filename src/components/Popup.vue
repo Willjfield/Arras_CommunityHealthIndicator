@@ -50,8 +50,11 @@
                                     
                                 </span>
                                 <span v-if="props.properties[`Count_${stat.key}`]" class="stat-total">
-                                    ({{ props.properties[`Count_${stat.key}`] }} total)
+                                    {{ props.properties[`Count_${stat.key}`] }} total
                                 </span>
+                                <span class="stat-total" v-if="getPop(stat) && getPop(stat)?.value && getPop(stat)?.value > 0">
+                                        out of {{getPop(stat)?.value}} people
+                                    </span>
                             </div>
                         </div>
                     </template>
@@ -67,7 +70,12 @@
                         >
                             <div class="stat-label">{{ stat.key.split('_')[1] }}</div>
                             <div class="stat-value count">
-                                <span v-if="!isNaN(+stat.value)">{{ stat.value }} total</span>
+                                <span class="stat-total" v-if="!isNaN(+stat.value)">
+                                    {{ stat.value }} total
+                                    <span class="stat-total" v-if="getPop(stat) && getPop(stat)?.value && getPop(stat)?.value > 0">
+                                        out of {{getPop(stat)?.value}} people
+                                    </span>
+                                </span>
                                 <span v-else class="no-data">No data</span>
                             </div>
                         </div>
@@ -124,6 +132,15 @@ const moreInfo = computed(() => {
     return splits.join('<br/>');
 })
 
+const pops = computed(() => {
+    return Object.keys(props.properties).filter(key => key.includes('pop_')).map(key => {
+        return {
+            key: key.toLowerCase(),
+            value: props.properties[key]
+        }
+    })
+})
+
 const counts = computed(() => {
     return Object.keys(props.properties).filter(key => key.startsWith('Count_')).map(key => {
         return {
@@ -145,6 +162,11 @@ const pcts = computed(() => {
 const stats = computed(() => {
     return [...pcts.value, ...counts.value]
 })
+
+const getPop = (stat: { key: string; value: any }) => {
+    const popKey = 'pop_' + stat.key.replace('Count_', '').replace('count_','');
+    return pops.value.find(pop => pop.key === popKey)
+}
 </script>
 
 <style>
