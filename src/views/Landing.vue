@@ -100,7 +100,7 @@
 </template>
 <script setup lang="ts">
 import { inject, computed } from 'vue';
-import { onBeforeRouteLeave } from 'vue-router';
+//import { onBeforeRouteLeave } from 'vue-router';
 import { useThemeLevelStore } from '../stores/themeLevelStore';
 import { useRouter } from 'vue-router';
 
