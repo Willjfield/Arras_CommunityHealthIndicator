@@ -50,7 +50,7 @@
                                     
                                 </span>
                                 <span v-if="props.properties[`Count_${stat.key}`]" class="stat-total">
-                                    {{ props.properties[`Count_${stat.key}`] }} total
+                                    {{ (+props.properties[`Count_${stat.key}`]).toLocaleString('en-US') }} total
                                 </span>
                                 <span class="stat-total" v-if="getPop(stat) && getPop(stat)?.value && getPop(stat)?.value > 0">
                                         out of {{getPop(stat)?.value}} people
@@ -71,10 +71,7 @@
                             <div class="stat-label">{{ stat.key.split('_')[1] }}</div>
                             <div class="stat-value count">
                                 <span class="stat-total" v-if="!isNaN(+stat.value)">
-                                    {{ stat.value }} total
-                                    <span class="stat-total" v-if="getPop(stat) && getPop(stat)?.value && getPop(stat)?.value > 0">
-                                        out of {{getPop(stat)?.value}} people
-                                    </span>
+                                    {{ (+stat.value).toLocaleString('en-US') }} total<span class="stat-total" v-if="getPop(stat) && getPop(stat)?.value && getPop(stat)?.value > 0">out of {{getPop(stat)?.value}} people</span>
                                 </span>
                                 <span v-else class="no-data">No data</span>
                             </div>
@@ -333,7 +330,7 @@ const getPop = (stat: { key: string; value: any }) => {
     font-size: 0.85rem;
     font-weight: 400;
     color: #64748b;
-    margin-left: 0.25rem;
+    /* margin-left: 0.25rem; */
 }
 
 .no-data {

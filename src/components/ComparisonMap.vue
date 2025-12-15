@@ -139,12 +139,17 @@ onMounted(async () => {
 
   if (leftMap && rightMap) {
     const position = orientation.value === 'top-bottom' ? ['bottom', 'left'] : ['top', 'horiz-center'] as any
-    _compare = new Compare(leftMap, rightMap, comparisonContainer, { orientation: orientation.value, type: props._type, position })
-      _compare.onceBoth('load', () => {
+    _compare = new Compare(leftMap, rightMap, comparisonContainer, { orientation: orientation.value, type: props._type, position });
+    _compare.onceBoth('load', () => {
+      const loadingEl = document.getElementById('loading');
+      if (loadingEl && loadingEl.style) {
+        console.log('loadingEl', loadingEl)
+        loadingEl.style.display = 'none';
+      }
       Array.from(document.getElementsByClassName('maplibregl-ctrl-attrib') as unknown as HTMLElement[]).forEach((element) => {
         element.classList.remove('maplibregl-compact-show');
       });
-    })
+    });
   }
 
   // Listen for location selection events

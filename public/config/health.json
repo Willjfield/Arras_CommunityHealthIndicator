@@ -119,6 +119,23 @@
       },
       "fill_color": ["case", ["has", "1990"], ["interpolate", ["linear"], ["to-number", ["get", "1990"]]], "#0000"]
 
+    },
+    {
+      "title": "Could Not See a Doctor Due to Cost",
+      "geolevel": "area",
+      "geotype": "tract",
+      "default": false,
+      "has_pct": true,
+      "has_count": true,
+      "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vSnJkFJHxwHVr8YseJRFPdIzYbvWY9G5Rgzo2Izrg1Tg2s_tVYSV5E38dgz-Fl4CFwcCIFxPv9F_o1N/pub?gid=0&single=true&output=csv",
+      "source_name": "tracts-harmonized",
+      "short_name": "could-not-see-doctor",
+      "layers": {
+        "main": "tracts-harmonized-fill",
+        "outline": "tracts-harmonized-outline"
+      },
+      "fill_color": ["case", ["has", "1990"], ["interpolate", ["linear"], ["to-number", ["get", "1990"]]], "#0000"]
+
     }
   ]
 }

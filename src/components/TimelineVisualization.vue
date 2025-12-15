@@ -202,6 +202,7 @@ const createChart = () => {
     year: d.year,
     value: d.value?.toFixed(2) ? Number(d.value?.toFixed(2)) : null
   }))
+  console.log('validData', validData)
 
   if (validData.length === 0) {
     // Just show x-axis with years
@@ -578,9 +579,12 @@ const getMinMaxValues = () => {
 
 const createYScale = (data: Array<{ year: number; value: number | null }>) => {
   const values = data.map(d => d.value!).filter(v => v !== null && v !== undefined && !isNaN(+v))
+  console.log('values', values)
   if (values.length === 0) return d3.scaleLinear().domain([0, 100]).range([height - margin.bottom, margin.top])
 
   const { minValue, maxValue } = getMinMaxValues()
+  console.log('minValue', minValue)
+  console.log('maxValue', maxValue)
   //const padding = (maxValue - minValue) || 1
   //todo: Math.max(minValue - padding, 0)
   return d3.scaleLinear()

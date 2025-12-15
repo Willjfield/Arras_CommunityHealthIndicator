@@ -53,7 +53,7 @@
           <div class="loading-text">
             <h2 class="loading-title">Loading Community Health Data</h2>
             <!-- <p class="loading-subtitle">Please wait while we prepare your map...</p> -->
-            {{ `Loading ${categories.find((c:any) => router.options.history.state.current?.toString().includes(c.query_str))?.title} data...` }}
+            <!-- {{ `Loading ${categories.find((c:any) => router.options.history.state.current?.toString().includes(c.query_str))?.title} data...` }} -->
             <p class="loading-subtitle">If this takes too long, please refresh the page.</p>
           </div>
           <div class="progress-container">
@@ -139,6 +139,7 @@ onBeforeMount(() => {
   transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
   visibility: visible;
   opacity: 1;
+
 }
 
 .loading-screen[style*="display: none"] {

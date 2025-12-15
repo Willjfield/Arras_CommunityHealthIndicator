@@ -62,13 +62,13 @@ export default {
             document.getElementById('loading').style.display = 'flex'
             const success = await useThemeLevelStore().setCurrentTheme(to.query.theme)
             if(!success){
-                document.getElementById('loading').style.display = 'none'
+              //  document.getElementById('loading').style.display = 'none'
                 next(false)
                 return
             }
             // Hide loading after a brief delay to ensure theme is fully loaded
             await this.$nextTick()
-            document.getElementById('loading').style.display = 'none'
+          //  document.getElementById('loading').style.display = 'none'
         }
         next()
     },
@@ -77,7 +77,7 @@ export default {
         next()
     },
     mounted() {
-        document.getElementById('loading').style.display = 'none'
+       // document.getElementById('loading').style.display = 'none'
     },
     computed: {
         currentThemeConfig() {
