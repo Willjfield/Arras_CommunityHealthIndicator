@@ -1,5 +1,36 @@
 <template>
   <main id="main" class="full-screen-main" :class="{ 'orientation-top-bottom': orientation === 'top-bottom', 'orientation-left-right': orientation === 'left-right' }" tabindex="-1">
+    <div id="loading" class="loading-screen">
+        <div class="loading-content">
+          <div class="logo-container">
+            <v-img 
+              src="ArrasFoundation.png" 
+              max-width="300px"
+              class="loading-logo"
+            />
+          </div>
+          <div class="loading-text">
+            <h2 class="loading-title">Loading Community Health Data</h2>
+            <!-- <p class="loading-subtitle">Please wait while we prepare your map...</p> -->
+            <!-- {{ `Loading ${categories.find((c:any) => router.options.history.state.current?.toString().includes(c.query_str))?.title} data...` }} -->
+            <p class="loading-subtitle">If this takes too long, please refresh the page.</p>
+          </div>
+          <div class="progress-container">
+            <v-progress-circular 
+              indeterminate 
+              color="white" 
+              size="80" 
+              width="8"
+              class="loading-spinner"
+            />
+          </div>
+          <div class="loading-dots">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+          </div>
+        </div>
+      </div>
     <v-app>
       <v-navigation-drawer class="sidebar" v-model="drawer" temporary>
         <v-list>
@@ -41,37 +72,7 @@
          
         </template>
       </v-app-bar>
-      <div id="loading" class="loading-screen">
-        <div class="loading-content">
-          <div class="logo-container">
-            <v-img 
-              src="ArrasFoundation.png" 
-              max-width="300px"
-              class="loading-logo"
-            />
-          </div>
-          <div class="loading-text">
-            <h2 class="loading-title">Loading Community Health Data</h2>
-            <!-- <p class="loading-subtitle">Please wait while we prepare your map...</p> -->
-            <!-- {{ `Loading ${categories.find((c:any) => router.options.history.state.current?.toString().includes(c.query_str))?.title} data...` }} -->
-            <p class="loading-subtitle">If this takes too long, please refresh the page.</p>
-          </div>
-          <div class="progress-container">
-            <v-progress-circular 
-              indeterminate 
-              color="white" 
-              size="80" 
-              width="8"
-              class="loading-spinner"
-            />
-          </div>
-          <div class="loading-dots">
-            <span class="dot"></span>
-            <span class="dot"></span>
-            <span class="dot"></span>
-          </div>
-        </div>
-      </div>
+     
       <router-view></router-view>
     </v-app>
   </main>

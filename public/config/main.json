@@ -90,6 +90,9 @@
       "title": "Social & Cultural Wellbeing",
       "query_str": "social_cultural",
       "icon": "assets/theme_icons/soc-cult_pink.png",
+      "enabled": true,
+      "description": "We envision communities that offer empowering supports for family wellbeing, safe neighborhoods, and community trust.",
+      "config": "/config/social_cultural.json",
       "style": {
         "colors": {
           "icon": "pink",
@@ -103,8 +106,7 @@
           "color": "pink",
           "value": 100
         }
-      },
-      "description": "We envision communities that offer empowering supports for family wellbeing, safe neighborhoods, and community trust."
+      }
     }
   ]
 }

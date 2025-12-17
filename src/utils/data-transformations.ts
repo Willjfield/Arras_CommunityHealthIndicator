@@ -44,7 +44,6 @@ function formatGoogleSheetData(csvString: string) {
       {} as Record<string, string | undefined>
     );
   });
-  console.log(data);
   //IPUMS data has extra zeros in the geoid, we need to remove them
   data.forEach((row) => {
     if (

@@ -198,7 +198,7 @@ const createChart = () => {
     .attr('height', height)
 
   // Filter out null values for line chart
-  const validData: Array<{ year: number; value: number | null }> = data.filter(d => d.value !== null && d.value > -1).map(d => ({
+  const validData: Array<{ year: number; value: number | null }> = data.filter(d => d.value !== null && !isNaN(+d.value)).map(d => ({
     year: d.year,
     value: d.value?.toFixed(2) ? Number(d.value?.toFixed(2)) : null
   }))
@@ -365,7 +365,7 @@ const addFeatureLine = (feature: string) => {
     .attr('height', height)
 
   // Filter out null values for line chart
-  const validData = data.filter(d => d.value !== null && d.value > -1)
+  const validData = data.filter(d => d.value !== null && !isNaN(+d.value))
 
   // Calculate scales
   const xScale = createXScale(data)
@@ -579,7 +579,7 @@ const getMinMaxValues = () => {
 
 const createYScale = (data: Array<{ year: number; value: number | null }>) => {
   const values = data.map(d => d.value!).filter(v => v !== null && v !== undefined && !isNaN(+v))
-  console.log('values', values)
+  //console.log('values', values)
   if (values.length === 0) return d3.scaleLinear().domain([0, 100]).range([height - margin.bottom, margin.top])
 
   const { minValue, maxValue } = getMinMaxValues()

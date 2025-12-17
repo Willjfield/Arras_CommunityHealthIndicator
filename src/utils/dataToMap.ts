@@ -373,8 +373,8 @@ export class DataToMap {
         .filter((value: any) => 
           value !== null && 
           value !== undefined && 
-          !isNaN(Number(value)) && 
-          Number(value) > 0
+          !isNaN(Number(value))
+          //Number(value) > 0
         );
       
       if (yearValues.length === 0) continue;
@@ -391,7 +391,7 @@ export class DataToMap {
     }
     
     // Clamp percentage values to 0-100 range
-    if (this.data.has_pct && !this.data.totalAmntOf) {
+    if (this.data.has_pct && !this.data.totalAmntOf && !this.data.hasNegativeValues) {
       minValue = Math.max(minValue, MIN_PERCENTAGE);
       maxValue = Math.min(maxValue, MAX_PERCENTAGE);
       return { minValue, maxValue };
