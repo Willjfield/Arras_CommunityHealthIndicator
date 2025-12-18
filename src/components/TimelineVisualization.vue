@@ -29,7 +29,7 @@
 
 <script lang="ts" setup>
 import * as d3 from 'd3'
-import { ref, onMounted, onUnmounted, watch, nextTick, inject, computed } from 'vue'
+import { ref, onMounted, onUnmounted, watch, nextTick, inject, computed, type ComputedRef } from 'vue'
 import useIndicatorLevelStore from '../stores/indicatorLevelStore';
 import IndicatorSelector from './IndicatorSelector.vue';
 
@@ -330,9 +330,9 @@ const createChart = () => {
     .style('fill', '#08f')
     .style('pointer-events', 'none')
     .text((d) => {
-      
-      if(timelineValueFormat && timelineValueFormat.value && timelineValueFormat.value !== '') {
-        return timelineValueFormat.value.replace('{{value}}', d?.value?.toLocaleString())
+      if (timelineValueFormat && timelineValueFormat.value && timelineValueFormat.value !== '') {
+        const formattedValue = d?.value?.toLocaleString() ?? ''
+        return timelineValueFormat.value.replace('{{value}}', formattedValue)
       }
       if (useRateForOverall.value) {
         return d?.value?.toLocaleString()
@@ -455,8 +455,9 @@ const addFeatureLine = (feature: string) => {
     .style('fill', `${statewide ? '#7d7d7d' : '#f80'}`)
     .style('pointer-events', 'none')
     .text((d) => {
-      if(timelineValueFormat && timelineValueFormat.value && timelineValueFormat.value !== '') {
-        return timelineValueFormat.value.replace('{{value}}', d?.value?.toLocaleString())
+      if (timelineValueFormat && timelineValueFormat.value && timelineValueFormat.value !== '') {
+        const formattedValue = d?.value?.toLocaleString() ?? ''
+        return timelineValueFormat.value.replace('{{value}}', formattedValue)
       }
       if (useRateForOverall.value) {
         return d?.value?.toLocaleString()
