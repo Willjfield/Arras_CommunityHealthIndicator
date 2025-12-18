@@ -11,7 +11,7 @@ function formatGoogleSheetData(csvString: string) {
   if (!rows[shortNameRowIdx] || !rows[shortNameRowIdx].split) {
     console.error("No short name row found", csvString);
   }
-  const headerShortNames = rows[shortNameRowIdx]
+  const headerShortNames = rows[shortNameRowIdx].toLowerCase()
     .split(",")
     .map((header) => header.trim());
   const labelRowIdx = 1 - shortNameRowIdx; //If shortNameRowIdx is 0, then labelRowIdx is 1, if shortNameRowIdx is 1, then labelRowIdx is 0

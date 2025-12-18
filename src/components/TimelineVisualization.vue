@@ -32,6 +32,7 @@ import * as d3 from 'd3'
 import { ref, onMounted, onUnmounted, watch, nextTick, inject, computed, type ComputedRef } from 'vue'
 import useIndicatorLevelStore from '../stores/indicatorLevelStore';
 import IndicatorSelector from './IndicatorSelector.vue';
+import { YEAR_PATTERN } from '../constants';
 
 const emitter = inject('mitt') as any
 interface Props {
@@ -58,15 +59,11 @@ const hoveredColorRef = ref(hoveredColor);
 
 const headerHTML = computed(() => {
   const indicator = indicatorStore?.getCurrentIndicator()
-  const title = indicator?.title || ''
   const geoSelection = indicatorStore.getCurrentGeoSelection() || ''
   const geotype = indicator?.geotype || ''
 
-  const titleSize = title.length > 40 ? 'font-size: .8em;' : 'font-size: 1em;';
-  const line1 = `
-  <div class="selected-geo" style="${titleSize}">${title}</div>
-  `
-  const line2 = geoSelection.toLowerCase().includes("overall") ?
+ 
+  const line2 = indicator?.timeline?.filterOut?.some((filter: string) => filter.toLowerCase() === "overall") ? '' : geoSelection.toLowerCase().includes("overall") ?
     `<div class="selected-geo">Overall by ${geotype.charAt(0).toUpperCase() + geotype.slice(1)}</div>`
     :
     `<div class="selected-geo">(${geotype.charAt(0).toUpperCase() + geotype.slice(1)}: ${geoSelection})</div>`
@@ -75,11 +72,11 @@ const headerHTML = computed(() => {
   const statewide = data?.data.find((feature: any) => feature?.geoid.toLowerCase() === "statewide");
   let line2b = '';
   if (statewide) {
-    line2b = `<div class="selected-geo">Statewide</div><span class="selected-color" style="border: 2px solid #7d7d7d"></span>`
+    line2b = indicator?.timeline?.filterOut?.some((filter: string) => filter.toLowerCase() === "statewide") ? '' : `<div class="selected-geo">Statewide</div><span class="selected-color" style="border: 2px solid #7d7d7d"></span>`
   }
-  const swatch = `<span class="selected-color" style="border: 2px solid ${selectedColorRef.value}"></span>`
+  const swatch = indicator?.timeline?.filterOut?.some((filter: string) => filter.toLowerCase() === "overall") ? '' : `<span class="selected-color" style="border: 2px solid ${selectedColorRef.value}"></span>`
 
-  return `${line1}<br>${line2}${swatch} ${line2b}`
+  return `${line2}${swatch} ${line2b}`
 })
 
 //const container = ref<HTMLElement>()
@@ -100,32 +97,24 @@ const availableYears = computed(() => {
 
   const headerShortNames = raw_data.headerShortNames
   let yearColumns: number[] = []
+  const yearValuePrefix = indicator?.timeline?.yearValuePrefix || '';
   if (indicator?.timeline) {
     yearColumns = headerShortNames
-      .filter((header: string) =>
-        header.startsWith(indicator?.timeline?.yearValuePrefix) || 
-        /^\d{4}$/.test(header) && !isNaN(Number(header))
-      )
-      .map((year: string) => Number(year.replace('Count_', '')))
-      .sort((a: number, b: number) => a - b)
+    .filter(
+      (year: string) => yearValuePrefix.length > 0 ? year.startsWith(yearValuePrefix) : YEAR_PATTERN.test(year) && !isNaN(Number(year))
+    )
+    .sort((a: number, b: number) => a - b)
   } else {
-    if (indicator?.has_pct) {
-      // Find year columns (numeric strings)
       yearColumns = headerShortNames.filter((header: string) =>
         /^\d{4}$/.test(header) && !isNaN(Number(header))
       ).map((year: string) => Number(year)).sort((a: number, b: number) => a - b)
-    } else {
-      yearColumns = headerShortNames.filter((header: string) =>
-        /^\d{4}$/.test(header) && !isNaN(Number(header))
-      ).map((year: string) => Number(year)).sort((a: number, b: number) => a - b)
-    }
   }
   return yearColumns
 })
 
 const timelineValueFormat = computed(() => {
   const indicator = indicatorStore.getCurrentIndicator()
-  return indicator?.timeline?.yearValueFormat as string | null || null
+  return indicator?.timeline?.yearValueShortFormat as string | null || null
 }) as ComputedRef<string | null>
 
 const selectedYear = computed({
@@ -164,12 +153,8 @@ const processData = (_feature: string | number | null) => {
   if (!matchingRow) return []
   availableYears.value.forEach((year: number) => {
     let yearValue = matchingRow?.[year.toString()]
-    if (indicator?.has_count && !indicator?.has_pct && indicator?.short_name !== 'grandchildren') {
-      const prefix = indicator?.timeline?.yearValuePrefix === 'pct' ? 'Count_' : ''
-      yearValue = matchingRow?.[prefix + year.toString()]
-    }
     data.push({
-      year,
+      year: +(year.toString().replace(indicator?.timeline?.yearValuePrefix || '', '')),
       value: yearValue != null && yearValue !== "" ? Number(yearValue) : null
     })
   })
@@ -331,17 +316,10 @@ const createChart = () => {
     .style('pointer-events', 'none')
     .text((d) => {
       if (timelineValueFormat && timelineValueFormat.value && timelineValueFormat.value !== '') {
-        const formattedValue = d?.value?.toLocaleString() ?? ''
+        const formattedValue = d?.value?.toLocaleString() || ''
         return timelineValueFormat.value.replace('{{value}}', formattedValue)
       }
-      if (useRateForOverall.value) {
-        return d?.value?.toLocaleString()
-          + ' '
-          + indicatorStore?.getCurrentIndicator()?.totalAmntOf === 'dollars' ? '$' : ''
-          + ' per ' + indicatorStore?.getCurrentIndicator()?.ratePer?.toLocaleString() || indicatorStore?.getCurrentIndicator()?.geotype || ''
-        + ' avg.';
-      }
-      return (indicatorStore?.getCurrentIndicator()?.totalAmntOf === 'dollars' ? '$' : '') + (d?.value?.toLocaleString() || '') + (indicatorStore?.getCurrentIndicator()?.has_pct && !indicatorStore?.getCurrentIndicator()?.totalAmntOf ? '%' : '');
+      return (d?.value?.toLocaleString() || '');
     })
 
 
@@ -456,17 +434,10 @@ const addFeatureLine = (feature: string) => {
     .style('pointer-events', 'none')
     .text((d) => {
       if (timelineValueFormat && timelineValueFormat.value && timelineValueFormat.value !== '') {
-        const formattedValue = d?.value?.toLocaleString() ?? ''
+        const formattedValue = d?.value?.toLocaleString() || ''
         return timelineValueFormat.value.replace('{{value}}', formattedValue)
       }
-      if (useRateForOverall.value) {
-        return d?.value?.toLocaleString()
-          + ' '
-          + indicatorStore?.getCurrentIndicator()?.totalAmntOf === 'dollars' ? '$' : ''
-          + ' per ' + indicatorStore?.getCurrentIndicator()?.ratePer?.toLocaleString() || indicatorStore?.getCurrentIndicator()?.geotype || ''
-        + ' avg.';
-      }
-      return (indicatorStore?.getCurrentIndicator()?.totalAmntOf === 'dollars' ? '$' : '') + (d?.value?.toLocaleString() || '') + (indicatorStore?.getCurrentIndicator()?.has_pct && !indicatorStore?.getCurrentIndicator()?.totalAmntOf ? '%' : '');
+      return (d?.value?.toLocaleString() || '');
     })
 }
 const createAxisOnly = (data: Array<{ year: number; value: number | null }>) => {
@@ -542,12 +513,14 @@ const getMinMaxValues = () => {
   const data = indicator?.google_sheets_data;
   if (!data) return { minValue: 0, maxValue: 100 }
   //todo: this has to get min and max from all the  years, not just this year
-  let years = data.headerShortNames.filter((year: string) => /^\d{4}$/.test(year) && !isNaN(Number(year)));
-  if (years.length === 0) {
-    years = data.headerShortNames.filter((year: string) => year.startsWith('Count_')).sort((a: string, b: string) => Number(a.replace('Count_', '')) - Number(b.replace('Count_', '')));
-  }
-  let minValue = 9999999999999;
-  let maxValue = 0;
+  const yearValuePrefix = indicator?.timeline?.yearValuePrefix || '';
+    let years = data.headerShortNames.filter(
+      (year: string) => yearValuePrefix.length > 0 ? year.startsWith(yearValuePrefix) : YEAR_PATTERN.test(year) && !isNaN(Number(year))
+    );
+    
+    let minValue = Number.MAX_SAFE_INTEGER;
+    let maxValue = 0;
+
 
   for (let year = 0; year < years.length; year++) {
     const yearValues = data.data
@@ -565,14 +538,6 @@ const getMinMaxValues = () => {
     if (+thisyearMaxValue > maxValue) {
       maxValue = +thisyearMaxValue;
     }
-    // if(maxValue > 100){
-    //   console.log(years[year], maxValue);
-    // }
-  }
-  if (indicator?.has_pct && !indicator?.totalAmntOf) {
-    minValue = Math.max(minValue, 0);
-    maxValue = Math.min(maxValue, 100);
-    return { minValue, maxValue };
   }
 
   return { minValue: Math.floor(minValue * .95), maxValue: Math.ceil(maxValue * 1.05) };

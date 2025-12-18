@@ -131,23 +131,26 @@ const indicatorLevelStore = (storeName: 'left' | 'right') => {
                     
                 if (!defaultYears || defaultYears.length === 0) {
                     defaultYears = headerShortNames
-                        .filter((year: string) => year.startsWith('Count_'))
+                        .filter((year: string) => year.toLowerCase().startsWith(indicator.timeline?.yearValuePrefix || ''))
                         .sort((a: string, b: string) => 
-                            Number(a.replace('Count_', '')) - Number(b.replace('Count_', ''))
-                        );
+                            Number(a.replace(indicator.timeline?.yearValuePrefix || '', '')) - Number(b.replace(indicator.timeline?.yearValuePrefix || '', ''))
+                        ).map((year: string) => Number(year.replace(indicator.timeline?.yearValuePrefix || '', '')));
                 }
                 
                 // Use the latest year as default
-                let defaultYear = null;
-                if (defaultYears !== null && defaultYears.length > 0) {
-                    defaultYear = defaultYears[defaultYears.length - 1];
-                    await worker.setupIndicator(defaultYear);
-                    // Update min/max values from worker after setup
-                    minValue.value = (worker as any).minValue ?? null;
-                    maxValue.value = (worker as any).maxValue ?? null;
-                }
-                
-                await setCurrentYear(defaultYear);
+                // let defaultYear = null;
+                // if (defaultYears !== null && defaultYears.length > 0) {
+                //     defaultYear = defaultYears[defaultYears.length - 1];
+                //     await worker.setupIndicator(defaultYear);
+                //     // Update min/max values from worker after setup
+                //     minValue.value = (worker as any).minValue ?? null;
+                //     maxValue.value = (worker as any).maxValue ?? null;
+                // }
+                await worker.setupIndicator(defaultYears[defaultYears.length - 1]);
+                // Update min/max values from worker after setup
+                minValue.value = (worker as any).minValue ?? null;
+                maxValue.value = (worker as any).maxValue ?? null;
+                await setCurrentYear(defaultYears[defaultYears.length - 1]);
                 setCurrentGeoSelection(DEFAULT_GEO_SELECTION);
                 
                 // Listen for geography selection events

@@ -1,17 +1,8 @@
 <template>
     <div ref="popupContainer" class="popup-container">
-        <!-- Cluster Message -->
-        <div v-if="properties.cluster" class="cluster-message">
-            <v-icon icon="mdi-map-marker-multiple" size="32" color="primary" class="mb-2"></v-icon>
-            <h4 class="cluster-title">{{ properties.point_count }} Features</h4>
-            <p class="cluster-text">
-                <v-icon icon="mdi-magnify-plus-outline" size="16" class="mr-1"></v-icon>
-                Zoom in to view individual features
-            </p>
-        </div>
 
         <!-- Feature Details -->
-        <div v-else class="feature-details">
+        <div class="feature-details">
             <!-- Header -->
             <div class="popup-header">
                 <v-icon icon="mdi-map-marker" size="24" color="primary" class="header-icon"></v-icon>
@@ -34,48 +25,20 @@
                 <v-divider class="my-3"></v-divider>
                 
                 <!-- Percentage Stats -->
-                <div v-if="currentIndicator.has_pct" class="stats-grid">
-                    <template v-for="(stat) in stats" :key="stat.key">
-                        <div 
-                            v-if="!stat.key.startsWith('Count_')"
-                            :class="{ 'stat-item': true, 'stat-item-empty': isNaN(+stat.value) }"
+                <div class="stats-grid">
+                    <template v-for="(stat,index) in stats" :key="index">
+                        
+                        <div
+                            :class="{ 'stat-item': true, 'stat-item-empty': stat.isEmpty }"
                         >
-                            <div class="stat-label">{{ stat.key }}                     
+                        <div class="stat-label">{{ stat.year }}</div>
+                            <div class="stat-value percentage">
+                                {{ stat.title }}                     
                             </div> 
-                            <div v-if="!isNaN(+stat.value)" class="stat-value percentage">
-                                <span v-if="currentIndicator.totalAmntOf">
-                                    {{currentIndicator.totalAmntOf === 'dollars' ? '$' : ''}}{{ (+stat.value).toLocaleString('en-US') }} {{ currentIndicator.totalAmntOf === 'dollars' ? '' : currentIndicator.totalAmntOf }}
-                                </span>
-                                <span v-else>{{ (+stat.value).toFixed(1) }}%
-                                    
-                                </span>
-                                <span v-if="props.properties[`Count_${stat.key}`]" class="stat-total">
-                                    {{ (+props.properties[`Count_${stat.key}`]).toLocaleString('en-US') }} total
-                                </span>
-                                <span class="stat-total" v-if="getPop(stat) && getPop(stat)?.value && getPop(stat)?.value > 0">
-                                        out of {{getPop(stat)?.value}} people
-                                    </span>
-                            </div>
-                        </div>
-                    </template>
-                </div>
-
-                <!-- Count Stats -->
-                <div v-else-if="currentIndicator.has_count" class="stats-grid">
-                    <template v-for="stat in stats" :key="stat.key">
-                        <div 
-                            v-if="stat.key.startsWith('Count_')"
-                            class="stat-item"
-                            :class="{ 'stat-item-empty': isNaN(+stat.value) }"
-                        >
-                            <div class="stat-label">{{ stat.key.split('_')[1] }}</div>
-                            <div class="stat-value count">
-                                <span class="stat-total" v-if="!isNaN(+stat.value)">
-                                    {{ (+stat.value).toLocaleString('en-US') }} total<span class="stat-total" v-if="getPop(stat) && getPop(stat)?.value && getPop(stat)?.value > 0">out of {{getPop(stat)?.value}} people</span>
-                                </span>
-                                <span v-else class="no-data">No data</span>
-                            </div>
-                        </div>
+                           <div class="stat-value count">
+                            {{ stat.subtitle }}
+                           </div>
+                        </div> 
                     </template>
                 </div>
             </div>
@@ -129,41 +92,30 @@ const moreInfo = computed(() => {
     return splits.join('<br/>');
 })
 
-const pops = computed(() => {
-    return Object.keys(props.properties).filter(key => key.includes('pop_')).map(key => {
-        return {
-            key: key.toLowerCase(),
-            value: props.properties[key]
-        }
-    })
-})
-
-const counts = computed(() => {
-    return Object.keys(props.properties).filter(key => key.startsWith('Count_')).map(key => {
-        return {
-            key: key,
-            value: props.properties[key]
-        }
-    })
-})
-
-const pcts = computed(() => {
-    return Object.keys(props.properties).filter(key => !isNaN(+key) && +key > 1900 && +key < 2050).map(key => {
-        return {
-            key: key,
-            value: props.properties[key]
-        }
-    })
-})
-
-const stats = computed(() => {
-    return [...pcts.value, ...counts.value]
-})
-
-const getPop = (stat: { key: string; value: any }) => {
-    const popKey = 'pop_' + stat.key.replace('Count_', '').replace('count_','');
-    return pops.value.find(pop => pop.key === popKey)
+const keyMapping = {
+    "pct": "pct_",
+    "count": "count_",
+    "pop": "pop_"
 }
+const stats = computed(() => {
+    const years = Array.from(new Set(Object.keys(props.properties).map(key => Number(key.toLowerCase().replace('count_', '').replace('pop_', ''))).filter(year => !isNaN(+year))))
+    const stats = [];
+    const popup = currentIndicator?.value?.popup;
+    for(const year of years) {
+        const count = props.properties[keyMapping.count+year.toString()] || '';
+        const pop = props.properties[keyMapping.pop+year.toString()] || '';
+        const pct = props.properties[keyMapping.pct+year.toString()] || '';
+        const isEmpty = count === '' && pop === '' && pct === '';
+        stats.push({
+            isEmpty: isEmpty,
+            year: year,
+            title: popup?.format?.title?.replace('{{count}}', count).replace('{{pop}}', pop).replace('{{pct}}', pct),
+            subtitle: popup?.format?.subtitle?.replace('{{count}}', count).replace('{{pop}}', pop).replace('{{pct}}', pct)
+        })
+    }
+    return stats
+})
+
 </script>
 
 <style>

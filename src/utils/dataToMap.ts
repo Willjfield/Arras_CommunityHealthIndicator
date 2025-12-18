@@ -86,8 +86,8 @@ export class DataToMap {
   getGradientExpression() {
     const data = this.data;
     // Use instance properties if available, otherwise calculate
-    const minValue = this.minValue ?? this.getMinMaxValues().minValue;
-    const maxValue = this.maxValue ?? this.getMinMaxValues().maxValue;
+    const minValue = this.minValue || this.getMinMaxValues().minValue;
+    const maxValue = this.maxValue || this.getMinMaxValues().maxValue;
     const minColor = this.arrasBranding.colors[data.style.min.color];
     const maxColor = this.arrasBranding.colors[data.style.max.color];
     // Don't mutate shared indicator config - values are stored in instance properties
@@ -98,26 +98,24 @@ export class DataToMap {
       !data.layers.main ||
       !data.style ||
       !data.style.min ||
-      !data.style.max ||
-      !data.fill_color
+      !data.style.max
     ) {
       console.error("Missing required data properties:", {
         data,
         layers: data?.layers,
-        style: data?.style,
-        fill_color: data?.fill_color,
+        style: data?.style
       });
       return false;
     }
-
+    const yearValuePrefix = this.data.timeline?.yearValuePrefix || '';
     // Create MapLibre expression: interpolate color based on year value
     const fillExp = [
       "case",
-      ["has", String(this.year ?? -1)],
+      ["has", yearValuePrefix + String(this.year)],
       [
         "interpolate",
         ["linear"],
-        ["to-number", ["get", String(this.year ?? -1)]],
+        ["to-number", ["get", yearValuePrefix + String(this.year)]],
         minValue,
         minColor,
         maxValue,
@@ -344,16 +342,11 @@ export class DataToMap {
    */
   getMinMaxValues() {
     const data = this.data;
-    
-    // Find year columns - either 4-digit years or Count_ prefixed columns
+
+    const yearValuePrefix = data.timeline?.yearValuePrefix || '';
     let years = data.google_sheets_data.headerShortNames.filter(
-      (year: string) => YEAR_PATTERN.test(year) && !isNaN(Number(year))
+      (year: string) => yearValuePrefix.length > 0 ? year.startsWith(yearValuePrefix) : YEAR_PATTERN.test(year) && !isNaN(Number(year))
     );
-    if (years.length === 0) {
-      years = data.google_sheets_data.headerShortNames.filter(
-        (year: string) => year.startsWith(COUNT_PREFIX)
-      );
-    }
     
     let minValue = Number.MAX_SAFE_INTEGER;
     let maxValue = 0;
@@ -361,6 +354,7 @@ export class DataToMap {
     // Calculate min/max across all years
     for (let yearIdx = 0; yearIdx < years.length; yearIdx++) {
       const yearColumn = years[yearIdx] as string;
+
       const yearValues = data.google_sheets_data.data
         .filter((feature: any) => {
           const geoid = feature?.geoid?.toLowerCase() || '';
@@ -374,14 +368,12 @@ export class DataToMap {
           value !== null && 
           value !== undefined && 
           !isNaN(Number(value))
-          //Number(value) > 0
         );
-      
       if (yearValues.length === 0) continue;
       
       const thisYearMinValue = Math.min(...yearValues);
       const thisYearMaxValue = Math.max(...yearValues);
-      
+
       if (thisYearMinValue < minValue) {
         minValue = thisYearMinValue;
       }
@@ -391,11 +383,11 @@ export class DataToMap {
     }
     
     // Clamp percentage values to 0-100 range
-    if (this.data.has_pct && !this.data.totalAmntOf && !this.data.hasNegativeValues) {
-      minValue = Math.max(minValue, MIN_PERCENTAGE);
-      maxValue = Math.min(maxValue, MAX_PERCENTAGE);
-      return { minValue, maxValue };
-    }
+    // if (this.data.has_pct && !this.data.totalAmntOf && !this.data.hasNegativeValues) {
+    //   minValue = Math.max(minValue, MIN_PERCENTAGE);
+    //   maxValue = Math.min(maxValue, MAX_PERCENTAGE);
+    //   return { minValue, maxValue };
+    // }
     
     // Apply multipliers to provide visual padding
     return {

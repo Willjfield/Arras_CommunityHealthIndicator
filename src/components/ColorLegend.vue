@@ -11,8 +11,8 @@
           }"></div>
         </div>
         <div class="legend-labels">
-          <span class="min-label">{{indicatorDescription === 'dollars' ? '$' : ''}}{{ minValue.toLocaleString() }} {{ indicatorDescription === 'dollars' ? '' : indicatorDescription }}</span>
-          <span class="max-label">{{indicatorDescription === 'dollars' ? '$' : ''}}{{ maxValue.toLocaleString() }} {{ indicatorDescription === 'dollars' ? '' : indicatorDescription }}</span>
+          <span class="min-label">{{ legendTitle.min }}</span>
+          <span class="max-label">{{ legendTitle.max }}</span>
         </div>
       </div>
     </div>
@@ -37,14 +37,17 @@ const indicatorLevelStore = useIndicatorLevelStore(props.side)
 // Use storeToRefs to get reactive refs from the store
 const { minValue: storeMinValue, maxValue: storeMaxValue } = storeToRefs(indicatorLevelStore)
 
-const indicatorDescription = computed(() => {
-  if(props.selectedIndicator?.ratePer) {
-    return 'per ' + (+ props.selectedIndicator?.ratePer).toLocaleString('en-US')+' people';
+const legendTitle = computed(() => {
+  if (props.selectedIndicator?.legend?.title) {
+    return {
+      min: props.selectedIndicator?.legend?.title.replace('{{value}}', minValue.value.toLocaleString()),
+      max: props.selectedIndicator?.legend?.title.replace('{{value}}', maxValue.value.toLocaleString())
+    }
   }
-  if(props.selectedIndicator?.totalAmntOf) {
-    return props.selectedIndicator?.totalAmntOf;
+  return {
+    min: minValue.value.toLocaleString(),
+    max: maxValue.value.toLocaleString()
   }
-  return '%';
 })
 
 const minValue = computed(() => {
@@ -80,7 +83,7 @@ const maxColor = computed(() => {
   top: 5px;
   width: 50%;
   height: 80px;
- 
+
   z-index: 1000;
   user-select: none;
 }

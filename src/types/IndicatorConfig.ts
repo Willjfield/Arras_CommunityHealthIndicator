@@ -4,17 +4,12 @@ export interface Icon {
 }
 export interface IndicatorConfig {
     timeline: any;
-    hasNegativeValues: any;
-    totalAmntOf: any;
-    ratePer: number;
+    popup: any;
     title: string;
     geotype: string | 'tract' | 'county' | 'school' | 'facility';
     short_name: string;
     geolevel: string;
     default: 'left' | 'right' | false;
-    timeseries: boolean;
-    has_pct: boolean;
-    has_count: boolean;
     google_sheets_url: string;
     google_sheets_data: any;
     source_name: string;
@@ -35,6 +30,5 @@ export interface IndicatorConfig {
             value: number;
         };
     };
-    fill_color: any[];
     icons: Icon[];
 }
