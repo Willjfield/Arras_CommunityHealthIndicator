@@ -89,7 +89,8 @@ const orientation = computed(() => window.innerWidth > window.innerHeight ? 'lef
 
 watch(router.currentRoute, (newRoute, oldRoute) => {
     if(newRoute.name === 'map' && oldRoute?.name === 'map') {
-      window.location.reload()
+      console.log(newRoute)
+      window.location.replace(newRoute.fullPath)
     }
 }, { immediate: true })
 onBeforeMount(() => {
