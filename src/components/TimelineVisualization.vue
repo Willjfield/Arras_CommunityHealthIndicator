@@ -18,7 +18,8 @@
           timeline</span>
         <span v-show="hoveredGeo" class="hovered-geo mx-0">{{ indicatorStore?.getCurrentIndicator()?.geotype === 'tract'
           ? 'Census Tract Number' : indicatorStore?.getCurrentIndicator()?.geotype === 'county' ? 'County FIPS code' :
-          indicatorStore?.getCurrentIndicator()?.geotype === 'school' ? 'School' : 'ID' }}: {{ hoveredGeoName && hoveredGeoName.length > 0 ? hoveredGeoName : hoveredGeo }}<span class="hovered-color"
+            indicatorStore?.getCurrentIndicator()?.geotype === 'school' ? 'School' : 'ID' }}: {{ hoveredGeoName &&
+            hoveredGeoName.length > 0 ? hoveredGeoName : hoveredGeo }}<span class="hovered-color"
             :style="{ border: `2px solid ${hoveredColorRef}` }"></span></span>
       </div>
       <svg ref="svg" class="timeline-chart"></svg>
@@ -99,27 +100,33 @@ const availableYears = computed(() => {
 
   const headerShortNames = raw_data.headerShortNames
   let yearColumns: number[] = []
-
-  if (indicator?.has_pct) {
-    // Find year columns (numeric strings)
-    yearColumns = headerShortNames.filter((header: string) =>
-      /^\d{4}$/.test(header) && !isNaN(Number(header))
-    ).map((year: string) => Number(year)).sort((a: number, b: number) => a - b)
-  } else {
+  if (indicator?.timeline) {
     yearColumns = headerShortNames
       .filter((header: string) =>
-        header.startsWith('Count_')
+        header.startsWith(indicator?.timeline?.yearValuePrefix) || 
+        /^\d{4}$/.test(header) && !isNaN(Number(header))
       )
       .map((year: string) => Number(year.replace('Count_', '')))
       .sort((a: number, b: number) => a - b)
-  }
-  if (yearColumns.length === 0) {
-    yearColumns = headerShortNames.filter((header: string) =>
-      /^\d{4}$/.test(header) && !isNaN(Number(header))
-    ).map((year: string) => Number(year)).sort((a: number, b: number) => a - b)
+  } else {
+    if (indicator?.has_pct) {
+      // Find year columns (numeric strings)
+      yearColumns = headerShortNames.filter((header: string) =>
+        /^\d{4}$/.test(header) && !isNaN(Number(header))
+      ).map((year: string) => Number(year)).sort((a: number, b: number) => a - b)
+    } else {
+      yearColumns = headerShortNames.filter((header: string) =>
+        /^\d{4}$/.test(header) && !isNaN(Number(header))
+      ).map((year: string) => Number(year)).sort((a: number, b: number) => a - b)
+    }
   }
   return yearColumns
 })
+
+const timelineValueFormat = computed(() => {
+  const indicator = indicatorStore.getCurrentIndicator()
+  return indicator?.timeline?.yearValueFormat as string | null || null
+}) as ComputedRef<string | null>
 
 const selectedYear = computed({
   get: () => indicatorStore.getCurrentYear(),
@@ -141,7 +148,7 @@ const processData = (_feature: string | number | null) => {
   const raw_data = indicator?.google_sheets_data
 
   if (!raw_data) return []
-  const headerShortNames = raw_data.headerShortNames
+  //const headerShortNames = raw_data.headerShortNames
   const rows = raw_data.data
 
   //SET CURRENTGEO SELECTION TO HOVERED
@@ -149,31 +156,18 @@ const processData = (_feature: string | number | null) => {
 
   let matchingRow: Record<string, any> | undefined = undefined;
   const data: Array<{ year: number; value: number | null }> = []
-  let yearColumns: number[] = []
-  //actual difference is totals or pcts. Is this always area vs point?
-  if (indicator.has_pct) {
-    // Find year columns (numeric strings)
-    yearColumns = headerShortNames.filter((header: string) =>
-      /^\d{4}$/.test(header) && !isNaN(Number(header))
-    ).map((year: string) => Number(year)).sort((a: number, b: number) => a - b)
-  } else {
-    yearColumns = headerShortNames
-      .filter((header: string) =>
-        header.startsWith('Count_')
-      )
-      .map((year: string) => Number(year.replace('Count_', '')))
-      .sort((a: number, b: number) => a - b)
-  }
+
   matchingRow = rows.find((_row: Record<string, any>) =>
     '' + _row.geoid === '' + currentGeoSelection
   )
-  if (!matchingRow) return []
-  yearColumns.forEach((year: number) => {
-    let yearValue = matchingRow?.[year.toString()]
-    if (indicator?.has_count && !indicator?.has_pct) {
-      yearValue = matchingRow?.['Count_' + year.toString()]
-    }
 
+  if (!matchingRow) return []
+  availableYears.value.forEach((year: number) => {
+    let yearValue = matchingRow?.[year.toString()]
+    if (indicator?.has_count && !indicator?.has_pct && indicator?.short_name !== 'grandchildren') {
+      const prefix = indicator?.timeline?.yearValuePrefix === 'pct' ? 'Count_' : ''
+      yearValue = matchingRow?.[prefix + year.toString()]
+    }
     data.push({
       year,
       value: yearValue != null && yearValue !== "" ? Number(yearValue) : null
@@ -187,7 +181,7 @@ const createChart = () => {
   if (!svg.value) return
 
   const data = processData(null)
-
+  console.log('data', data)
   if (data.length === 0) return
 
   // Clear previous chart
@@ -203,7 +197,6 @@ const createChart = () => {
     value: d.value?.toFixed(2) ? Number(d.value?.toFixed(2)) : null
   }))
   console.log('validData', validData)
-
   if (validData.length === 0) {
     // Just show x-axis with years
     createAxisOnly(data)
@@ -337,6 +330,10 @@ const createChart = () => {
     .style('fill', '#08f')
     .style('pointer-events', 'none')
     .text((d) => {
+      
+      if(timelineValueFormat && timelineValueFormat.value && timelineValueFormat.value !== '') {
+        return timelineValueFormat.value.replace('{{value}}', d?.value?.toLocaleString())
+      }
       if (useRateForOverall.value) {
         return d?.value?.toLocaleString()
           + ' '
@@ -344,7 +341,7 @@ const createChart = () => {
           + ' per ' + indicatorStore?.getCurrentIndicator()?.ratePer?.toLocaleString() || indicatorStore?.getCurrentIndicator()?.geotype || ''
         + ' avg.';
       }
-      return (indicatorStore?.getCurrentIndicator()?.totalAmntOf === 'dollars' ? '$' : '') + (d?.value?.toLocaleString() || '') +  (indicatorStore?.getCurrentIndicator()?.has_pct && !indicatorStore?.getCurrentIndicator()?.totalAmntOf ? '%' : '');
+      return (indicatorStore?.getCurrentIndicator()?.totalAmntOf === 'dollars' ? '$' : '') + (d?.value?.toLocaleString() || '') + (indicatorStore?.getCurrentIndicator()?.has_pct && !indicatorStore?.getCurrentIndicator()?.totalAmntOf ? '%' : '');
     })
 
 
@@ -445,7 +442,7 @@ const addFeatureLine = (feature: string) => {
     .style('fill', '#fff')
     .style('opacity', 0.75)
 
-    svgElement.selectAll(`.${statewide ? 'statewide-' : ''}data-feature-point-label`)
+  svgElement.selectAll(`.${statewide ? 'statewide-' : ''}data-feature-point-label`)
     .data(validData)
     .enter()
     .append('text')
@@ -458,6 +455,9 @@ const addFeatureLine = (feature: string) => {
     .style('fill', `${statewide ? '#7d7d7d' : '#f80'}`)
     .style('pointer-events', 'none')
     .text((d) => {
+      if(timelineValueFormat && timelineValueFormat.value && timelineValueFormat.value !== '') {
+        return timelineValueFormat.value.replace('{{value}}', d?.value?.toLocaleString())
+      }
       if (useRateForOverall.value) {
         return d?.value?.toLocaleString()
           + ' '
@@ -465,7 +465,7 @@ const addFeatureLine = (feature: string) => {
           + ' per ' + indicatorStore?.getCurrentIndicator()?.ratePer?.toLocaleString() || indicatorStore?.getCurrentIndicator()?.geotype || ''
         + ' avg.';
       }
-      return (indicatorStore?.getCurrentIndicator()?.totalAmntOf === 'dollars' ? '$' : '') + (d?.value?.toLocaleString() || '') +  (indicatorStore?.getCurrentIndicator()?.has_pct && !indicatorStore?.getCurrentIndicator()?.totalAmntOf ? '%' : '');
+      return (indicatorStore?.getCurrentIndicator()?.totalAmntOf === 'dollars' ? '$' : '') + (d?.value?.toLocaleString() || '') + (indicatorStore?.getCurrentIndicator()?.has_pct && !indicatorStore?.getCurrentIndicator()?.totalAmntOf ? '%' : '');
     })
 }
 const createAxisOnly = (data: Array<{ year: number; value: number | null }>) => {
@@ -511,7 +511,8 @@ const createAxisOnly = (data: Array<{ year: number; value: number | null }>) => 
 }
 
 const createXScale = (data: Array<{ year: number; value: number | null }>) => {
-  const years = data.map(d => d.year)
+  
+  const years = data.map(d => d.year).filter(d => d !== null && d !== undefined && !isNaN(Number(d))).sort((a: number, b: number) => a - b)
 
   // Create custom scale with variable spacing
   const yearPositions: number[] = []
@@ -549,13 +550,12 @@ const getMinMaxValues = () => {
 
   for (let year = 0; year < years.length; year++) {
     const yearValues = data.data
-    .filter((feature: any) => !feature?.name?.toLowerCase().includes("school district"))
-
-      //.filter((feature: any) => feature?.geoid.toLowerCase() !== "overall" && !feature?.geoid.toLowerCase().includes("statewide") && !feature?.name?.toLowerCase().includes("school district"))
+      .filter((feature: any) => !indicator?.timeline?.filterOut?.some((filter: string) => feature?.geoid.toLowerCase().includes(filter)))
+      .filter((feature: any) => !feature?.name?.toLowerCase().includes("school district"))
       .map((feature: any) => feature[years[year] as string])
       .filter((value: any) => value !== null && value !== undefined && !isNaN(Number(value)))
       .map((value: any) => Number(value));
-    //console.log(years[year], yearValues);
+
     const thisyearMinValue = Math.min(...yearValues);
     const thisyearMaxValue = Math.max(...yearValues);
     if (+thisyearMinValue < minValue) {
@@ -579,14 +579,11 @@ const getMinMaxValues = () => {
 
 const createYScale = (data: Array<{ year: number; value: number | null }>) => {
   const values = data.map(d => d.value!).filter(v => v !== null && v !== undefined && !isNaN(+v))
-  //console.log('values', values)
+
   if (values.length === 0) return d3.scaleLinear().domain([0, 100]).range([height - margin.bottom, margin.top])
 
   const { minValue, maxValue } = getMinMaxValues()
-  console.log('minValue', minValue)
-  console.log('maxValue', maxValue)
-  //const padding = (maxValue - minValue) || 1
-  //todo: Math.max(minValue - padding, 0)
+
   return d3.scaleLinear()
     .domain([minValue, maxValue])
     .range([height + margin.bottom, margin.top])
@@ -618,37 +615,26 @@ onMounted(() => {
   })
   emitter.on(`feature-${props.side}-hovered`, (feature: string | null) => {
     //if (props.side === 'left') {
-      d3.selectAll('.timeline-feature-line').remove()
-      d3.selectAll('.data-feature-point').remove()
-      d3.selectAll('.data-feature-point-label').remove()
-      d3.selectAll('.data-feature-point-label-background').remove()
-      if (feature === null) {
-        hoveredGeo.value = ''
-      } else {
-        hoveredGeo.value = feature;
-        addFeatureLine(feature)
-      }
-   // }
+    d3.selectAll('.timeline-feature-line').remove()
+    d3.selectAll('.data-feature-point').remove()
+    d3.selectAll('.data-feature-point-label').remove()
+    d3.selectAll('.data-feature-point-label-background').remove()
+    if (feature === null) {
+      hoveredGeo.value = ''
+    } else {
+      hoveredGeo.value = feature;
+      addFeatureLine(feature)
+    }
+    // }
   })
   emitter.on(`feature-name-${props.side}-hovered`, (feature: string | null) => {
     if (feature === null) {
-        hoveredGeoName.value = ''
-      } else {
-        hoveredGeoName.value = feature;
-      }
+      hoveredGeoName.value = ''
+    } else {
+      hoveredGeoName.value = feature;
+    }
   })
-  // emitter.on('feature-right-hovered', (feature: string | null) => {
-  //   if (props.side === 'right') {
-  //     d3.selectAll('.timeline-feature-line').remove()
-  //     d3.selectAll('.data-feature-point').remove()
-  //     d3.selectAll('.data-feature-point-label').remove()
-  //     if (feature === null) {
-  //       hoveredGeo.value = ''
-  //     } else {
-  //       addFeatureLine(feature)
-  //     }
-  //   }
-  // })
+ 
 })
 
 onUnmounted(() => {
@@ -867,7 +853,6 @@ onUnmounted(() => {
 }
 </style>
 <style>
- 
 .orientation-top-bottom .color-legend.right {
   top: calc(50% + 3rem);
 }

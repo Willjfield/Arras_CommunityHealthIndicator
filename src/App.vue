@@ -88,9 +88,14 @@ const categories = computed(() => mainConfig?.categories || []);
 const orientation = computed(() => window.innerWidth > window.innerHeight ? 'left-right' : 'top-bottom')
 
 watch(router.currentRoute, (newRoute, oldRoute) => {
+  if(!window.location.search.includes('theme') && newRoute.name === 'map') {
+    alert('Please go to the home page to select a theme first.')
+    window.location.href = '/'
+    return
+  }
     if(newRoute.name === 'map' && oldRoute?.name === 'map') {
-      console.log(newRoute)
-      window.location.replace(newRoute.fullPath)
+      window.location.reload()
+      //window.location.replace(newRoute.fullPath)
     }
 }, { immediate: true })
 onBeforeMount(() => {

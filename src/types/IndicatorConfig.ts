@@ -3,6 +3,8 @@ export interface Icon {
     filename?: string;
 }
 export interface IndicatorConfig {
+    timeline: any;
+    hasNegativeValues: any;
     totalAmntOf: any;
     ratePer: number;
     title: string;

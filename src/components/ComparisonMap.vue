@@ -143,7 +143,6 @@ onMounted(async () => {
     _compare.onceBoth('load', () => {
       const loadingEl = document.getElementById('loading');
       if (loadingEl && loadingEl.style) {
-        console.log('loadingEl', loadingEl)
         loadingEl.style.display = 'none';
       }
       Array.from(document.getElementsByClassName('maplibregl-ctrl-attrib') as unknown as HTMLElement[]).forEach((element) => {

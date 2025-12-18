@@ -10,13 +10,6 @@
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRenE0k_5PqyC_bP8DsVfuheopSPQbHNSdcB6ipGGqqKixPSzyxNT4fiPQw2GUnfKiMUHtuqf5If98c/pub?gid=482200278&single=true&output=csv",
       "source_name": "tracts-harmonized",
       "short_name": "smokers",
-      "legend-timeline":{
-        "type":"pct",
-        "minMaxField":"pct"
-      },
-      "popup":{
-        "{{pct}}% - {{count}} out of {{pop}} people"
-      },
       "layers": {
         "main": "tracts-harmonized-fill",
         "outline": "tracts-harmonized-outline"
