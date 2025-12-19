@@ -7,10 +7,7 @@ import Popup from "../components/Popup.vue";
 import vuetify from "../plugins/vuetify.js";
 import {
   YEAR_PATTERN,
-  COUNT_PREFIX,
   EXCLUDED_GEO_PATTERNS,
-  MIN_PERCENTAGE,
-  MAX_PERCENTAGE,
   MIN_MULTIPLIER,
   MAX_MULTIPLIER,
 } from "../constants";
@@ -147,7 +144,7 @@ export class DataToMap {
         maxValue,
         maxColor,
       ],
-      "#000",
+      "#0000",
     ];
 
     if (!data.layers.main) {

@@ -14,7 +14,6 @@
       },
       "timeline": {
         "yearValuePrefix": "pct_",
-        "yearValueFormat": "{{value}}% of 3 and 4 year olds",
         "yearValueShortFormat": "{{value}}%",
         "filterOut": []
       },
@@ -43,7 +42,6 @@
       },
       "timeline": {
         "yearValuePrefix": "pct_",
-        "yearValueFormat": "{{value}}% of families",
         "yearValueShortFormat": "{{value}}%",
         "filterOut": []
       },
@@ -73,9 +71,8 @@
       },
       "timeline": {
         "yearValuePrefix": "count_",
-        "yearValueFormat": "{{value}} children",
         "yearValueShortFormat": "{{value}}",
-        "filterOut": ["statewide", "overall"]
+        "filterOut": ["statewide"]
       },
       "popup": {
         "columns": ["count"],
@@ -107,7 +104,6 @@
       },
       "timeline": {
         "yearValuePrefix": "pct_",
-        "yearValueFormat": "{{value}}% of students",
         "yearValueShortFormat": "{{value}}%",
         "filterOut": []
       },
@@ -139,7 +135,6 @@
       "short_name": "3rdGradeELAReadiness",
       "timeline": {
         "yearValuePrefix": "pct_",
-        "yearValueFormat": "{{value}}% of students",
         "yearValueShortFormat": "{{value}}%",
         "filterOut": []
       },
@@ -175,7 +170,6 @@
       "short_name": "8thGradeMathReadiness",
       "timeline": {
         "yearValuePrefix": "pct_",
-        "yearValueFormat": "{{value}}% of students",
         "yearValueShortFormat": "{{value}}%",
         "filterOut": []
       },
@@ -211,7 +205,6 @@
       "short_name": "8thGradeELAReadiness",
       "timeline": {
         "yearValuePrefix": "pct_",
-        "yearValueFormat": "{{value}}% of students",
         "yearValueShortFormat": "{{value}}%",
         "filterOut": []
       },
@@ -248,7 +241,6 @@
       "short_name": "highSchoolCompletion",
       "timeline": {
         "yearValuePrefix": "pct_",
-        "yearValueFormat": "{{value}}% of students",
         "yearValueShortFormat": "{{value}}%",
         "filterOut": []
       },
@@ -283,7 +275,6 @@
       "short_name": "highSchoolCareerReadiness",
       "timeline": {
         "yearValuePrefix": "pct_",
-        "yearValueFormat": "{{value}}% of students",
         "yearValueShortFormat": "{{value}}%",
         "filterOut": []
       },
@@ -319,7 +310,6 @@
       "short_name": "highSchoolCollegeReadiness",
       "timeline": {
         "yearValuePrefix": "pct_",
-        "yearValueFormat": "{{value}}% of students",
         "yearValueShortFormat": "{{value}}%",
         "filterOut": []
       },
@@ -355,7 +345,6 @@
       "short_name": "disconnectedYouth",
       "timeline": {
         "yearValuePrefix": "pct_",
-        "yearValueFormat": "{{value}}% of children",
         "yearValueShortFormat": "{{value}}%",
         "filterOut": []
       },
@@ -384,7 +373,6 @@
       "short_name": "kReadiness",
       "timeline": {
         "yearValuePrefix": "pct_",
-        "yearValueFormat": "{{value}}% of students",
         "yearValueShortFormat": "{{value}}%",
         "filterOut": []
       },

@@ -13,6 +13,22 @@
       "layers": {
         "main": "tracts-harmonized-fill",
         "outline": "tracts-harmonized-outline"
+      },
+      "timeline": {
+        "yearValuePrefix": "pct_",
+        "yearValueShortFormat": "{{value}}%",
+        "filterOut": []
+      },
+      "popup": {
+        "columns": ["pct", "count"],
+        "format": {
+          "title": "{{pct}}% of adults",
+          "subtitle": "{{count}} adults"
+        }
+      },
+      "legend":{
+        "title-column":"pct",
+        "title": "{{pct}}% of adults"
       }
     },
     {
@@ -20,14 +36,28 @@
       "geolevel": "area",
       "geotype": "tract",
       "default": "right",
-      "has_pct": true,
-      "has_count": true,
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vR9zeolHtawv9gwC_vD12fwM_GuujMxXi8KVJoF3PqSONsdw3LvX2sZRZOnji09mBVopP1I0tDXOMN6/pub?gid=646151606&single=true&output=csv",
       "source_name": "tracts-harmonized",
       "short_name": "concentrated_poverty",
       "layers": {
         "main": "tracts-harmonized-fill",
         "outline": "tracts-harmonized-outline"
+      },
+      "timeline": {
+        "yearValuePrefix": "pct_",
+        "yearValueShortFormat": "{{value}}%",
+        "filterOut": []
+      },
+      "popup": {
+        "columns": ["pct"],
+        "format": {
+          "title": "{{pct}}% of children",
+          "subtitle": null
+        }
+      },
+      "legend":{
+        "title-column":"pct",
+        "title": "{{pct}}% of children"
       }
     },
     {
@@ -35,8 +65,6 @@
       "geolevel": "area",
       "geotype": "tract",
       "default": false,
-      "has_pct": true,
-      "has_count": true,
       "totalAmntOf": "dollars",
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRxBdPEeiYzDaPP8ZRebLlTvX_OzEFwRL6c7zC45u0HES0ZlD5v2o8tUdL0xcBmYKTpCL_I4ALJoWNR/pub?gid=956489115&single=true&output=csv",
       "source_name": "tracts-harmonized",
@@ -46,10 +74,19 @@
         "outline": "tracts-harmonized-outline"
       },
       "timeline": {
-        "yearValuePrefix": "pct_",
-        "yearValueFormat": "{{value}}% of households",
-        "yearValueShortFormat": "{{value}}%",
+        "yearValuePrefix": "count_",
+        "yearValueShortFormat": "${{value}}",
         "filterOut": []
+      },
+      "popup": {
+        "columns": ["count"],
+        "format": {
+          "title": "${{count}}"
+        }
+      },
+      "legend":{
+        "title-column":"count",
+        "title": "${{count}} median household income"
       }
     },
     {
@@ -65,6 +102,22 @@
       "layers": {
         "main": "tracts-harmonized-fill",
         "outline": "tracts-harmonized-outline"
+      },
+      "timeline": {
+        "yearValuePrefix": "pct_",
+        "yearValueShortFormat": "{{value}}%",
+        "filterOut": []
+      },
+      "popup": {
+        "columns": ["pct", "count"],
+        "format": {
+          "title": "{{pct}}% of households",
+          "subtitle": "{{count}} households total"
+        }
+      },
+      "legend":{
+        "title-column":"pct",
+        "title": "{{pct}}% of households"
       }
     },
     {
@@ -72,11 +125,28 @@
       "geolevel": "area",
       "geotype": "tract",
       "default": false,
-      "has_pct": true,
-      "has_count": true,
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vQfEBRwU2Zwqtbt3hzpobMszogf7jUrvcxHIXbAmzaNlTGafpTgroY3P0wJyXr9FRy8QJbJJyBLoBeR/pub?gid=1453198124&single=true&output=csv",
       "source_name": "tracts-harmonized",
       "short_name": "hs_grads",
+      "timeline": {
+        "yearValuePrefix": "pct_",
+        "yearValueShortFormat": "{{value}}%",
+        "filterOut": []
+      },
+      "popup": {
+        "columns": ["pct", "count"],
+        "format": {
+          "title": "{{pct}}% of adults",
+          "subtitle": "{{count}} adults"
+        }
+      },
+      "legend":{
+        "title-column":"pct",
+        "title": "{{pct}}% of adults"
+      },
+      "map":{
+        "color": "pct"
+      },
       "layers": {
         "main": "tracts-harmonized-fill",
         "outline": "tracts-harmonized-outline"
@@ -87,11 +157,28 @@
       "geolevel": "area",
       "geotype": "tract",
       "default": false,
-      "has_pct": true,
-      "has_count": true,
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vT67ITh6KidlwFKzHeQNGkKULuRnRhp2T6KzAUnVUgfo9m0VD26KcpOVJL1pmqk7TDetCNUXNChn_hl/pub?gid=175542881&single=true&output=csv",
       "source_name": "tracts-harmonized",
       "short_name": "long_commute",
+      "timeline": {
+        "yearValuePrefix": "pct_",
+        "yearValueShortFormat": "{{value}}%",
+        "filterOut": []
+      },
+      "popup": {
+        "columns": ["pct", "count"],
+        "format": {
+          "title": "{{pct}}% of workers",
+          "subtitle": "{{count}} workers"
+        }
+      },
+      "legend":{
+        "title-column":"pct",
+        "title": "{{pct}}% of workers"
+      },
+      "map":{
+        "color": "pct"
+      },
       "layers": {
         "main": "tracts-harmonized-fill",
         "outline": "tracts-harmonized-outline"
@@ -107,6 +194,25 @@
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRnru_GVIY34kQpl2sYDTCXMFWT_GGtaq6qU9YGKbTIwXdiqI63GdfhVUmzSaDaHUz9pFreEcWXRHJ3/pub?gid=1994802547&single=true&output=csv",
       "source_name": "tracts-harmonized",
       "short_name": "people_in_pov",
+      "timeline": {
+        "yearValuePrefix": "pct_",
+        "yearValueShortFormat": "{{value}}%",
+        "filterOut": []
+      },
+      "popup": {
+        "columns": ["pct", "count"],
+        "format": {
+          "title": "{{pct}}% of residents",
+          "subtitle": "{{count}} residents"
+        }
+      },
+      "legend":{
+        "title-column":"pct",
+        "title": "{{pct}}% of residents"
+      },
+      "map":{
+        "color": "pct"
+      },
       "layers": {
         "main": "tracts-harmonized-fill",
         "outline": "tracts-harmonized-outline"
@@ -117,11 +223,28 @@
       "geolevel": "area",
       "geotype": "tract",
       "default": false,
-      "has_pct": true,
-      "has_count": true,
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vS4ioVC9PmujjHYlkLhZUNYF22RmqsGOXEgPzKvOwVb5OWWr0Q6Tm6OpMhnyyxte9u0d38mp5fYxbDv/pub?gid=1087215282&single=true&output=csv",
       "source_name": "tracts-harmonized",
       "short_name": "workforce_in_pov",
+      "timeline": {
+        "yearValuePrefix": "pct_",
+        "yearValueShortFormat": "{{value}}%",
+        "filterOut": []
+      },
+      "popup": {
+        "columns": ["pct", "count"],
+        "format": {
+          "title": "{{pct}}% of workforce",
+          "subtitle": "{{count}} workers"
+        }
+      },
+      "legend":{
+        "title-column":"pct",
+        "title": "{{pct}}% of workforce"
+      },
+      "map":{
+        "color": "pct"
+      },
       "layers": {
         "main": "tracts-harmonized-fill",
         "outline": "tracts-harmonized-outline"
@@ -137,21 +260,57 @@
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vQerb-iOq-zzpATcIUQ43K34qWDe1bE4gHBRQJYhSjLxeMOm83ALT3FVcGqihxt_1k4qBRhQ0WocHRB/pub?gid=1933545590&single=true&output=csv",
       "source_name": "tracts-harmonized",
       "short_name": "unemployment_rate",
+      "timeline": {
+        "yearValuePrefix": "pct_",
+        "yearValueShortFormat": "{{value}}%",
+        "filterOut": []
+      },
+      "popup": {
+        "columns": ["pct", "count"],
+        "format": {
+          "title": "{{pct}}% of residents",
+          "subtitle": "{{count}} residents"
+        }
+      },
+      "legend":{
+        "title-column":"pct",
+        "title": "{{pct}}% of residents"
+      },
+      "map":{
+        "color": "pct"
+      },
       "layers": {
         "main": "tracts-harmonized-fill",
         "outline": "tracts-harmonized-outline"
-        }
+      }
     },
     {
       "title": "Substandard housing units",
       "geolevel": "area",
       "geotype": "tract",
       "default": false,
-      "has_pct": true,
-      "has_count": true,
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRnL5GlWMLotD1OY_nU_L712aq6VcN6r5I6S0g5D_CC5TceMqofVscOxlnioXwgjTvoDzUOoMtCJNAG/pub?gid=1379297340&single=true&output=csv",
       "source_name": "tracts-harmonized",
       "short_name": "substandard_housing",
+      "timeline": {
+        "yearValuePrefix": "pct_",
+        "yearValueShortFormat": "{{value}}%",
+        "filterOut": []
+      },
+      "popup": {
+        "columns": ["pct", "count"],
+        "format": {
+          "title": "{{pct}}% of housing units",
+          "subtitle": "{{count}} housing units"
+        }
+      },
+      "legend":{
+        "title-column":"pct",
+        "title": "{{pct}}% of housing units"
+      },
+      "map":{
+        "color": "pct"
+      },
       "layers": {
         "main": "tracts-harmonized-fill",
         "outline": "tracts-harmonized-outline"

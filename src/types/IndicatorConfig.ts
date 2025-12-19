@@ -3,6 +3,12 @@ export interface Icon {
     filename?: string;
 }
 export interface IndicatorConfig {
+    has_count: any;
+    has_pct: any;
+    map?: {
+        size?: string;
+        color?: string | null;
+    };
     timeline: any;
     popup: any;
     title: string;

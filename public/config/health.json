@@ -5,14 +5,11 @@
       "geolevel": "area",
       "geotype": "tract",
       "default": "left",
-      "has_pct": true,
-      "has_count": true,
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRenE0k_5PqyC_bP8DsVfuheopSPQbHNSdcB6ipGGqqKixPSzyxNT4fiPQw2GUnfKiMUHtuqf5If98c/pub?gid=482200278&single=true&output=csv",
       "source_name": "tracts-harmonized",
       "short_name": "smokers",
       "timeline": {
         "yearValuePrefix": "pct_",
-        "yearValueFormat": "{{value}}% of adults",
         "yearValueShortFormat": "{{value}}%",
         "filterOut": []
       },
@@ -40,8 +37,6 @@
       "geolevel": "area",
       "geotype": "tract",
       "default": "right",
-      "has_pct": true,
-      "has_count": true,
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vTVxPi4GgcloW3FKCIEwM--UA9HhKQjNOGxEoTQC1quZEmlEF-5V9GXIvepoImUQ2c8QXfkmyB79MjS/pub?gid=534592488&single=true&output=csv",
       "source_name": "tracts-harmonized",
       "short_name": "no_health_insurance",
@@ -51,7 +46,6 @@
       },
       "timeline": {
         "yearValuePrefix": "pct_",
-        "yearValueFormat": "{{value}}% of working age adults",
         "yearValueShortFormat": "{{value}}%",
         "filterOut": []
       },
@@ -84,7 +78,6 @@
       },
       "timeline": {
         "yearValuePrefix": "pct_",
-        "yearValueFormat": "{{value}}% of residents",
         "yearValueShortFormat": "{{value}}%",
         "filterOut": []
       },
@@ -117,8 +110,7 @@
       },
       "timeline": {
         "yearValuePrefix": "pop_",
-        "yearValueFormat": "{{value}} per 100k",
-        "yearValueShortFormat": "{{value}} per 100k",
+        "yearValueShortFormat": "{{value}}/100k",
         "filterOut": []
       },
       "popup": {
@@ -150,7 +142,6 @@
       },
       "timeline": {
         "yearValuePrefix": "pct_",
-        "yearValueFormat": "{{value}}% of births",
         "yearValueShortFormat": "{{value}}%",
         "filterOut": []
       },
@@ -173,10 +164,6 @@
       "geolevel": "area",
       "geotype": "county",
       "default": false,
-      "has_pct": false,
-      "has_count": true,
-      "totalAmntOf": "deaths",
-      "ratePer": 100000,
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vTQx5IGI_FrPFnuH2_qxNO3csjQq6vE0VJEFPfqB4zGkltxOKuAMJ2CrBYSV6wiS6kE3p76nGqWc8iz/pub?gid=829636489&single=true&output=csv",
       "source_name": "counties-source",
       "short_name": "neoplasm-mortality",
@@ -184,20 +171,30 @@
         "main": "counties-data"
       },
       "timeline": {
-        "yearValuePrefix": "count_",
-        "yearValueFormat": "{{value}} deaths",
-        "yearValueShortFormat": "{{value}}",
+        "yearValuePrefix": "pop_",
+        "yearValueShortFormat": "{{value}}/100k",
         "filterOut": []
+      },
+      "popup": {
+        "columns": ["pop", "count"],
+        "format": {
+          "title": "{{pop}} per 100k",
+          "subtitle": "{{count}} residents total"
+        }
+      },
+      "legend":{
+        "title-column":"pop",
+        "title": "{{pop}} per 100,000 residents"
+      },
+      "map":{
+        "color": "pop"
       }
-
     },
     {
       "title": "Percent of Adults with Mental Health Distress",
       "geolevel": "area",
       "geotype": "tract",
       "default": false,
-      "has_pct": true,
-      "has_count": true,
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vSiMSkw-to8lXOD0pyjuoci-xIFvCdL3woQsEsPtPI0w1TO-g-zt1UVAOV4TOczQ_0RIWX_iFm4EasK/pub?gid=876954295&single=true&output=csv",
       "source_name": "tracts-harmonized",
       "short_name": "mental-health-distress",
@@ -207,31 +204,22 @@
       },
       "timeline": {
         "yearValuePrefix": "pct_",
-        "yearValueFormat": "{{value}}% of adults",
         "yearValueShortFormat": "{{value}}%",
         "filterOut": []
-      }
-
-    },
-    {
-      "title": "Could Not See a Doctor Due to Cost",
-      "geolevel": "area",
-      "geotype": "tract",
-      "default": false,
-      "has_pct": true,
-      "has_count": true,
-      "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vSnJkFJHxwHVr8YseJRFPdIzYbvWY9G5Rgzo2Izrg1Tg2s_tVYSV5E38dgz-Fl4CFwcCIFxPv9F_o1N/pub?gid=0&single=true&output=csv",
-      "source_name": "tracts-harmonized",
-      "short_name": "could-not-see-doctor",
-      "layers": {
-        "main": "tracts-harmonized-fill",
-        "outline": "tracts-harmonized-outline"
       },
-      "timeline": {
-        "yearValuePrefix": "pct_",
-        "yearValueFormat": "{{value}}% of adults",
-        "yearValueShortFormat": "{{value}}%",
-        "filterOut": []
+      "popup": {
+        "columns": ["pct", "count", "pop"],
+        "format": {
+          "title": "{{pct}}% of adults",
+          "subtitle": "{{count}} out of {{pop}} adults"
+        }
+      },
+      "legend":{
+        "title-column":"pct",
+        "title": "{{pct}}% of adults"
+      },
+      "map":{
+        "color": "pct"
       }
 
     }

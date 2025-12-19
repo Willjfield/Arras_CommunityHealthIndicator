@@ -9,15 +9,22 @@
     <div ref="container" class="timeline-visualization">
 
       <div class="chart-label">
-        <div v-html="headerHTML" class="header-html">
-        </div>
-
-        <v-divider></v-divider>
-        <span v-show="!hoveredGeo" class="hovered-geo mx-0 font-italic font-weight-medium">Hover over a feature to see
-          the
-          timeline</span>
-        <span v-show="hoveredGeo" class="hovered-geo mx-0">Selected area<span class="hovered-color"
-            :style="{ border: `2px solid ${hoveredColorRef}` }"></span></span>
+        <table class="viz-legend">
+          <tbody>
+            <tr>
+              <td v-if="!indicatorStore?.getCurrentIndicator()?.timeline?.filterOut?.some((filter: string) => filter.toLowerCase() === 'overall')">
+                <span class="hovered-geo mx-0">Chester & Lancaster avg.<span class="selected-color" :style="{border:`2px solid ${selectedColorRef}`}"></span></span>
+              </td>
+              <td v-if="!indicatorStore?.getCurrentIndicator()?.timeline?.filterOut?.some((filter: string) => filter.toLowerCase() === 'statewide')">
+                <span class="selected-geo">Statewide</span><span class="selected-color" :style="{border:`2px solid ${statewideColor}`}"></span>
+              </td>
+              <td>
+                <span v-show="hoveredGeo" class="hovered-geo mx-0">Selected area<span class="hovered-color"
+                    :style="{ border: `2px solid ${hoveredColorRef}` }"></span></span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
       <svg ref="svg" class="timeline-chart"></svg>
     </div>
@@ -38,11 +45,7 @@ interface Props {
 
 const props = defineProps<Props>()
 const indicatorStore = useIndicatorLevelStore(props.side)
-const useRateForOverall = computed(() => {
-  if (!indicatorStore?.getCurrentIndicator()) return false;
-  if (indicatorStore?.getCurrentIndicator()?.short_name === 'childcare') return false;
-  return !indicatorStore?.getCurrentIndicator()?.has_pct && indicatorStore?.getCurrentIndicator()?.has_count && indicatorStore?.getCurrentIndicator()?.totalAmntOf !== 'dollars'
-})
+
 defineEmits<{
   indicatorChanged: [indicator: any, side: 'left' | 'right']
   close: []
@@ -54,34 +57,13 @@ const statewideColor = '#7d7d7d';
 const selectedColorRef = ref(selectedColor);
 const hoveredColorRef = ref(hoveredColor);
 
-const headerHTML = computed(() => {
-  const indicator = indicatorStore?.getCurrentIndicator()
-  const geoSelection = indicatorStore.getCurrentGeoSelection() || ''
-  const geotype = indicator?.geotype || ''
-
- 
-  const line2 = indicator?.timeline?.filterOut?.some((filter: string) => filter.toLowerCase() === "overall") ? '' : geoSelection.toLowerCase().includes("overall") ?
-    `<div class="selected-geo">Overall by ${geotype.charAt(0).toUpperCase() + geotype.slice(1)}</div>`
-    :
-    `<div class="selected-geo">(${geotype.charAt(0).toUpperCase() + geotype.slice(1)}: ${geoSelection})</div>`
-
-  const data = indicator?.google_sheets_data;
-  const statewide = data?.data.find((feature: any) => feature?.geoid.toLowerCase() === "statewide");
-  let line2b = '';
-  if (statewide) {
-    line2b = indicator?.timeline?.filterOut?.some((filter: string) => filter.toLowerCase() === "statewide") ? '' : `<div class="selected-geo">Statewide</div><span class="selected-color" style="border: 2px solid #7d7d7d"></span>`
-  }
-  const swatch = indicator?.timeline?.filterOut?.some((filter: string) => filter.toLowerCase() === "overall") ? '' : `<span class="selected-color" style="border: 2px solid ${selectedColorRef.value}"></span>`
-
-  return `${line2}${swatch} ${line2b}`
-})
 
 //const container = ref<HTMLElement>()
 const svg = ref<SVGElement>()
 
 let svgElement: d3.Selection<SVGElement, unknown, null, undefined>
 let width = 450
-let height = 100
+let height = 130
 let margin = { top: 15, right: 5, bottom: 15, left: 30 }
 let yScale: d3.ScaleLinear<number, number> = d3.scaleLinear().domain([0, 100]).range([height - margin.bottom, margin.top])
 
@@ -93,20 +75,7 @@ const availableYears = computed(() => {
   if (!raw_data) return []
 
   const headerShortNames = raw_data.headerShortNames
-  let yearColumns: number[] = []
-  const yearValuePrefix = indicator?.timeline?.yearValuePrefix || '';
-  if (indicator?.timeline) {
-    yearColumns = headerShortNames
-    .filter(
-      (year: string) => yearValuePrefix.length > 0 ? year.startsWith(yearValuePrefix) : YEAR_PATTERN.test(year) && !isNaN(Number(year))
-    )
-    .sort((a: number, b: number) => a - b)
-  } else {
-      yearColumns = headerShortNames.filter((header: string) =>
-        /^\d{4}$/.test(header) && !isNaN(Number(header))
-      ).map((year: string) => Number(year)).sort((a: number, b: number) => a - b)
-  }
-  return yearColumns
+  return Array.from(new Set(headerShortNames.map((year: string) => Number(year.replace(indicator?.timeline?.yearValuePrefix || '', '')))))
 })
 
 const timelineValueFormat = computed(() => {
@@ -148,10 +117,14 @@ const processData = (_feature: string | number | null) => {
   )
 
   if (!matchingRow) return []
-  availableYears.value.forEach((year: number) => {
-    let yearValue = matchingRow?.[year.toString()]
+  ;(availableYears.value as number[]).forEach((year: number) => {
+    let yearKey =
+      indicator?.timeline?.yearValuePrefix
+        ? `${indicator.timeline.yearValuePrefix}${year}`
+        : year.toString()
+    let yearValue = matchingRow?.[yearKey]
     data.push({
-      year: +(year.toString().replace(indicator?.timeline?.yearValuePrefix || '', '')),
+      year: year,
       value: yearValue != null && yearValue !== "" ? Number(yearValue) : null
     })
   })
@@ -607,6 +580,49 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+  .viz-legend {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #e5e7eb;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    padding: 0;
+  }
+  .viz-legend td {
+    padding: 0;
+    margin: 0;
+    width: 33%;
+    text-align: center;
+  }
+  .viz-legend span {
+    font-size: smaller;
+    font-weight: bold;
+    color: #6b7280;
+  }
+  .viz-legend span.selected-color {
+    display: inline-block;
+    width: 20px;
+    height: 0;
+    margin-bottom: 2.5px;
+    margin-left: 5px;
+  }
+  .viz-legend span.hovered-color {
+    display: inline-block;
+    width: 20px;
+    height: 0;
+    margin-bottom: 2.5px;
+    margin-left: 5px;
+  }
+  .viz-legend span.selected-geo {
+    display: inline-block;
+    font-weight: bold;
+    font-size: .9em;
+  }
+  .viz-legend span.hovered-geo {
+    display: inline-block;
+    font-weight: bold;
+    font-size: .9em;
+  }
 .timeline-visualization-container {
   position: absolute;
   top: 0;
@@ -644,7 +660,6 @@ onUnmounted(() => {
   cursor: move;
   z-index: 1000;
   user-select: none;
-  /* zoom: .9; */
   height: 200px;
   bottom: 5px;
 }
@@ -681,7 +696,7 @@ onUnmounted(() => {
 
 .chart-label {
   font-weight: 600;
-  font-size: larger;
+  font-size: smaller;
   /* color: #6b7280; */
   padding: 4px 8px;
   padding-bottom: 0px;

@@ -26,7 +26,7 @@
                 
                 <!-- Percentage Stats -->
                 <div class="stats-grid">
-                    <template v-for="(stat,index) in stats" :key="index">
+                    <template v-for="stat in stats" :key="stat.year">
                         
                         <div
                             :class="{ 'stat-item': true, 'stat-item-empty': stat.isEmpty }"
@@ -35,7 +35,7 @@
                             <div class="stat-value percentage">
                                 {{ stat.title }}                     
                             </div> 
-                           <div class="stat-value count">
+                           <div class="stat-value count" v-if="!stat.pctOnly">
                             {{ stat.subtitle }}
                            </div>
                         </div> 
@@ -98,7 +98,8 @@ const keyMapping = {
     "pop": "pop_"
 }
 const stats = computed(() => {
-    const years = Array.from(new Set(Object.keys(props.properties).map(key => Number(key.toLowerCase().replace('count_', '').replace('pop_', ''))).filter(year => !isNaN(+year))))
+    const years = Array.from(new Set(Object.keys(props.properties).map(key => Number(key.toLowerCase().replace('count_', '').replace('pop_', '').replace('pct_', ''))).filter(year => !isNaN(+year))))
+    console.log(years)
     const stats = [];
     const popup = currentIndicator?.value?.popup;
     for(const year of years) {
@@ -106,11 +107,13 @@ const stats = computed(() => {
         const pop = props.properties[keyMapping.pop+year.toString()] || '';
         const pct = props.properties[keyMapping.pct+year.toString()] || '';
         const isEmpty = count === '' && pop === '' && pct === '';
+        const pctOnly = pct !== '' && count === '' && pop === '';
         stats.push({
             isEmpty: isEmpty,
+            pctOnly: pctOnly,
             year: year,
-            title: popup?.format?.title?.replace('{{count}}', count).replace('{{pop}}', pop).replace('{{pct}}', pct),
-            subtitle: popup?.format?.subtitle?.replace('{{count}}', count).replace('{{pop}}', pop).replace('{{pct}}', pct)
+            title: popup?.format?.title?.replace('{{count}}', (+count).toLocaleString()).replace('{{pop}}', (+pop).toLocaleString()).replace('{{pct}}', pct.toLocaleString()),
+            subtitle: popup?.format?.subtitle?.replace('{{count}}', (+count).toLocaleString()).replace('{{pop}}', (+pop).toLocaleString()).replace('{{pct}}', pct.toLocaleString())
         })
     }
     return stats

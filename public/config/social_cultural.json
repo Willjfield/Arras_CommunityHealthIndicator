@@ -10,7 +10,6 @@
       "short_name": "grandchildren",
       "timeline": {
         "yearValuePrefix": "count_",
-        "yearValueFormat": "{{value}} children",
         "yearValueShortFormat": "{{value}}",
         "filterOut": ["statewide", "overall"]
       },
@@ -39,7 +38,6 @@
       "short_name": "social_emotional_support",
       "timeline": {
         "yearValuePrefix": "pct_",
-        "yearValueFormat": "{{value}}% of adults",
         "yearValueShortFormat": "{{value}}%",
         "filterOut": []
       },
@@ -68,7 +66,6 @@
       "short_name": "working_age",
       "timeline": {
         "yearValuePrefix": "pct_",
-        "yearValueFormat": "{{value}}% of adults",
         "yearValueShortFormat": "{{value}}%",
         "filterOut": []
       },
@@ -97,7 +94,6 @@
       "short_name": "population_change",
       "timeline": {
         "yearValuePrefix": "pct_",
-        "yearValueFormat": "{{value}}% change",
         "yearValueShortFormat": "{{value}}%",
         "filterOut": []
       },
@@ -126,7 +122,6 @@
       "short_name": "single_parent_households",
       "timeline": {
         "yearValuePrefix": "pct_",
-        "yearValueFormat": "{{value}}% of households",
         "yearValueShortFormat": "{{value}}%",
         "filterOut": []
       },
