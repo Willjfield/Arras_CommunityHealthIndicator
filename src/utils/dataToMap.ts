@@ -37,6 +37,11 @@ export class DataToMap {
   protected hoveringPlaceId: number = -1;
   minValue: number | null;
   maxValue: number | null;
+  rangeValues: {
+    count: { min: number | null; max: number | null };
+    pop: { min: number | null; max: number | null };
+    pct: { min: number | null; max: number | null };
+  };
   constructor(
     _data: IndicatorConfig,
     _map: Map,
@@ -62,10 +67,31 @@ export class DataToMap {
 
     this.minValue = null;
     this.maxValue = null;
+
+    this.rangeValues = {
+      count: {
+        min: 0,
+        max: 100,
+      },
+      pop: {
+        min: 0,
+        max: 100,
+      },
+      pct: {
+        min: 0,
+        max: 100,
+      },
+    };
   }
 
   async setupIndicator(year: number | null): Promise<boolean> {
     this.year = year || this.year || null;
+    this.rangeValues.pop.min = this.getMin("pop") ?? null;
+    this.rangeValues.pop.max = this.getMax("pop") ?? null;
+    this.rangeValues.pct.min = this.getMin("pct") ?? null;
+    this.rangeValues.pct.max = this.getMax("pct") ?? null;
+    this.rangeValues.count.min = this.getMin("count") ?? null;
+    this.rangeValues.count.max = this.getMax("count") ?? null;
     const { minValue, maxValue } = this.getMinMaxValues();
     this.minValue = minValue;
     this.maxValue = maxValue;
@@ -91,7 +117,7 @@ export class DataToMap {
     const minColor = this.arrasBranding.colors[data.style.min.color];
     const maxColor = this.arrasBranding.colors[data.style.max.color];
     // Don't mutate shared indicator config - values are stored in instance properties
-    
+
     if (
       !data ||
       !data.layers ||
@@ -103,11 +129,11 @@ export class DataToMap {
       console.error("Missing required data properties:", {
         data,
         layers: data?.layers,
-        style: data?.style
+        style: data?.style,
       });
       return false;
     }
-    const yearValuePrefix = this.data.timeline?.yearValuePrefix || '';
+    const yearValuePrefix = this.data.timeline?.yearValuePrefix || "";
     // Create MapLibre expression: interpolate color based on year value
     const fillExp = [
       "case",
@@ -119,9 +145,9 @@ export class DataToMap {
         minValue,
         minColor,
         maxValue,
-        maxColor
+        maxColor,
       ],
-      "#0000"
+      "#000",
     ];
 
     if (!data.layers.main) {
@@ -335,42 +361,155 @@ export class DataToMap {
     return true;
   }
 
+  getAllYears() {
+    const shortNames = this.data.google_sheets_data.headerShortNames;
+    return Array.from(
+      new Set(
+        shortNames
+          .map((year: string) =>
+            Number(year.toLowerCase().replace("count_", "").replace("pop_", "").replace("pct_", ""))
+          )
+          .filter((year: string | number) => !isNaN(+year))
+      )
+    );
+  }
+
+  getMinForYear(prop: string, year: number | null) {
+    const data = this.data.google_sheets_data.data;
+    let filteredData = data.filter(
+      (feature: any) => feature.geoid !== null && feature.geoid !== undefined && feature[prop + "_" + (year || this.year)] !== null && feature[prop + "_" + (year || this.year)] !== undefined
+    )
+    if (prop === "pop" || prop === "count") {
+      filteredData = filteredData.filter(
+        (feature: any) =>
+          !EXCLUDED_GEO_PATTERNS.some((pattern) =>
+            feature?.geoid?.toLowerCase()?.includes(pattern)
+          )
+      );
+    }
+    if (filteredData.length === 0) {
+      console.warn(year, prop, "no data");
+      return null;
+    }
+    
+    const min = Math.min(
+      ...filteredData.map(
+        (feature: any) => +feature[prop + "_" + (year || this.year)]
+      )
+    );
+    if (isNaN(+min)) {
+      console.log(min)
+      console.warn(year, prop, "isNaN", min);
+      return Number.MAX_SAFE_INTEGER;
+    }
+    if (prop === "pct") {
+      if (min < 0) {
+        return 0;
+      }
+    }
+    return min;
+  }
+  getMaxForYear(prop: string, year: number | null) {
+    const data = this.data.google_sheets_data.data;
+    let filteredData = data.filter(
+      (feature: any) => feature.geoid !== null && feature.geoid !== undefined && feature[prop + "_" + (year || this.year)] !== null && feature[prop + "_" + (year || this.year)] !== undefined
+    );
+    if (prop === "pop" || prop === "count") {
+      filteredData = filteredData.filter(
+        (feature: any) =>
+          !EXCLUDED_GEO_PATTERNS.some((pattern) =>
+            feature?.geoid?.toLowerCase()?.includes(pattern)
+          )
+      );
+    }
+    if (filteredData.length === 0) {
+      console.warn(year, prop, "no data");
+      return Number.MAX_SAFE_INTEGER;
+    }
+    const max = Math.max(
+      ...filteredData.map(
+        (feature: any) => +feature[prop + "_" + (year || this.year)]
+      )
+    );
+    if (isNaN(max)) {
+      console.log(max)
+      console.warn(year, prop, "isNaN", max);
+      return Number.MAX_SAFE_INTEGER;
+    }
+    if (prop === "pct") {
+      if (max > 100) {
+        return 100;
+      }
+    }
+    return max;
+  }
+  getMin(prop: string) {
+    let min = Number.MAX_SAFE_INTEGER;
+    const years = this.getAllYears();
+    console.log(years);
+    for (let yearIdx = 0; yearIdx < years.length; yearIdx++) {
+      const year = years[yearIdx] as number;
+      const yearValue = this.getMinForYear(prop, +year as number);
+      console.log(year, yearValue);
+      if (yearValue !== null && yearValue < min && !isNaN(yearValue)) {
+        min = yearValue as number;
+      }
+    }
+    return min;
+  }
+
+  getMax(prop: string) {
+    let max = 0;
+    const years = this.getAllYears();
+    for (let yearIdx = 0; yearIdx < years.length; yearIdx++) {
+      const year = years[yearIdx] as number;
+      const yearValue = this.getMaxForYear(prop, +year as number);
+      if (yearValue !== null && yearValue > max && !isNaN(yearValue)) {
+        max = yearValue as number;
+      }
+    }
+    return max;
+  }
+
   /**
    * Calculates min and max values across all years in the dataset
    * Filters out excluded geographies (overall, statewide, school districts)
    * @returns Object with minValue and maxValue
    */
+  //TODO: Replace this with new getMin and getMax methods
   getMinMaxValues() {
     const data = this.data;
 
-    const yearValuePrefix = data.timeline?.yearValuePrefix || '';
+    const yearValuePrefix = data.timeline?.yearValuePrefix || "";
     let years = data.google_sheets_data.headerShortNames.filter(
-      (year: string) => yearValuePrefix.length > 0 ? year.startsWith(yearValuePrefix) : YEAR_PATTERN.test(year) && !isNaN(Number(year))
+      (year: string) =>
+        yearValuePrefix.length > 0
+          ? year.startsWith(yearValuePrefix)
+          : YEAR_PATTERN.test(year) && !isNaN(Number(year))
     );
-    
+
     let minValue = Number.MAX_SAFE_INTEGER;
     let maxValue = 0;
-    
+
     // Calculate min/max across all years
     for (let yearIdx = 0; yearIdx < years.length; yearIdx++) {
       const yearColumn = years[yearIdx] as string;
 
       const yearValues = data.google_sheets_data.data
         .filter((feature: any) => {
-          const geoid = feature?.geoid?.toLowerCase() || '';
-          const name = feature?.name?.toLowerCase() || '';
-          return !EXCLUDED_GEO_PATTERNS.some(pattern => 
-            geoid.includes(pattern) || name.includes(pattern)
+          const geoid = feature?.geoid?.toLowerCase() || "";
+          const name = feature?.name?.toLowerCase() || "";
+          return !EXCLUDED_GEO_PATTERNS.some(
+            (pattern) => geoid.includes(pattern) || name.includes(pattern)
           );
         })
         .map((feature: any) => feature[yearColumn])
-        .filter((value: any) => 
-          value !== null && 
-          value !== undefined && 
-          !isNaN(Number(value))
+        .filter(
+          (value: any) =>
+            value !== null && value !== undefined && !isNaN(Number(value))
         );
       if (yearValues.length === 0) continue;
-      
+
       const thisYearMinValue = Math.min(...yearValues);
       const thisYearMaxValue = Math.max(...yearValues);
 
@@ -381,18 +520,11 @@ export class DataToMap {
         maxValue = thisYearMaxValue;
       }
     }
-    
-    // Clamp percentage values to 0-100 range
-    // if (this.data.has_pct && !this.data.totalAmntOf && !this.data.hasNegativeValues) {
-    //   minValue = Math.max(minValue, MIN_PERCENTAGE);
-    //   maxValue = Math.min(maxValue, MAX_PERCENTAGE);
-    //   return { minValue, maxValue };
-    // }
-    
+
     // Apply multipliers to provide visual padding
     return {
       minValue: Math.floor(minValue * MIN_MULTIPLIER),
-      maxValue: Math.ceil(maxValue * MAX_MULTIPLIER)
+      maxValue: Math.ceil(maxValue * MAX_MULTIPLIER),
     };
-  } 
+  }
 }

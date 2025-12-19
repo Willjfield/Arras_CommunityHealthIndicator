@@ -13,13 +13,7 @@
       "layers": {
         "main": "tracts-harmonized-fill",
         "outline": "tracts-harmonized-outline"
-      },
-      "fill_color": [
-        "case",
-        ["has", "1990"],
-        ["interpolate", ["linear"], ["to-number", ["get", "1990"]]],
-        "#0000"
-      ]
+      }
     },
     {
       "title": "Children in Concentrated Poverty",
@@ -34,13 +28,7 @@
       "layers": {
         "main": "tracts-harmonized-fill",
         "outline": "tracts-harmonized-outline"
-      },
-      "fill_color": [
-        "case",
-        ["has", "1990"],
-        ["interpolate", ["linear"], ["to-number", ["get", "1990"]]],
-        "#0000"
-      ]
+      }
     },
     {
       "title": "Median Household Income",
@@ -57,12 +45,12 @@
         "main": "tracts-harmonized-fill",
         "outline": "tracts-harmonized-outline"
       },
-      "fill_color": [
-        "case",
-        ["has", "1990"],
-        ["interpolate", ["linear"], ["to-number", ["get", "1990"]]],
-        "#0000"
-      ]
+      "timeline": {
+        "yearValuePrefix": "pct_",
+        "yearValueFormat": "{{value}}% of households",
+        "yearValueShortFormat": "{{value}}%",
+        "filterOut": []
+      }
     },
     {
       "title": "Housing cost burdened households (30% or more of income)",
@@ -77,13 +65,7 @@
       "layers": {
         "main": "tracts-harmonized-fill",
         "outline": "tracts-harmonized-outline"
-      },
-      "fill_color": [
-        "case",
-        ["has", "1990"],
-        ["interpolate", ["linear"], ["to-number", ["get", "1990"]]],
-        "#0000"
-      ]
+      }
     },
     {
       "title": "% adults (ages 25+) with a high school diploma or equivalent",
@@ -98,13 +80,7 @@
       "layers": {
         "main": "tracts-harmonized-fill",
         "outline": "tracts-harmonized-outline"
-      },
-      "fill_color": [
-        "case",
-        ["has", "1990"],
-        ["interpolate", ["linear"], ["to-number", ["get", "1990"]]],
-        "#0000"
-      ]
+      }
     },
     {
       "title": "Workers with long commutes (45 minutes or more)",
@@ -119,13 +95,7 @@
       "layers": {
         "main": "tracts-harmonized-fill",
         "outline": "tracts-harmonized-outline"
-      },
-      "fill_color": [
-        "case",
-        ["has", "1990"],
-        ["interpolate", ["linear"], ["to-number", ["get", "1990"]]],
-        "#0000"
-      ]
+      }
     },
     {
       "title": "Percent of people living in poverty",
@@ -140,13 +110,7 @@
       "layers": {
         "main": "tracts-harmonized-fill",
         "outline": "tracts-harmonized-outline"
-      },
-      "fill_color": [
-        "case",
-        ["has", "1990"],
-        ["interpolate", ["linear"], ["to-number", ["get", "1990"]]],
-        "#0000"
-      ]
+      }
     },
     {
       "title": "Working population (civilians in workforce) living below the poverty line",
@@ -161,13 +125,7 @@
       "layers": {
         "main": "tracts-harmonized-fill",
         "outline": "tracts-harmonized-outline"
-      },
-      "fill_color": [
-        "case",
-        ["has", "1990"],
-        ["interpolate", ["linear"], ["to-number", ["get", "1990"]]],
-        "#0000"
-      ]
+      }
     },
     {
       "title": "Unemployment Rate",
@@ -182,13 +140,7 @@
       "layers": {
         "main": "tracts-harmonized-fill",
         "outline": "tracts-harmonized-outline"
-      },
-      "fill_color": [
-        "case",
-        ["has", "1990"],
-        ["interpolate", ["linear"], ["to-number", ["get", "1990"]]],
-        "#0000"
-      ]
+        }
     },
     {
       "title": "Substandard housing units",
@@ -203,13 +155,7 @@
       "layers": {
         "main": "tracts-harmonized-fill",
         "outline": "tracts-harmonized-outline"
-      },
-      "fill_color": [
-        "case",
-        ["has", "1990"],
-        ["interpolate", ["linear"], ["to-number", ["get", "1990"]]],
-        "#0000"
-      ]
+      }
     }
   ]
 }

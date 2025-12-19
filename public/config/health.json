@@ -14,7 +14,12 @@
         "main": "tracts-harmonized-fill",
         "outline": "tracts-harmonized-outline"
       },
-      "fill_color": ["case", ["has", "1990"], ["interpolate", ["linear"], ["to-number", ["get", "1990"]]], "#0000"]
+      "timeline": {
+        "yearValuePrefix": "pct_",
+        "yearValueFormat": "{{value}}% of adults",
+        "yearValueShortFormat": "{{value}}%",
+        "filterOut": []
+      }
 
     },
     {
@@ -31,7 +36,12 @@
         "main": "tracts-harmonized-fill",
         "outline": "tracts-harmonized-outline"
       },
-      "fill_color": ["case", ["has", "1990"], ["interpolate", ["linear"], ["to-number", ["get", "1990"]]], "#0000"]
+      "timeline": {
+        "yearValuePrefix": "pct_",
+        "yearValueFormat": "{{value}}% of adults",
+        "yearValueShortFormat": "{{value}}%",
+        "filterOut": []
+      }
 
     },
     {
@@ -48,7 +58,12 @@
         "main": "tracts-harmonized-fill",
         "outline": "tracts-harmonized-outline"
       },
-      "fill_color": ["case", ["has", "1990"], ["interpolate", ["linear"], ["to-number", ["get", "1990"]]], "#0000"]
+      "timeline": {
+        "yearValuePrefix": "count_",
+        "yearValueFormat": "{{value}} deaths",
+        "yearValueShortFormat": "{{value}}",
+        "filterOut": []
+      }
 
     },
     {
@@ -66,7 +81,12 @@
       "layers": {
         "main": "counties-data"
       },
-      "fill_color": ["case", ["has", "1990"], ["interpolate", ["linear"], ["to-number", ["get", "1990"]]], "#0000"]
+      "timeline": {
+        "yearValuePrefix": "count_",
+        "yearValueFormat": "{{value}} deaths",
+        "yearValueShortFormat": "{{value}}",
+        "filterOut": []
+      }
 
     },
     {
@@ -82,7 +102,12 @@
       "layers": {
         "main": "counties-data"
       },
-      "fill_color": ["case", ["has", "1990"], ["interpolate", ["linear"], ["to-number", ["get", "1990"]]], "#0000"]
+      "timeline": {
+        "yearValuePrefix": "count_",
+        "yearValueFormat": "{{value}} deaths",
+        "yearValueShortFormat": "{{value}}",
+        "filterOut": []
+      }
 
     },
     {
@@ -100,7 +125,12 @@
       "layers": {
         "main": "counties-data"
       },
-      "fill_color": ["case", ["has", "1990"], ["interpolate", ["linear"], ["to-number", ["get", "1990"]]], "#0000"]
+      "timeline": {
+        "yearValuePrefix": "count_",
+        "yearValueFormat": "{{value}} deaths",
+        "yearValueShortFormat": "{{value}}",
+        "filterOut": []
+      }
 
     },
     {
@@ -117,7 +147,12 @@
         "main": "tracts-harmonized-fill",
         "outline": "tracts-harmonized-outline"
       },
-      "fill_color": ["case", ["has", "1990"], ["interpolate", ["linear"], ["to-number", ["get", "1990"]]], "#0000"]
+      "timeline": {
+        "yearValuePrefix": "pct_",
+        "yearValueFormat": "{{value}}% of adults",
+        "yearValueShortFormat": "{{value}}%",
+        "filterOut": []
+      }
 
     },
     {
@@ -134,7 +169,12 @@
         "main": "tracts-harmonized-fill",
         "outline": "tracts-harmonized-outline"
       },
-      "fill_color": ["case", ["has", "1990"], ["interpolate", ["linear"], ["to-number", ["get", "1990"]]], "#0000"]
+      "timeline": {
+        "yearValuePrefix": "pct_",
+        "yearValueFormat": "{{value}}% of adults",
+        "yearValueShortFormat": "{{value}}%",
+        "filterOut": []
+      }
 
     }
   ]

@@ -121,7 +121,7 @@ const indicatorLevelStore = (storeName: 'left' | 'right') => {
             );
 
             if (worker) {
-                // Find available years - prefer 4-digit years, fallback to Count_ prefixed columns
+                // Find available years - prefer 4-digit years, fallback to count_ prefixed columns
                 const headerShortNames = indicator.google_sheets_data.headerShortNames;
                 let defaultYears = headerShortNames && headerShortNames.length > 0 
                     ? headerShortNames
@@ -167,12 +167,26 @@ const indicatorLevelStore = (storeName: 'left' | 'right') => {
         return currentIndicator.value || null
     }
 
-    function getMinValue(): number | null {
-        return minValue.value
+    function getMinValue(type: 'count' | 'pop' | 'pct'): number | null {
+        if(type === 'count') {
+            return worker?.rangeValues.count.min ?? null;
+        } else if(type === 'pop') {
+            return worker?.rangeValues.pop.min ?? null;
+        } else if(type === 'pct') {
+            return worker?.rangeValues.pct.min ?? null;
+        }
+        return null;
     }
 
-    function getMaxValue(): number | null {
-        return maxValue.value
+    function getMaxValue(type: 'count' | 'pop' | 'pct'): number | null {
+        if(type === 'count') {
+            return worker?.rangeValues.count.max ?? null;
+        } else if(type === 'pop') {
+            return worker?.rangeValues.pop.max ?? null;
+        } else if(type === 'pct') {
+            return worker?.rangeValues.pct.max ?? null;
+        }
+        return null;
     }
 
     return { setIndicatorFromIndicatorShortName, getCurrentIndicator, initializeMap, removeMap, setCurrentYear, getCurrentYear, getCurrentGeoSelection, setCurrentGeoSelection, getMinValue, getMaxValue, minValue, maxValue }

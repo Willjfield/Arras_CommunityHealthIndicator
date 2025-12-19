@@ -15,7 +15,7 @@ export const DEFAULT_GEO_SELECTION = 'overall';
 
 // Year column patterns
 export const YEAR_PATTERN = /^\d{4}$/;
-export const COUNT_PREFIX = 'Count_';
+export const COUNT_PREFIX = 'count_';
 export const COHORT_PREFIX = 'Cohort_';
 
 // GeoID patterns that need normalization

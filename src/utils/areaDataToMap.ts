@@ -37,9 +37,15 @@ export class AreaDataToMap extends DataToMap {
     const source: any = map.getSource(data.source_name);
     const geojson = await source.getData();
     geojson.features = geojson.features.map((feature: any) => {
-      const properties = data.google_sheets_data.data.find(
+      let properties = data.google_sheets_data.data.find(
         (row: any) => +row.geoid === +feature.properties.geoid
       );
+      Object.keys(properties).forEach((key: string) => {
+        if(properties[key] === null || properties[key] === undefined) {
+          delete properties[key];
+        }
+      });
+      console.log(properties);
       if (properties) {
         return {
           type: "Feature",

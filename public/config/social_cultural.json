@@ -17,7 +17,8 @@
       "popup": {
         "columns": ["count"],
         "format": {
-          "title": "{{count}} children"
+          "title": "{{count}} children",
+          "subtitle": null
         }
       },
       "legend":{

@@ -8,13 +8,11 @@ import {
   POINT_SIZE_VALUE_MIN,
   POINT_SIZE_VALUE_MAX,
   CIRCLE_OPACITY_DEFAULT,
-  CIRCLE_OPACITY_HOVER,
-  EXCLUDED_GEO_PATTERNS,
+  CIRCLE_OPACITY_HOVER
 } from "../constants";
 
 export class PointDataToMap extends DataToMap {
-  maxDataValue: number;
-  minDataValue: number;
+
 
   constructor(
     data: IndicatorConfig,
@@ -25,26 +23,22 @@ export class PointDataToMap extends DataToMap {
     sitePath?: string
   ) {
     super(data, map, side, emitter, arrasBranding as any, sitePath);
-    this.minDataValue = 0;
-    this.maxDataValue = 100;
+
     this.arrasBranding = arrasBranding as any;
   }
 
   /**
    * Generates a MapLibre GL expression for circle radius based on data values
-   * Uses Cohort_ prefix if both count and percentage are available, otherwise Count_ prefix
+   * Uses Cohort_ prefix if both count and percentage are available, otherwise count_ prefix
    * @returns MapLibre expression array for circle-radius property
    */
   getSizeExpression() {
     const data = this.data;
-    let propAccessor = '';
-    
-    if (data.has_count && data.has_pct) {
-      propAccessor = `Cohort_${this.year}`;
-    } else {
-      propAccessor = `Count_${this.year}`;
+    let propAccessor = data.map?.size + '_' + String(this.year);
+    if (!propAccessor) {
+      return POINT_SIZE_MIN + 3;
     }
-
+    
     const sizeExp = [
       "case",
       ["has", propAccessor],
@@ -67,27 +61,6 @@ export class PointDataToMap extends DataToMap {
     await super.setupIndicator?.(year);
     this.removeOldEvents();
     const geojson = this.generateGeojson();
-    const propAccessor = (this.data as any).has_count
-      ? `Count_${this.year}`
-      : `${this.year}`;
-    this.minDataValue = Math.min(
-      ...geojson.features.map(
-        (feature: any) => +feature.properties[propAccessor] || Number.MAX_SAFE_INTEGER
-      )
-    );
-    this.maxDataValue = Math.max(
-      ...geojson.features.map((feature: any) => {
-        const geoid = feature.properties.geoid?.toLowerCase() || '';
-        const name = feature.properties.name?.toLowerCase() || '';
-        const isExcluded = EXCLUDED_GEO_PATTERNS.some(pattern => 
-          geoid.includes(pattern) || name.includes(pattern)
-        );
-        if (isExcluded) {
-          return -1;
-        }
-        return +feature.properties[propAccessor] || -1;
-      })
-    );
 
     const map = (this as any).map as Map;
     const data = this.data;
@@ -102,6 +75,8 @@ export class PointDataToMap extends DataToMap {
     this.addNewEvents();
     return true;
   }
+
+
 
   removeOldEvents() {
     super.removeOldEvents();
@@ -180,18 +155,18 @@ export class PointDataToMap extends DataToMap {
     // Set sort key to ensure larger circles render on top
     map.setLayoutProperty(mainLayer, "circle-sort-key", [
       "case",
-      ["has", `Cohort_${this.year}`],
-      ["/", 1, ["to-number", ["get", `Cohort_${this.year}`]]],
-      ["has", `Count_${this.year}`],
-      ["/", 1, ["to-number", ["get", `Count_${this.year}`]]],
-      ["has", `${this.year}`],
-      ["/", 1, ["to-number", ["get", `${this.year}`]]],
+      ["has", `cohort_${this.year}`],
+      ["/", 1, ["to-number", ["get", `cohort_${this.year}`]]],
+      ["has", `count_${this.year}`],
+      ["/", 1, ["to-number", ["get", `count_${this.year}`]]],
+      ["has", `pct_${this.year}`],
+      ["/", 1, ["to-number", ["get", `pct_${this.year}`]]],
       0,
     ]);
 
     const maxColor = this.arrasBranding.colors[this.data.style.max.color];
     const circleColor =
-      this.data.has_count && !this.data.has_pct
+      this.data.map?.color === null
         ? maxColor
         : this.getGradientExpression();
 

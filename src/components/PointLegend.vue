@@ -5,9 +5,10 @@
         <span class="legend-title">{{ selectedIndicator?.title || 'Indicator' }}</span>
       </div>
       <div class="legend-content">
-    
-        <table class="legend-icon-container">
+
+        <table class="legend-icon-container" v-if="legendTitle.min !== '' && legendTitle.max !== '' && legendTitle.mid !== ''">
           <tbody>
+            
             <tr>
               <td style="text-align: left;">
                 <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%;"
@@ -21,41 +22,52 @@
                   style="display: inline-block; width: 32px; height: 32px; border-radius: 50%;"
                   :style="{ backgroundColor: maxColor }" /></td>
             </tr>
-            
             <tr class="legend-labels">
-              <td style="text-align: left;"><span class="min-label">{{minMaxCohortValues.minCohortValue.toFixed(0) }} {{ selectedIndicator?.cohort_type }} total</span>
+              <td style="text-align: left;">
+                <span class="min-label">
+                  {{ legendTitle.min ?? '' }}
+                </span>
               </td>
-              <td style="text-align: center;"><span class="mid-label">{{ (minMaxCohortValues.maxCohortValue / 2).toFixed(0) }} {{ selectedIndicator?.cohort_type }} total</span></td>
-              <td style="text-align: right;"><span class="max-label"> {{ minMaxCohortValues.maxCohortValue.toFixed(0) }} or more {{ selectedIndicator?.cohort_type }} total</span>
+              <td style="text-align: center;">
+                <span class="mid-label">
+                  {{ legendTitle.mid ?? '' }}
+                </span>
+              </td>
+              <td style="text-align: right;">
+                <span class="max-label">
+                  {{ legendTitle.max ?? '' }}
+                </span>
               </td>
             </tr>
           </tbody>
         </table>
-        <table v-if="selectedIndicator?.geotype !== 'facility' && selectedIndicator?.has_pct" class="legend-icon-container">
+        <table v-if="secondaryTitleColumn" class="legend-icon-container">
           <tbody>
             <tr>
               <td style="text-align: left;">
-                <span style="border: 1px solid #000; display: inline-block; width: 12px; height: 12px; border-radius: 50%;"
-                  :style="{ backgroundColor: minColor}"></span>
+                <span
+                  style="border: 1px solid #000; display: inline-block; width: 12px; height: 12px; border-radius: 50%;"
+                  :style="{ backgroundColor: minColor }"></span>
               </td>
               <td style="text-align: center;">
-                <span style="border: 1px solid #000;display: inline-block; width: 12px; height: 12px; border-radius: 50%;"
+                <span
+                  style="border: 1px solid #000;display: inline-block; width: 12px; height: 12px; border-radius: 50%;"
                   :style="{ backgroundColor: middleColor }"></span>
               </td>
               <td style="text-align: right;"><span
                   style="border: 1px solid #000;display: inline-block; width: 12px; height: 12px; border-radius: 50%;"
                   :style="{ backgroundColor: maxColor }" /></td>
             </tr>
+
             <tr class="legend-labels">
-              <td style="text-align: left;"><span class="min-label">{{ minValue.toFixed(0) }} {{minValue === 0 ? '' : 'or less'}} {{ indicatorDescription }}</span>
+              <td style="text-align: left;"><span class="min-label">{{ secondaryTitle?.min }}</span>
               </td>
-              <td style="text-align: center;"><span class="mid-label">{{ (maxValue / 2).toFixed(0) }} {{
-                  indicatorDescription }}</span></td>
-              <td style="text-align: right;"><span class="max-label">{{ maxValue.toFixed(0) }} {{maxValue === 100 ? '' : 'or more'}} {{ indicatorDescription }}</span>
+              <td style="text-align: center;"><span class="mid-label">{{ secondaryTitle?.mid }}</span></td>
+              <td style="text-align: right;"><span class="max-label">{{ secondaryTitle?.max }}</span>
               </td>
             </tr>
           </tbody>
-          
+
         </table>
       </div>
     </div>
@@ -65,6 +77,7 @@
 <script lang="ts" setup>
 import { computed, inject } from 'vue'
 import { useIndicatorLevelStore } from '../stores/indicatorLevelStore'
+//import { storeToRefs } from 'pinia'
 const arrasBranding = inject('arrasBranding') as any
 
 interface Props {
@@ -73,54 +86,60 @@ interface Props {
 }
 
 const props = defineProps<Props>()
-  const indicatorLevelStore = useIndicatorLevelStore(props.side as 'left' | 'right')
-const currentIndicator = computed(() => {
-  return indicatorLevelStore.getCurrentIndicator()
-})
-const minMaxCohortValues = computed(() => {
-let cohortKeys = currentIndicator?.value?.google_sheets_data.headerShortNames.filter((n: string) => n.startsWith('Cohort'));
-if(cohortKeys.length === 0) {
-  cohortKeys = currentIndicator?.value?.google_sheets_data.headerShortNames.filter((n: string) => n.startsWith('Count_'));
-}
-const allFeatures = currentIndicator?.value?.google_sheets_data.data;
-let minCohortValue = 9999999999999;
-let maxCohortValue = 0;
-for(let i=0; i<cohortKeys.length; i++) {
-  const key = cohortKeys[i];
-  const values = allFeatures
-  .filter((feature: any) => feature[key] !== null && feature[key] !== undefined && feature[key] !== '' && !isNaN(Number(feature[key])) && !feature?.geoid.toLowerCase().includes("overall") && !feature?.geoid?.toLowerCase().includes("statewide") && !feature?.name?.toLowerCase().includes("school district"))
-  .map((feature: any) => +feature[key])
-  .filter((value: number) => !isNaN(value))
-  
-  const min = Math.min(...values);
-  const max = Math.max(...values);
-  if(min < minCohortValue) {
-    minCohortValue = min;
-  }
-  if(max > maxCohortValue) {
-    maxCohortValue = max;
-  }
-}
-return { minCohortValue, maxCohortValue };
-})
-const indicatorDescription = computed(() => {
-  if (props.selectedIndicator?.ratePer) {
-    return 'per ' + (+ props.selectedIndicator?.ratePer).toLocaleString('en-US') + ' people';
-  }
-  if (props.selectedIndicator?.totalAmntOf) {
-    return props.selectedIndicator?.totalAmntOf;
-  }
-  if(props.selectedIndicator?.geotype === 'school') {
-    return '% of students ready';
-  }
-  return '%';
-})
-const minValue = computed(() => {
-  return (+props.selectedIndicator?.style?.min?.value > +props.selectedIndicator?.style?.max?.value ? 0 : +props.selectedIndicator?.style?.min?.value) || 0
+const indicatorLevelStore = useIndicatorLevelStore(props.side as 'left' | 'right')
+// const currentIndicator = computed(() => {
+//   return indicatorLevelStore.getCurrentIndicator()
+// })
+
+// const titleColumn = computed(() => {
+//   return props.selectedIndicator?.legend?.['title-column'] as 'count' | 'pop' | 'pct' | undefined;
+// })
+
+const secondaryTitleColumn = computed(() => {
+  return props.selectedIndicator?.legend?.['secondary-title-column'] as 'count' | 'pop' | 'pct' | undefined;
 })
 
-const maxValue = computed(() => {
-  return props.selectedIndicator?.style?.max?.value || 100
+const secondaryTitle = computed(() => {
+  const titleTemplate = props.selectedIndicator?.legend?.['secondary-title'] as string | undefined;
+  const minValue = indicatorLevelStore.getMinValue(secondaryTitleColumn.value as 'count' | 'pop' | 'pct') ?? 0;
+  const maxValue = indicatorLevelStore.getMaxValue(secondaryTitleColumn.value as 'count' | 'pop' | 'pct') ?? 0;
+  const midValue = ((minValue + maxValue) / 2).toFixed(0);
+
+  if (titleTemplate) {
+    return {
+      min: titleTemplate.replace(`{{${secondaryTitleColumn.value}}}`, minValue.toLocaleString() ?? '0'),
+      mid: titleTemplate.replace(`{{${secondaryTitleColumn.value}}}`, midValue.toLocaleString() ?? '0'),
+      max: titleTemplate.replace(`{{${secondaryTitleColumn.value}}}`, maxValue.toLocaleString() ?? '0'),
+    }
+  }
+  return {
+    min: '',
+    mid: '',
+    max: '',
+  }
+})
+
+
+const legendTitle = computed(() => {
+  const titleTemplate = props.selectedIndicator?.legend?.['title'] as string | undefined;
+  const titleColumn = props.selectedIndicator?.legend?.['title-column'] as 'count' | 'pop' | 'pct' | undefined;
+  const minValue = indicatorLevelStore.getMinValue(titleColumn as 'count' | 'pop' | 'pct') ?? 0;
+  const maxValue = indicatorLevelStore.getMaxValue(titleColumn as 'count' | 'pop' | 'pct') ?? 0;
+  console.log(minValue, maxValue);
+  const midValue = ((minValue + maxValue) / 2).toFixed(0);
+
+  if (titleTemplate) {
+    return {
+      min: titleTemplate.replace(`{{${titleColumn}}}`, minValue.toLocaleString() ?? '0'),
+      mid: titleTemplate.replace(`{{${titleColumn}}}`, midValue.toLocaleString() ?? '0'),
+      max: titleTemplate.replace(`{{${titleColumn}}}`, maxValue.toLocaleString() ?? '0'),
+    }
+  }
+  return {
+    min: '',
+    mid: '',
+    max: '',
+  }
 })
 
 const maxColor = computed(() => {
@@ -142,10 +161,10 @@ const middleColor = computed(() => {
     }
     if (hex.length !== 6) return null;
     const num = parseInt(hex, 16);
-    return { 
-      r: (num >> 16) & 255, 
-      g: (num >> 8) & 255, 
-      b: num & 255 
+    return {
+      r: (num >> 16) & 255,
+      g: (num >> 8) & 255,
+      b: num & 255
     };
   }
 
