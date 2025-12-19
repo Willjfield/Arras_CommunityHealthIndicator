@@ -91,7 +91,7 @@ const moreInfo = computed(() => {
     const splits = props.properties.more_info.split('\\n');
     return splits.join('<br/>');
 })
-
+//TODO: Probably don't need keyMapping...
 const keyMapping = {
     "pct": "pct_",
     "count": "count_",

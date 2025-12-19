@@ -38,15 +38,21 @@ const indicatorLevelStore = useIndicatorLevelStore(props.side)
 const { minValue: storeMinValue, maxValue: storeMaxValue } = storeToRefs(indicatorLevelStore)
 
 const legendTitle = computed(() => {
-  if (props.selectedIndicator?.legend?.title) {
+  const titleTemplate = props.selectedIndicator?.legend?.title as string | undefined;
+  const titleColumn = props.selectedIndicator?.legend?.['title-column'] as 'count' | 'pop' | 'pct' | undefined;
+  const minValue = indicatorLevelStore.getMinValue(titleColumn as 'count' | 'pop' | 'pct') ?? 0;
+  const maxValue = indicatorLevelStore.getMaxValue(titleColumn as 'count' | 'pop' | 'pct') ?? 0;
+
+  if (titleTemplate) {
     return {
-      min: props.selectedIndicator?.legend?.title.replace('{{value}}', minValue.value.toLocaleString()),
-      max: props.selectedIndicator?.legend?.title.replace('{{value}}', maxValue.value.toLocaleString())
+      min: titleTemplate.replace(`{{${titleColumn}}}`, minValue.toLocaleString()),
+      max: titleTemplate.replace(`{{${titleColumn}}}`, maxValue.toLocaleString())
     }
   }
   return {
-    min: minValue.value.toLocaleString(),
-    max: maxValue.value.toLocaleString()
+    min: '',
+    mid: '',
+    max: ''
   }
 })
 

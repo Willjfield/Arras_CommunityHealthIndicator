@@ -10,17 +10,30 @@
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRenE0k_5PqyC_bP8DsVfuheopSPQbHNSdcB6ipGGqqKixPSzyxNT4fiPQw2GUnfKiMUHtuqf5If98c/pub?gid=482200278&single=true&output=csv",
       "source_name": "tracts-harmonized",
       "short_name": "smokers",
-      "layers": {
-        "main": "tracts-harmonized-fill",
-        "outline": "tracts-harmonized-outline"
-      },
       "timeline": {
         "yearValuePrefix": "pct_",
         "yearValueFormat": "{{value}}% of adults",
         "yearValueShortFormat": "{{value}}%",
         "filterOut": []
+      },
+      "popup": {
+        "columns": ["pct", "count", "pop"],
+        "format": {
+          "title": "{{pct}}% of adults",
+          "subtitle": "{{count}} out of {{pop}} adults"
+        }
+      },
+      "legend":{
+        "title-column":"pct",
+        "title": "{{pct}}% of adults"
+      },
+      "map":{
+        "color": "pct"
+      },
+      "layers": {
+        "main": "tracts-harmonized-fill",
+        "outline": "tracts-harmonized-outline"
       }
-
     },
     {
       "title": "Working Age Adults with No Health Insurance",
@@ -38,19 +51,30 @@
       },
       "timeline": {
         "yearValuePrefix": "pct_",
-        "yearValueFormat": "{{value}}% of adults",
+        "yearValueFormat": "{{value}}% of working age adults",
         "yearValueShortFormat": "{{value}}%",
         "filterOut": []
+      },
+      "popup": {
+        "columns": ["pct", "count"],
+        "format": {
+          "title": "{{pct}}%",
+          "subtitle": "{{count}} working age adults"
+        }
+      },
+      "legend":{
+        "title-column":"pct",
+        "title": "{{pct}}% of working age adults"
+      },
+      "map":{
+        "color": "pct"
       }
-
     },
     {
       "title": "Food Insecurity",
       "geolevel": "area",
       "default": false,
       "geotype": "tract",
-      "has_pct": true,
-      "has_count": true,
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vSpN9_3frlzhn0QzhN3IVYxJ4T4n6RjdAG9mQfq_Tk0qF5AwRUo-CWraFTIWM5tyznNZxbRW8siUNLm/pub?gid=849801194&single=true&output=csv",
       "source_name": "tracts-harmonized",
       "short_name": "food-insecurity",
@@ -59,10 +83,24 @@
         "outline": "tracts-harmonized-outline"
       },
       "timeline": {
-        "yearValuePrefix": "count_",
-        "yearValueFormat": "{{value}} deaths",
-        "yearValueShortFormat": "{{value}}",
+        "yearValuePrefix": "pct_",
+        "yearValueFormat": "{{value}}% of residents",
+        "yearValueShortFormat": "{{value}}%",
         "filterOut": []
+      },
+      "popup": {
+        "columns": ["pct", "count", "pop"],
+        "format": {
+          "title": "{{pct}}% of residents",
+          "subtitle": "{{count}} out of {{pop}} residents"
+        }
+      },
+      "legend":{
+        "title-column":"pct",
+        "title": "{{pct}}% of residents"
+      },
+      "map":{
+        "color": "pct"
       }
 
     },
@@ -71,10 +109,6 @@
       "geolevel": "area",
       "geotype": "tract",
       "default": false,
-      "has_pct": false,
-      "has_count": true,
-      "totalAmntOf": "deaths",
-      "ratePer": 100000,
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vQAZ7te1R2RjauYyukLy8AzDXjLJgYofIjfn8ktnOt7TV2_j9TqtnoW31hWBOPqmtF8O4Y12dpUdSD5/pub?gid=361602694&single=true&output=csv",
       "source_name": "counties-source",
       "short_name": "heart-disease",
@@ -82,10 +116,24 @@
         "main": "counties-data"
       },
       "timeline": {
-        "yearValuePrefix": "count_",
-        "yearValueFormat": "{{value}} deaths",
-        "yearValueShortFormat": "{{value}}",
+        "yearValuePrefix": "pop_",
+        "yearValueFormat": "{{value}} per 100k",
+        "yearValueShortFormat": "{{value}} per 100k",
         "filterOut": []
+      },
+      "popup": {
+        "columns": ["pop", "count"],
+        "format": {
+          "title": "{{pop}} per 100k",
+          "subtitle": "{{count}} residents total"
+        }
+      },
+      "legend":{
+        "title-column":"pop",
+        "title": "{{pop}} per 100,000 residents"
+      },
+      "map":{
+        "color": "pop"
       }
 
     },
@@ -94,8 +142,6 @@
       "geolevel": "area",
       "geotype": "county",
       "default": false,
-      "has_pct": true,
-      "has_count": true,
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vTSIDstR1PxU_mFXK6GbZGvKUoLN8HXi4UASSww3tFAxBzkV2EZMmtkh9_v_OSkZxAc2g2oSNYogSav/pub?gid=0&single=true&output=csv",
       "source_name": "counties-source",
       "short_name": "birth-weight",
@@ -103,12 +149,24 @@
         "main": "counties-data"
       },
       "timeline": {
-        "yearValuePrefix": "count_",
-        "yearValueFormat": "{{value}} deaths",
-        "yearValueShortFormat": "{{value}}",
+        "yearValuePrefix": "pct_",
+        "yearValueFormat": "{{value}}% of births",
+        "yearValueShortFormat": "{{value}}%",
         "filterOut": []
+      },
+      "popup": {
+        "columns": ["pct"],
+        "format": {
+          "title": "{{pct}}% of births"
+        }
+      },
+      "legend":{
+        "title-column":"pct",
+        "title": "{{pct}}% of births"
+      },
+      "map":{
+        "color": "pct"
       }
-
     },
     {
       "title": "Malignant Neoplasm Morality",
