@@ -67,8 +67,8 @@
     {
       "title": "Food Insecurity",
       "geolevel": "area",
-      "default": false,
       "geotype": "tract",
+      "default": false,
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vSpN9_3frlzhn0QzhN3IVYxJ4T4n6RjdAG9mQfq_Tk0qF5AwRUo-CWraFTIWM5tyznNZxbRW8siUNLm/pub?gid=849801194&single=true&output=csv",
       "source_name": "tracts-harmonized",
       "short_name": "food-insecurity",

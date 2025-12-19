@@ -3,8 +3,8 @@
     {
       "title": "Percent of 3 and 4 Year Olds enrolled in Pre-K",
       "geolevel": "area",
-      "default": "left",
       "geotype": "tract",
+      "default": "left",
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vSygEfL4IXNKghq9ZCxT2_eIivEdHBXiddv-_Pb2U44ltaoSd8Qjgeu3m18JAJVK-VNHeDNXSMr25V1/pub?gid=1483288023&single=true&output=csv",
       "source_name": "tracts-harmonized",
       "short_name": "prek",
@@ -25,7 +25,8 @@
         }
       },
       "legend":{
-        "title": "{{value}}% of 3 and 4 year olds"
+        "title-column": "pct",
+        "title": "{{pct}}% of 3 and 4 year olds"
       }
     },
     {
@@ -53,7 +54,8 @@
         }
       },
       "legend":{
-        "title": "{{value}}% of families"
+        "title-column": "pct",
+        "title": "{{pct}}% of families"
       }
 
     },
@@ -93,8 +95,8 @@
     {
       "title": "3rd Grade Math Readiness",
       "geolevel": "point",
-      "default": false,
       "geotype": "school",
+      "default": false,
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vSCu5kjxric5yfSKfHIDWjgb5-aYVInFA6Dxb09sf59l7dEvI3EETNvW_jEbjBp9Zmvzfe0Ba79UN-e/pub?gid=1083324309&single=true&output=csv",
       "source_name": "points-source",
       "short_name": "3rdGradeMathReadiness",
@@ -356,7 +358,8 @@
         }
       },
       "legend":{
-        "title": "{{value}}% of children"
+        "title-column": "pct",
+        "title": "{{pct}}% of children"
       },
       "layers": {
         "main": "tracts-harmonized-fill",

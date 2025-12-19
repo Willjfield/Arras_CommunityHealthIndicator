@@ -11,15 +11,15 @@
       <div class="chart-label">
         <table class="viz-legend">
           <tbody>
-            <tr>
+            <tr >
               <td v-if="!indicatorStore?.getCurrentIndicator()?.timeline?.filterOut?.some((filter: string) => filter.toLowerCase() === 'overall')">
-                <span class="hovered-geo mx-0">Chester & Lancaster avg.<span class="selected-color" :style="{border:`2px solid ${selectedColorRef}`}"></span></span>
+                <span class="hovered-geo mx-0">Chester & Lancaster avg.<br/><span class="selected-color" :style="{border:`2px solid ${selectedColorRef}`}"></span></span>
               </td>
-              <td v-if="!indicatorStore?.getCurrentIndicator()?.timeline?.filterOut?.some((filter: string) => filter.toLowerCase() === 'statewide')">
-                <span class="selected-geo">Statewide</span><span class="selected-color" :style="{border:`2px solid ${statewideColor}`}"></span>
+              <td v-if="showStatewide">
+                <span class="selected-geo">Statewide</span><br/><span class="selected-color" :style="{border:`2px solid ${statewideColor}`}"></span>
               </td>
               <td>
-                <span v-show="hoveredGeo" class="hovered-geo mx-0">Selected area<span class="hovered-color"
+                <span v-show="hoveredGeo" class="hovered-geo mx-0">Selected area<br/><span class="hovered-color"
                     :style="{ border: `2px solid ${hoveredColorRef}` }"></span></span>
               </td>
             </tr>
@@ -62,9 +62,9 @@ const hoveredColorRef = ref(hoveredColor);
 const svg = ref<SVGElement>()
 
 let svgElement: d3.Selection<SVGElement, unknown, null, undefined>
-let width = 450
+let width = document.body.clientWidth * 0.33
 let height = 130
-let margin = { top: 15, right: 5, bottom: 15, left: 30 }
+let margin = { top: 15, right: 5, bottom: 0, left: 20 }
 let yScale: d3.ScaleLinear<number, number> = d3.scaleLinear().domain([0, 100]).range([height - margin.bottom, margin.top])
 
 // Year selector - get available years from the indicator data
@@ -378,17 +378,27 @@ const addFeatureLine = (feature: string) => {
     .attr('r', 5)
 
   // Add text labels next to feature circles
-  svgElement.selectAll(`.${statewide ? 'statewide-' : ''}data-feature-point-label`)
-    .data(validData)
-    .enter()
-    .append('rect')
+  // svgElement.selectAll(`.${statewide ? 'statewide-' : ''}data-feature-point-label`)
+  //   .data(validData)
+  //   .enter()
+  //   .append('rect')
+  //   .attr('class', `${statewide ? 'statewide-' : ''}data-feature-point-label-background`)
+  //   .attr('x', d => xScale(d.year) - 6)
+  //   .attr('y', d => yScale(d.value!) - 24)
+  //   .attr('width', 40)
+  //   .attr('height', 12)
+  //   .style('fill', '#fff')
+  //   .style('opacity', 0.75)
+  if(!statewide) {
+  svgElement.append('rect')
     .attr('class', `${statewide ? 'statewide-' : ''}data-feature-point-label-background`)
-    .attr('x', d => xScale(d.year) - 6)
-    .attr('y', d => yScale(d.value!) - 24)
-    .attr('width', 40)
-    .attr('height', 12)
+    .attr('x', margin.left)
+    .attr('y', 0)
+    .attr('width', width)
+    .attr('height', height)
     .style('fill', '#fff')
-    .style('opacity', 0.75)
+    .style('opacity', 0.667)
+  }
 
   svgElement.selectAll(`.${statewide ? 'statewide-' : ''}data-feature-point-label`)
     .data(validData)
@@ -469,7 +479,7 @@ const createXScale = (data: Array<{ year: number; value: number | null }>) => {
       const gap = nextYear - currentYear
 
       // Larger spacing for decade gaps, smaller for consecutive years
-      const spacing = Math.sqrt(gap) * 25 //<= 1 ? 25 : gap <= 10 ? 50 : 90
+      const spacing = (width / years.length) * (Math.sqrt(gap) / years.length )*1.333//<= 1 ? 25 : gap <= 10 ? 50 : 90
       currentPos += spacing
     }
   }
@@ -534,6 +544,10 @@ const handleIndicatorChange = async () => {
   })
 }
 
+const showStatewide = computed(() => {
+  return indicatorStore?.getCurrentIndicator()?.google_sheets_data?.data?.find((feature: any) => feature?.geoid.toLowerCase() === 'statewide') !== undefined && !indicatorStore?.getCurrentIndicator()?.timeline?.filterOut?.some((filter: string) => filter.toLowerCase() === 'statewide')
+}) as ComputedRef<boolean>
+
 // Watch for data changes
 watch([() => indicatorStore.getCurrentIndicator(), () => indicatorStore.getCurrentYear(), () => indicatorStore.getCurrentGeoSelection()],
   () => {
@@ -586,10 +600,9 @@ onUnmounted(() => {
     border: 1px solid #e5e7eb;
     border-radius: 5px;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    padding: 0;
   }
   .viz-legend td {
-    padding: 0;
+    padding: 4px 8px;
     margin: 0;
     width: 33%;
     text-align: center;
@@ -651,8 +664,7 @@ onUnmounted(() => {
   right: 20px;
   left: auto;
   top: auto;
-  width: 450px;
-  max-width: 33%;
+  width: 33%;
   background: rgba(255, 255, 255, 0.95);
   border: 1px solid #e5e7eb;
   border-radius: 5px;
@@ -673,7 +685,6 @@ onUnmounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0;
   max-width: 25%;
 }
 
@@ -702,7 +713,7 @@ onUnmounted(() => {
   padding-bottom: 0px;
   text-align: left;
   line-height: .9em;
-  max-width: 95%;
+ 
 }
 
 

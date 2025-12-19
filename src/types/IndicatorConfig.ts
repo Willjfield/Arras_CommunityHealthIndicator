@@ -3,8 +3,6 @@ export interface Icon {
     filename?: string;
 }
 export interface IndicatorConfig {
-    has_count: any;
-    has_pct: any;
     map?: {
         size?: string;
         color?: string | null;
