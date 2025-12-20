@@ -314,7 +314,16 @@ const addFeatureLine = (feature: string) => {
 
   // Calculate scales
   const xScale = createXScale(data)
-
+  if(!statewide) {
+  svgElement.append('rect')
+    .attr('class', `${statewide ? 'statewide-' : ''}data-feature-point-label-background`)
+    .attr('x', margin.left)
+    .attr('y', 0)
+    .attr('width', width)
+    .attr('height', height)
+    .style('fill', '#fff')
+    .style('opacity', 0.667)
+  }
   // Create line generator
   const line = d3.line<{ year: number; value: number | null }>()
     .x(d => xScale(d.year))
@@ -389,16 +398,7 @@ const addFeatureLine = (feature: string) => {
   //   .attr('height', 12)
   //   .style('fill', '#fff')
   //   .style('opacity', 0.75)
-  if(!statewide) {
-  svgElement.append('rect')
-    .attr('class', `${statewide ? 'statewide-' : ''}data-feature-point-label-background`)
-    .attr('x', margin.left)
-    .attr('y', 0)
-    .attr('width', width)
-    .attr('height', height)
-    .style('fill', '#fff')
-    .style('opacity', 0.667)
-  }
+  
 
   svgElement.selectAll(`.${statewide ? 'statewide-' : ''}data-feature-point-label`)
     .data(validData)
