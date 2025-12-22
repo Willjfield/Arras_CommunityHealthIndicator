@@ -2,11 +2,9 @@
   "indicators": [
     {
       "title": "Current Smokers Among Adults",
-      "geolevel": "area",
       "geotype": "tract",
       "default": "left",
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRenE0k_5PqyC_bP8DsVfuheopSPQbHNSdcB6ipGGqqKixPSzyxNT4fiPQw2GUnfKiMUHtuqf5If98c/pub?gid=482200278&single=true&output=csv",
-      "source_name": "tracts-harmonized",
       "short_name": "smokers",
       "timeline": {
         "yearValuePrefix": "pct_",
@@ -26,24 +24,14 @@
       },
       "map":{
         "color": "pct"
-      },
-      "layers": {
-        "main": "tracts-harmonized-fill",
-        "outline": "tracts-harmonized-outline"
       }
     },
     {
       "title": "Working Age Adults with No Health Insurance",
-      "geolevel": "area",
       "geotype": "tract",
       "default": "right",
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vTVxPi4GgcloW3FKCIEwM--UA9HhKQjNOGxEoTQC1quZEmlEF-5V9GXIvepoImUQ2c8QXfkmyB79MjS/pub?gid=534592488&single=true&output=csv",
-      "source_name": "tracts-harmonized",
       "short_name": "no_health_insurance",
-      "layers": {
-        "main": "tracts-harmonized-fill",
-        "outline": "tracts-harmonized-outline"
-      },
       "timeline": {
         "yearValuePrefix": "pct_",
         "yearValueShortFormat": "{{value}}%",
@@ -66,16 +54,10 @@
     },
     {
       "title": "Food Insecurity",
-      "geolevel": "area",
       "geotype": "tract",
       "default": false,
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vSpN9_3frlzhn0QzhN3IVYxJ4T4n6RjdAG9mQfq_Tk0qF5AwRUo-CWraFTIWM5tyznNZxbRW8siUNLm/pub?gid=849801194&single=true&output=csv",
-      "source_name": "tracts-harmonized",
       "short_name": "food-insecurity",
-      "layers": {
-        "main": "tracts-harmonized-fill",
-        "outline": "tracts-harmonized-outline"
-      },
       "timeline": {
         "yearValuePrefix": "pct_",
         "yearValueShortFormat": "{{value}}%",
@@ -99,15 +81,10 @@
     },
     {
       "title": "Heart Disease Mortality Rate",
-      "geolevel": "area",
       "geotype": "tract",
       "default": false,
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vQAZ7te1R2RjauYyukLy8AzDXjLJgYofIjfn8ktnOt7TV2_j9TqtnoW31hWBOPqmtF8O4Y12dpUdSD5/pub?gid=361602694&single=true&output=csv",
-      "source_name": "counties-source",
       "short_name": "heart-disease",
-      "layers": {
-        "main": "counties-data"
-      },
       "timeline": {
         "yearValuePrefix": "pop_",
         "yearValueShortFormat": "{{value}}/100k",
@@ -131,15 +108,10 @@
     },
     {
       "title": "Percent of Births with Low Birth Weight",
-      "geolevel": "area",
       "geotype": "county",
       "default": false,
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vTSIDstR1PxU_mFXK6GbZGvKUoLN8HXi4UASSww3tFAxBzkV2EZMmtkh9_v_OSkZxAc2g2oSNYogSav/pub?gid=0&single=true&output=csv",
-      "source_name": "counties-source",
       "short_name": "birth-weight",
-      "layers": {
-        "main": "counties-data"
-      },
       "timeline": {
         "yearValuePrefix": "pct_",
         "yearValueShortFormat": "{{value}}%",
@@ -161,15 +133,10 @@
     },
     {
       "title": "Malignant Neoplasm Morality",
-      "geolevel": "area",
       "geotype": "county",
       "default": false,
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vTQx5IGI_FrPFnuH2_qxNO3csjQq6vE0VJEFPfqB4zGkltxOKuAMJ2CrBYSV6wiS6kE3p76nGqWc8iz/pub?gid=829636489&single=true&output=csv",
-      "source_name": "counties-source",
       "short_name": "neoplasm-mortality",
-      "layers": {
-        "main": "counties-data"
-      },
       "timeline": {
         "yearValuePrefix": "pop_",
         "yearValueShortFormat": "{{value}}/100k",
@@ -192,16 +159,10 @@
     },
     {
       "title": "Percent of Adults with Mental Health Distress",
-      "geolevel": "area",
       "geotype": "tract",
       "default": false,
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vSiMSkw-to8lXOD0pyjuoci-xIFvCdL3woQsEsPtPI0w1TO-g-zt1UVAOV4TOczQ_0RIWX_iFm4EasK/pub?gid=876954295&single=true&output=csv",
-      "source_name": "tracts-harmonized",
       "short_name": "mental-health-distress",
-      "layers": {
-        "main": "tracts-harmonized-fill",
-        "outline": "tracts-harmonized-outline"
-      },
       "timeline": {
         "yearValuePrefix": "pct_",
         "yearValueShortFormat": "{{value}}%",

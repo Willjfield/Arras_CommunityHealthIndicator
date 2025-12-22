@@ -2,11 +2,9 @@
   "indicators": [
     {
       "title": "Grandchildren for whom the grandparent is responsible",
-      "geolevel": "area",
       "geotype": "tract",
       "default": "left",
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vT9sGRCKoXuLSJ5tURB-k1iXI7hng56SqraMUy8G4YIA9Z4uFM2w5VOIbU2V2L43S5aBhvxjLtQzXNr/pub?gid=2104564019&single=true&output=csv",
-      "source_name": "tracts-harmonized",
       "short_name": "grandchildren",
       "timeline": {
         "yearValuePrefix": "count_",
@@ -23,19 +21,13 @@
       "legend":{
         "title-column": "count",
         "title": "{{count}} grandchildren"
-      },
-      "layers": {
-        "main": "tracts-harmonized-fill",
-        "outline": "tracts-harmonized-outline"
       }
     },
     {
       "title": "Lack of social and emotional support among adults",
-      "geolevel": "area",
       "geotype": "tract",
       "default": "right",
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vQYA4y9XrarP5F9dBfW8I7fe5LEzyRiZIGORPYk0AKK0Frq-llgS_qK6CoRadzOxYJ5QJS1mBQcwVq_/pub?gid=423437760&single=true&output=csv",
-      "source_name": "tracts-harmonized",
       "short_name": "social_emotional_support",
       "timeline": {
         "yearValuePrefix": "pct_",
@@ -52,19 +44,13 @@
       "legend":{
         "title-column": "pct",
         "title": "{{pct}}% of adults"
-      },
-      "layers": {
-        "main": "tracts-harmonized-fill",
-        "outline": "tracts-harmonized-outline"
       }
     },
     {
       "title": "Percent Working Age (18-64)",
-      "geolevel": "area",
       "geotype": "tract",
       "default": false,
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vTDkj8Yv8bgKU9oXbT9-omjXmVn8PZYFNEwifzCO2g_V9QO3X5S2DZq01za_kir4VnCQkNTLRtg6_AG/pub?gid=1358534828&single=true&output=csv",
-      "source_name": "tracts-harmonized",
       "short_name": "working_age",
       "timeline": {
         "yearValuePrefix": "pct_",
@@ -81,19 +67,13 @@
       "legend":{
         "title-column": "pct",
         "title": "{{pct}}% of adults"
-      },
-      "layers": {
-        "main": "tracts-harmonized-fill",
-        "outline": "tracts-harmonized-outline"
       }
     },
     {
       "title": "Population Change in 10 Years",
-      "geolevel": "area",
       "geotype": "tract",
       "default": false,
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vS8gacbSx8FH5jb2LmQNAQnUdxiXnhs1k6edAhwpSsCOG7u-53e9SY3vcrZtOKwouFT4xRC2DIEBuon/pub?gid=1076089840&single=true&output=csv",
-      "source_name": "tracts-harmonized",
       "short_name": "population_change",
       "timeline": {
         "yearValuePrefix": "pct_",
@@ -110,19 +90,13 @@
       "legend":{
         "title-column": "pct",
         "title": "{{pct}}% change"
-      },
-      "layers": {
-        "main": "tracts-harmonized-fill",
-        "outline": "tracts-harmonized-outline"
       }
     },
     {
       "title": "Single Parent Households",
-      "geolevel": "area",
       "geotype": "tract",
       "default": false,
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vTap76TYvUgSrNBTaekNPbE0KEdaXb06QQrFkvD9p0K5AOGEb4nb_JTwrC2EFW23DhOIG9VskaYestC/pub?gid=920237844&single=true&output=csv",
-      "source_name": "tracts-harmonized",
       "short_name": "single_parent_households",
       "timeline": {
         "yearValuePrefix": "pct_",
@@ -139,10 +113,6 @@
       "legend":{
         "title-column": "pct",
         "title": "{{pct}}% of households"
-      },
-      "layers": {
-        "main": "tracts-harmonized-fill",
-        "outline": "tracts-harmonized-outline"
       }
     }
   ]
