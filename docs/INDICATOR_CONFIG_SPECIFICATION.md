@@ -29,14 +29,14 @@ The following properties MUST be present in every indicator object:
 - **Description**: Human-readable display name for the indicator
 - **Example**: `"Adults with Bachelor's Degree or Higher"`
 
-#### `geolevel` (string)
+#### ~~`geolevel` (string)~~
 #### DEPRICATED (Moved to main.json config)
-~~- **Type**: String
+- **Type**: String
 - **Description**: Geographic level of the data visualization
 - **Allowed Values**: 
   - `"area"` - For area-based visualizations (tracts, counties)
   - `"point"` - For point-based visualizations (schools, facilities)
-- **Example**: `"area"`~~
+- **Example**: `"area"`
 
 #### `geotype` (string)
 - **Type**: String
@@ -64,15 +64,15 @@ The following properties MUST be present in every indicator object:
 - **Format**: MUST be a valid URL ending with `&output=csv`
 - **Example**: `"https://docs.google.com/spreadsheets/d/e/.../pub?gid=123&single=true&output=csv"`
 
-#### `source_name` (string)
+#### ~~`source_name` (string)~~
 #### DEPRICATED (Moved to main.json config)
-~~- **Type**: String
+- **Type**: String
 - **Description**: MapLibre GL source identifier for the geographic data
 - **Common Values**: 
   - `"tracts-harmonized"` - For tract-level area data
   - `"counties-source"` - For county-level area data
   - `"points-source"` - For point-based data
-- **Example**: `"tracts-harmonized"`~~
+- **Example**: `"tracts-harmonized"`
 
 #### `short_name` (string)
 - **Type**: String
@@ -80,9 +80,9 @@ The following properties MUST be present in every indicator object:
 - **Format**: SHOULD be lowercase with underscores or hyphens, no spaces or special characters
 - **Example**: `"bachelor_degree"` or `"no_health_insurance"`
 
-#### `layers` (object)
+#### ~~`layers` (object)~~
 #### DEPRICATED (Moved to main.json config)
-~~- **Type**: Object
+- **Type**: Object
 - **Description**: MapLibre GL layer identifiers for rendering
 - **Required Properties**:
   - `main` (string) - REQUIRED. Main layer identifier
@@ -102,7 +102,7 @@ The following properties MUST be present in every indicator object:
     "main": "point-data",
     "circle": false
   }
-  ```~~
+  ```
 
 #### `timeline` (object)
 - **Type**: Object
