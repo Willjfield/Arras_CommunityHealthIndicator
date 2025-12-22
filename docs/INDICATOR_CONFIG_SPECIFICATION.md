@@ -30,12 +30,13 @@ The following properties MUST be present in every indicator object:
 - **Example**: `"Adults with Bachelor's Degree or Higher"`
 
 #### `geolevel` (string)
-- **Type**: String
+#### DEPRICATED (Moved to main.json config)
+~~- **Type**: String
 - **Description**: Geographic level of the data visualization
 - **Allowed Values**: 
   - `"area"` - For area-based visualizations (tracts, counties)
   - `"point"` - For point-based visualizations (schools, facilities)
-- **Example**: `"area"`
+- **Example**: `"area"`~~
 
 #### `geotype` (string)
 - **Type**: String
@@ -64,13 +65,14 @@ The following properties MUST be present in every indicator object:
 - **Example**: `"https://docs.google.com/spreadsheets/d/e/.../pub?gid=123&single=true&output=csv"`
 
 #### `source_name` (string)
-- **Type**: String
+#### DEPRICATED (Moved to main.json config)
+~~- **Type**: String
 - **Description**: MapLibre GL source identifier for the geographic data
 - **Common Values**: 
   - `"tracts-harmonized"` - For tract-level area data
   - `"counties-source"` - For county-level area data
   - `"points-source"` - For point-based data
-- **Example**: `"tracts-harmonized"`
+- **Example**: `"tracts-harmonized"`~~
 
 #### `short_name` (string)
 - **Type**: String
@@ -79,7 +81,8 @@ The following properties MUST be present in every indicator object:
 - **Example**: `"bachelor_degree"` or `"no_health_insurance"`
 
 #### `layers` (object)
-- **Type**: Object
+#### DEPRICATED (Moved to main.json config)
+~~- **Type**: Object
 - **Description**: MapLibre GL layer identifiers for rendering
 - **Required Properties**:
   - `main` (string) - REQUIRED. Main layer identifier
@@ -99,7 +102,7 @@ The following properties MUST be present in every indicator object:
     "main": "point-data",
     "circle": false
   }
-  ```
+  ```~~
 
 #### `timeline` (object)
 - **Type**: Object

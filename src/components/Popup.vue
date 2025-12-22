@@ -99,7 +99,7 @@ const keyMapping = {
 }
 const stats = computed(() => {
     const years = Array.from(new Set(Object.keys(props.properties).map(key => Number(key.toLowerCase().replace('count_', '').replace('pop_', '').replace('pct_', ''))).filter(year => !isNaN(+year))))
-    console.log(years)
+
     const stats = [];
     const popup = currentIndicator?.value?.popup;
     for(const year of years) {

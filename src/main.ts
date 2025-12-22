@@ -26,6 +26,29 @@ await Promise.all(activeCategories.map(async (config: any) => {
     categoryConfigs[key] = (await axios.get(`${sitePath}${config.config}`)).data
 }));
 
+const geoConfigs = mainConfig.geo;
+const catKeys = Object.keys(categoryConfigs);
+
+for(let k=0; k<catKeys.length; k++){
+    const key = catKeys[k];
+    const indicators = categoryConfigs[key].indicators;
+
+    for(let i=0; i<indicators.length; i++){
+        let indicator = indicators[i];
+        const geotype = indicator.geotype;
+        
+        if(geoConfigs[geotype]){
+            categoryConfigs[key].indicators[i] = {
+                ...geoConfigs[geotype],
+                ...indicator
+            }
+        }else{
+            console.warn(`Geotype ${geotype} not found in geoConfigs`);
+        }
+    }
+}
+
+
 app.provide('categoryConfigs', categoryConfigs);
 app.provide('mainConfig', mainConfig);
 app.provide('arrasBranding', (await axios.get(`${sitePath}/config/arras_branding.json`)).data);

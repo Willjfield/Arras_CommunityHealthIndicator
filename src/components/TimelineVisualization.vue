@@ -11,15 +11,18 @@
       <div class="chart-label">
         <table class="viz-legend">
           <tbody>
-            <tr >
-              <td v-if="!indicatorStore?.getCurrentIndicator()?.timeline?.filterOut?.some((filter: string) => filter.toLowerCase() === 'overall')">
-                <span class="hovered-geo mx-0">Chester & Lancaster avg.<br/><span class="selected-color" :style="{border:`2px solid ${selectedColorRef}`}"></span></span>
+            <tr>
+              <td
+                v-if="!indicatorStore?.getCurrentIndicator()?.timeline?.filterOut?.some((filter: string) => filter.toLowerCase() === 'overall')">
+                <span class="hovered-geo mx-0">Chester & Lancaster avg.<br /><span class="selected-color"
+                    :style="{ border: `2px solid ${selectedColorRef}` }"></span></span>
               </td>
               <td v-if="showStatewide">
-                <span class="selected-geo">Statewide</span><br/><span class="selected-color" :style="{border:`2px solid ${statewideColor}`}"></span>
+                <span class="selected-geo">Statewide</span><br /><span class="selected-color"
+                  :style="{ border: `2px solid ${statewideColor}` }"></span>
               </td>
               <td>
-                <span v-show="hoveredGeo" class="hovered-geo mx-0">Selected area<br/><span class="hovered-color"
+                <span v-show="hoveredGeo" class="hovered-geo mx-0">Selected area<br /><span class="hovered-color"
                     :style="{ border: `2px solid ${hoveredColorRef}` }"></span></span>
               </td>
             </tr>
@@ -57,6 +60,7 @@ const statewideColor = '#7d7d7d';
 const selectedColorRef = ref(selectedColor);
 const hoveredColorRef = ref(hoveredColor);
 
+const showValuesOnTimeline = false;
 
 //const container = ref<HTMLElement>()
 const svg = ref<SVGElement>()
@@ -117,17 +121,17 @@ const processData = (_feature: string | number | null) => {
   )
 
   if (!matchingRow) return []
-  ;(availableYears.value as number[]).forEach((year: number) => {
-    let yearKey =
-      indicator?.timeline?.yearValuePrefix
-        ? `${indicator.timeline.yearValuePrefix}${year}`
-        : year.toString()
-    let yearValue = matchingRow?.[yearKey]
-    data.push({
-      year: year,
-      value: yearValue != null && yearValue !== "" ? Number(yearValue) : null
+    ; (availableYears.value as number[]).forEach((year: number) => {
+      let yearKey =
+        indicator?.timeline?.yearValuePrefix
+          ? `${indicator.timeline.yearValuePrefix}${year}`
+          : year.toString()
+      let yearValue = matchingRow?.[yearKey]
+      data.push({
+        year: year,
+        value: yearValue != null && yearValue !== "" ? Number(yearValue) : null
+      })
     })
-  })
 
   return data
 }
@@ -136,7 +140,7 @@ const createChart = () => {
   if (!svg.value) return
 
   const data = processData(null)
-  console.log('data', data)
+
   if (data.length === 0) return
 
   // Clear previous chart
@@ -151,7 +155,6 @@ const createChart = () => {
     year: d.year,
     value: d.value?.toFixed(2) ? Number(d.value?.toFixed(2)) : null
   }))
-  console.log('validData', validData)
   if (validData.length === 0) {
     // Just show x-axis with years
     createAxisOnly(data)
@@ -272,26 +275,27 @@ const createChart = () => {
     .attr('r', 5)
 
   // Add text labels next to circles
-  svgElement.selectAll('.data-point-label')
-    .data(validData)
-    .enter()
-    .append('text')
-    .attr('class', 'data-point-label')
-    .attr('x', d => xScale(d.year) + 4)
-    .attr('y', d => yScale(d.value!) + 12)
-    .attr('text-anchor', 'left')
-    .style('font-size', '12px')
-    .style('font-weight', 'bold')
-    .style('fill', '#08f')
-    .style('pointer-events', 'none')
-    .text((d) => {
-      if (timelineValueFormat && timelineValueFormat.value && timelineValueFormat.value !== '') {
-        const formattedValue = d?.value?.toLocaleString() || ''
-        return timelineValueFormat.value.replace('{{value}}', formattedValue)
-      }
-      return (d?.value?.toLocaleString() || '');
-    })
-
+  if (showValuesOnTimeline) {
+    svgElement.selectAll('.data-point-label')
+      .data(validData)
+      .enter()
+      .append('text')
+      .attr('class', 'data-point-label')
+      .attr('x', d => xScale(d.year) + 4)
+      .attr('y', d => yScale(d.value!) + 12)
+      .attr('text-anchor', 'left')
+      .style('font-size', '12px')
+      .style('font-weight', 'bold')
+      .style('fill', '#08f')
+      .style('pointer-events', 'none')
+      .text((d) => {
+        if (timelineValueFormat && timelineValueFormat.value && timelineValueFormat.value !== '') {
+          const formattedValue = d?.value?.toLocaleString() || ''
+          return timelineValueFormat.value.replace('{{value}}', formattedValue)
+        }
+        return (d?.value?.toLocaleString() || '');
+      })
+  }
 
 }
 const hoveredGeo = ref('');
@@ -314,15 +318,15 @@ const addFeatureLine = (feature: string) => {
 
   // Calculate scales
   const xScale = createXScale(data)
-  if(!statewide) {
-  svgElement.append('rect')
-    .attr('class', `${statewide ? 'statewide-' : ''}data-feature-point-label-background`)
-    .attr('x', margin.left)
-    .attr('y', 0)
-    .attr('width', width)
-    .attr('height', height)
-    .style('fill', '#fff')
-    .style('opacity', 0.667)
+  if (!statewide) {
+    svgElement.append('rect')
+      .attr('class', `${statewide ? 'statewide-' : ''}data-feature-point-label-background`)
+      .attr('x', margin.left)
+      .attr('y', 0)
+      .attr('width', width)
+      .attr('height', height)
+      .style('fill', '#fff')
+      .style('opacity', 0.667)
   }
   // Create line generator
   const line = d3.line<{ year: number; value: number | null }>()
@@ -398,27 +402,28 @@ const addFeatureLine = (feature: string) => {
   //   .attr('height', 12)
   //   .style('fill', '#fff')
   //   .style('opacity', 0.75)
-  
 
-  svgElement.selectAll(`.${statewide ? 'statewide-' : ''}data-feature-point-label`)
-    .data(validData)
-    .enter()
-    .append('text')
-    .attr('class', `${statewide ? 'statewide-' : ''}data-feature-point-label`)
-    .attr('x', d => xScale(d.year))
-    .attr('y', d => yScale(d.value!) - 12)
-    .attr('text-anchor', 'left')
-    .style('font-size', '12px')
-    .style('font-weight', 'bold')
-    .style('fill', `${statewide ? '#7d7d7d' : '#f80'}`)
-    .style('pointer-events', 'none')
-    .text((d) => {
-      if (timelineValueFormat && timelineValueFormat.value && timelineValueFormat.value !== '') {
-        const formattedValue = d?.value?.toLocaleString() || ''
-        return timelineValueFormat.value.replace('{{value}}', formattedValue)
-      }
-      return (d?.value?.toLocaleString() || '');
-    })
+  if (showValuesOnTimeline) {
+    svgElement.selectAll(`.${statewide ? 'statewide-' : ''}data-feature-point-label`)
+      .data(validData)
+      .enter()
+      .append('text')
+      .attr('class', `${statewide ? 'statewide-' : ''}data-feature-point-label`)
+      .attr('x', d => xScale(d.year))
+      .attr('y', d => yScale(d.value!) - 12)
+      .attr('text-anchor', 'left')
+      .style('font-size', '12px')
+      .style('font-weight', 'bold')
+      .style('fill', `${statewide ? '#7d7d7d' : '#f80'}`)
+      .style('pointer-events', 'none')
+      .text((d) => {
+        if (timelineValueFormat && timelineValueFormat.value && timelineValueFormat.value !== '') {
+          const formattedValue = d?.value?.toLocaleString() || ''
+          return timelineValueFormat.value.replace('{{value}}', formattedValue)
+        }
+        return (d?.value?.toLocaleString() || '');
+      })
+  }
 }
 const createAxisOnly = (data: Array<{ year: number; value: number | null }>) => {
   const xScale = createXScale(data)
@@ -463,7 +468,7 @@ const createAxisOnly = (data: Array<{ year: number; value: number | null }>) => 
 }
 
 const createXScale = (data: Array<{ year: number; value: number | null }>) => {
-  
+
   const years = data.map(d => d.year).filter(d => d !== null && d !== undefined && !isNaN(Number(d))).sort((a: number, b: number) => a - b)
 
   // Create custom scale with variable spacing
@@ -479,7 +484,7 @@ const createXScale = (data: Array<{ year: number; value: number | null }>) => {
       const gap = nextYear - currentYear
 
       // Larger spacing for decade gaps, smaller for consecutive years
-      const spacing = (width / years.length) * (Math.sqrt(gap) / years.length )*1.333//<= 1 ? 25 : gap <= 10 ? 50 : 90
+      const spacing = (width / years.length) * (Math.sqrt(gap) / years.length) * 1.333//<= 1 ? 25 : gap <= 10 ? 50 : 90
       currentPos += spacing
     }
   }
@@ -494,12 +499,12 @@ const getMinMaxValues = () => {
   if (!data) return { minValue: 0, maxValue: 100 }
   //todo: this has to get min and max from all the  years, not just this year
   const yearValuePrefix = indicator?.timeline?.yearValuePrefix || '';
-    let years = data.headerShortNames.filter(
-      (year: string) => yearValuePrefix.length > 0 ? year.startsWith(yearValuePrefix) : YEAR_PATTERN.test(year) && !isNaN(Number(year))
-    );
-    
-    let minValue = Number.MAX_SAFE_INTEGER;
-    let maxValue = 0;
+  let years = data.headerShortNames.filter(
+    (year: string) => yearValuePrefix.length > 0 ? year.startsWith(yearValuePrefix) : YEAR_PATTERN.test(year) && !isNaN(Number(year))
+  );
+
+  let minValue = Number.MAX_SAFE_INTEGER;
+  let maxValue = 0;
 
 
   for (let year = 0; year < years.length; year++) {
@@ -545,7 +550,7 @@ const handleIndicatorChange = async () => {
 }
 
 const showStatewide = computed(() => {
-  return indicatorStore?.getCurrentIndicator()?.google_sheets_data?.data?.find((feature: any) => feature?.geoid.toLowerCase() === 'statewide') !== undefined && !indicatorStore?.getCurrentIndicator()?.timeline?.filterOut?.some((filter: string) => filter.toLowerCase() === 'statewide')
+  return indicatorStore?.getCurrentIndicator()?.google_sheets_data?.data?.find((feature: any) => feature?.geoid?.toLowerCase() === 'statewide') !== undefined && !indicatorStore?.getCurrentIndicator()?.timeline?.filterOut?.some((filter: string) => filter.toLowerCase() === 'statewide')
 }) as ComputedRef<boolean>
 
 // Watch for data changes
@@ -584,7 +589,7 @@ onMounted(() => {
       hoveredGeoName.value = feature;
     }
   })
- 
+
 })
 
 onUnmounted(() => {
@@ -594,48 +599,55 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-  .viz-legend {
-    width: 100%;
-    border-collapse: collapse;
-    border: 1px solid #e5e7eb;
-    border-radius: 5px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  }
-  .viz-legend td {
-    padding: 4px 8px;
-    margin: 0;
-    width: 33%;
-    text-align: center;
-  }
-  .viz-legend span {
-    font-size: smaller;
-    font-weight: bold;
-    color: #6b7280;
-  }
-  .viz-legend span.selected-color {
-    display: inline-block;
-    width: 20px;
-    height: 0;
-    margin-bottom: 2.5px;
-    margin-left: 5px;
-  }
-  .viz-legend span.hovered-color {
-    display: inline-block;
-    width: 20px;
-    height: 0;
-    margin-bottom: 2.5px;
-    margin-left: 5px;
-  }
-  .viz-legend span.selected-geo {
-    display: inline-block;
-    font-weight: bold;
-    font-size: .9em;
-  }
-  .viz-legend span.hovered-geo {
-    display: inline-block;
-    font-weight: bold;
-    font-size: .9em;
-  }
+.viz-legend {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #e5e7eb;
+  border-radius: 5px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.viz-legend td {
+  padding: 4px 8px;
+  margin: 0;
+  width: 33%;
+  text-align: center;
+}
+
+.viz-legend span {
+  font-size: smaller;
+  font-weight: bold;
+  color: #6b7280;
+}
+
+.viz-legend span.selected-color {
+  display: inline-block;
+  width: 20px;
+  height: 0;
+  margin-bottom: 2.5px;
+  margin-left: 5px;
+}
+
+.viz-legend span.hovered-color {
+  display: inline-block;
+  width: 20px;
+  height: 0;
+  margin-bottom: 2.5px;
+  margin-left: 5px;
+}
+
+.viz-legend span.selected-geo {
+  display: inline-block;
+  font-weight: bold;
+  font-size: .9em;
+}
+
+.viz-legend span.hovered-geo {
+  display: inline-block;
+  font-weight: bold;
+  font-size: .9em;
+}
+
 .timeline-visualization-container {
   position: absolute;
   top: 0;
@@ -713,7 +725,7 @@ onUnmounted(() => {
   padding-bottom: 0px;
   text-align: left;
   line-height: .9em;
- 
+
 }
 
 

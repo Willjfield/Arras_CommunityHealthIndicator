@@ -108,5 +108,38 @@
         }
       }
     }
-  ]
+  ],
+  "geo":{
+    "tract":{
+      "geolevel": "area",
+      "source_name": "tracts-harmonized",
+      "layers": {
+        "main": "tracts-harmonized-fill",
+        "outline": "tracts-harmonized-outline"
+      }
+    },
+    "county":{
+      "geolevel": "area",
+      "source_name": "counties-source",
+      "layers": {
+        "main": "counties-data"
+      }
+    },
+    "school":{
+      "geolevel": "point",
+      "source_name": "points-source",
+      "layers": {
+        "main": "point-data",
+        "circle": false
+      }
+    },
+    "facility":{
+      "geolevel": "point",
+      "source_name": "points-source",
+      "layers": {
+        "main": "point-data",
+        "circle": false
+      }
+    }
+  }
 }
