@@ -1,7 +1,7 @@
 {
   "indicators": [
     {
-      "title": "Percent of 3 and 4 Year Olds enrolled in Pre-K (both public and private schools) Source: Census & American Community Survey",
+      "title": "Percent of 3 and 4 Year Olds enrolled in Pre-K (both public and private schools)",
       "geotype": "tract",
       "default": "left",
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vSygEfL4IXNKghq9ZCxT2_eIivEdHBXiddv-_Pb2U44ltaoSd8Qjgeu3m18JAJVK-VNHeDNXSMr25V1/pub?gid=1483288023&single=true&output=csv",
@@ -24,7 +24,7 @@
       }
     },
     {
-      "title": "Out of all families with children, the percent whose income in the past 12 months is below the federal poverty level, Source: Census & American Community Survey",
+      "title": "Out of all families with children, the percent whose income in the past 12 months is below the federal poverty level",
       "default": false,
       "geotype": "tract",
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRT9sRzNbN3RA9jfOSwV8VWN8-QCyd60ejnfQhNSS8MQkGn8u-BSXbIxkzwAFtE6CzVfv5Jr8nzMs7T/pub?gid=622872564&single=true&output=csv",      
