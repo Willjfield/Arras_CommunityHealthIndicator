@@ -2,6 +2,7 @@
   "indicators": [
     {
       "title": "Adults with Bachelor's Degree or Higher",
+      "short_title": "Adult Bachelor's Degree",
       "geotype": "tract",
       "default": "left",
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vQLH2WHaIW_W1rCEHkcCALW2GFVgr20hRmIu2DOKyETmKi3-vMDv0dF5WFbLU47By9gDXSeTdA4oJH6/pub?gid=936536633&single=true&output=csv",
@@ -25,6 +26,7 @@
     },
     {
       "title": "Children in Concentrated Poverty",
+      "short_title": "Children in Poverty",
       "geotype": "tract",
       "default": "right",
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vR9zeolHtawv9gwC_vD12fwM_GuujMxXi8KVJoF3PqSONsdw3LvX2sZRZOnji09mBVopP1I0tDXOMN6/pub?gid=646151606&single=true&output=csv",
@@ -48,6 +50,7 @@
     },
     {
       "title": "Median Household Income",
+      "short_title": "Median Income",
       "geotype": "tract",
       "default": false,
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRxBdPEeiYzDaPP8ZRebLlTvX_OzEFwRL6c7zC45u0HES0ZlD5v2o8tUdL0xcBmYKTpCL_I4ALJoWNR/pub?gid=956489115&single=true&output=csv",
@@ -70,6 +73,7 @@
     },
     {
       "title": "Housing cost burdened households (30% or more of income)",
+      "short_title": "Housing Cost Burden",
       "geotype": "tract",
       "default": false,
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vS0QQ808Zlb6SD7sdjmijEDSlqLhHs2qElErij9mqKt8AQEKH_dAZxfxlyIeqogfI6EN8rMy1qPyb22/pub?gid=1195534552&single=true&output=csv",
@@ -93,6 +97,7 @@
     },
     {
       "title": "% adults (ages 25+) with a high school diploma or equivalent",
+      "short_title": "HS Diploma",
       "geotype": "tract",
       "default": false,
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vQfEBRwU2Zwqtbt3hzpobMszogf7jUrvcxHIXbAmzaNlTGafpTgroY3P0wJyXr9FRy8QJbJJyBLoBeR/pub?gid=1453198124&single=true&output=csv",
@@ -119,6 +124,7 @@
     },
     {
       "title": "Workers with long commutes (45 minutes or more)",
+      "short_title": "Long Commutes",
       "geotype": "tract",
       "default": false,
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vT67ITh6KidlwFKzHeQNGkKULuRnRhp2T6KzAUnVUgfo9m0VD26KcpOVJL1pmqk7TDetCNUXNChn_hl/pub?gid=175542881&single=true&output=csv",
@@ -145,6 +151,7 @@
     },
     {
       "title": "Percent of people living in poverty",
+      "short_title": "Poverty Rate",
       "geotype": "tract",
       "default": false,
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRnru_GVIY34kQpl2sYDTCXMFWT_GGtaq6qU9YGKbTIwXdiqI63GdfhVUmzSaDaHUz9pFreEcWXRHJ3/pub?gid=1994802547&single=true&output=csv",
@@ -171,6 +178,7 @@
     },
     {
       "title": "Working population (civilians in workforce) living below the poverty line",
+      "short_title": "Workforce in Poverty",
       "geotype": "tract",
       "default": false,
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vS4ioVC9PmujjHYlkLhZUNYF22RmqsGOXEgPzKvOwVb5OWWr0Q6Tm6OpMhnyyxte9u0d38mp5fYxbDv/pub?gid=1087215282&single=true&output=csv",
@@ -197,6 +205,7 @@
     },
     {
       "title": "Unemployment Rate",
+      "short_title": "Unemployment",
       "geotype": "tract",
       "default": false,
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vQerb-iOq-zzpATcIUQ43K34qWDe1bE4gHBRQJYhSjLxeMOm83ALT3FVcGqihxt_1k4qBRhQ0WocHRB/pub?gid=1933545590&single=true&output=csv",
@@ -223,6 +232,7 @@
     },
     {
       "title": "Substandard housing units",
+      "short_title": "Substandard Housing",
       "geotype": "tract",
       "default": false,
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRnL5GlWMLotD1OY_nU_L712aq6VcN6r5I6S0g5D_CC5TceMqofVscOxlnioXwgjTvoDzUOoMtCJNAG/pub?gid=1379297340&single=true&output=csv",

@@ -2,6 +2,7 @@
   "indicators": [
     {
       "title": "Current Smokers Among Adults",
+      "short_title": "Smokers",
       "geotype": "tract",
       "default": "left",
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRenE0k_5PqyC_bP8DsVfuheopSPQbHNSdcB6ipGGqqKixPSzyxNT4fiPQw2GUnfKiMUHtuqf5If98c/pub?gid=482200278&single=true&output=csv",
@@ -28,6 +29,7 @@
     },
     {
       "title": "Working Age Adults with No Health Insurance",
+      "short_title": "Health Insurance Coverage",
       "geotype": "tract",
       "default": "right",
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vTVxPi4GgcloW3FKCIEwM--UA9HhKQjNOGxEoTQC1quZEmlEF-5V9GXIvepoImUQ2c8QXfkmyB79MjS/pub?gid=534592488&single=true&output=csv",
@@ -54,6 +56,7 @@
     },
     {
       "title": "Food Insecurity",
+      "short_title": "Food Insecurity",
       "geotype": "tract",
       "default": false,
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vSpN9_3frlzhn0QzhN3IVYxJ4T4n6RjdAG9mQfq_Tk0qF5AwRUo-CWraFTIWM5tyznNZxbRW8siUNLm/pub?gid=849801194&single=true&output=csv",
@@ -81,6 +84,7 @@
     },
     {
       "title": "Heart Disease Mortality Rate",
+      "short_title": "Heart Disease Mortality",
       "geotype": "tract",
       "default": false,
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vQAZ7te1R2RjauYyukLy8AzDXjLJgYofIjfn8ktnOt7TV2_j9TqtnoW31hWBOPqmtF8O4Y12dpUdSD5/pub?gid=361602694&single=true&output=csv",
@@ -108,6 +112,7 @@
     },
     {
       "title": "Percent of Births with Low Birth Weight",
+      "short_title": "Low Birth Weight",
       "geotype": "county",
       "default": false,
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vTSIDstR1PxU_mFXK6GbZGvKUoLN8HXi4UASSww3tFAxBzkV2EZMmtkh9_v_OSkZxAc2g2oSNYogSav/pub?gid=0&single=true&output=csv",
@@ -133,6 +138,7 @@
     },
     {
       "title": "Malignant Neoplasm Morality",
+      "short_title": "Cancer Mortality",
       "geotype": "county",
       "default": false,
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vTQx5IGI_FrPFnuH2_qxNO3csjQq6vE0VJEFPfqB4zGkltxOKuAMJ2CrBYSV6wiS6kE3p76nGqWc8iz/pub?gid=829636489&single=true&output=csv",
@@ -159,6 +165,7 @@
     },
     {
       "title": "Percent of Adults with Mental Health Distress",
+      "short_title": "Mental Health Distress",
       "geotype": "tract",
       "default": false,
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vSiMSkw-to8lXOD0pyjuoci-xIFvCdL3woQsEsPtPI0w1TO-g-zt1UVAOV4TOczQ_0RIWX_iFm4EasK/pub?gid=876954295&single=true&output=csv",

@@ -1,6 +1,6 @@
 <template>
   <v-select :model-value="indicatorStore?.getCurrentIndicator()"
-    :items="themeLevelStore?.getAllCurrentThemeIndicators() || []" return-object item-title="title" density="compact"
+    :items="themeLevelStore?.getAllCurrentThemeIndicators() || []" return-object item-title="short_title" density="compact"
     variant="outlined" width="100%" hide-details class="indicator-select"
     @update:model-value="handleIndicatorChange">
     <template v-slot:item="{ props: itemProps }">

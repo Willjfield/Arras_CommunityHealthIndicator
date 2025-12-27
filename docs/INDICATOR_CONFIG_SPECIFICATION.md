@@ -26,8 +26,14 @@ The following properties MUST be present in every indicator object:
 
 #### `title` (string)
 - **Type**: String
-- **Description**: Human-readable display name for the indicator
+- **Description**: REQUIRED. Human-readable display name for the indicator
 - **Example**: `"Adults with Bachelor's Degree or Higher"`
+
+#### `short_title` (string)
+- **Type**: String
+- **Description**: REQUIRED. Shortened version of the title for use in UI components with limited space
+- **Usage**: MUST be provided. The full `title` is often too long for compact UI elements (e.g., dropdown menus, small buttons, tooltips)
+- **Example**: `"Bachelor's Degree"` (for title "Adults with Bachelor's Degree or Higher")
 
 #### ~~`geolevel` (string)~~
 #### DEPRICATED (Moved to main.json config)
@@ -76,7 +82,7 @@ The following properties MUST be present in every indicator object:
 
 #### `short_name` (string)
 - **Type**: String
-- **Description**: Unique identifier for the indicator (used in URLs and internal references)
+- **Description**: REQUIRED. Unique identifier for the indicator (used in URLs and internal references)
 - **Format**: SHOULD be lowercase with underscores or hyphens, no spaces or special characters
 - **Example**: `"bachelor_degree"` or `"no_health_insurance"`
 
@@ -212,8 +218,9 @@ The following placeholders MAY be used in format strings:
 
 While property order does not affect functionality, the following order is RECOMMENDED for consistency:
 1. `title`
-2. `geolevel`
-3. `geotype`
+2. `short_title` (if present)
+3. `geolevel`
+4. `geotype`
 4. `default`
 5. `google_sheets_url`
 6. `source_name`
@@ -230,6 +237,7 @@ While property order does not affect functionality, the following order is RECOM
 ```json
 {
   "title": "Adults with Bachelor's Degree or Higher",
+  "short_title": "Bachelor's Degree",
   "geolevel": "area",
   "geotype": "tract",
   "default": "left",
@@ -266,6 +274,7 @@ While property order does not affect functionality, the following order is RECOM
 ```json
 {
   "title": "3rd Grade Math Readiness",
+  "short_title": "3rd Grade Math Ready",
   "geolevel": "point",
   "geotype": "school",
   "default": false,
