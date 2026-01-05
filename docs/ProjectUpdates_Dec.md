@@ -14,12 +14,16 @@
 - Updated health.json with new health metrics (low birth weight, cancer mortality, mental health distress)
 - Expanded social_cultural.json with new indicators
 
+#### 3 Hours
+---
+
 #### Configuration Documentation
 - Created comprehensive `INDICATOR_CONFIG_SPECIFICATION.md` documentation
 - Documented all required and optional indicator properties
 - Added deprecation notices for moved fields
 - Removed outdated ARCHITECTURE.md documentation
 
+#### 1 Hour
 ---
 
 ### Component Enhancements
@@ -32,11 +36,17 @@
 - Better handling of multiple data series
 - CSS improvements for different orientations
 
+#### 2 Hours
+---
+
 #### Popup Component
 - Enhanced popup styling and functionality
 - Improved USD formatting for currency values
 - Better handling of percentage and count displays
 - Updated to work with new configuration structure
+
+#### 2 Hours
+---
 
 #### Point Legend
 - Major refactoring of `PointLegend.vue`
@@ -44,10 +54,14 @@
 - Improved legend display for point-based indicators
 - Better cohort size display in legends
 
+#### 3 Hours
+---
+
 #### Color Legend
 - Updates to support new configuration structure
 - Improved styling and display
 
+#### 2 Hours
 ---
 
 ### Data and Utilities
@@ -56,14 +70,22 @@
 - Improved data handling for various indicator types
 - Better support for currency formatting
 
+#### 3 Hours
+---
+
 #### Map Utilities
 - Refactored `pointDataToMap.ts` with improved icon sizing logic
 - Better integration with new configuration structure
+
+#### 1 Hour
+---
 
 #### Data Store Updates
 - Updates to `indicatorLevelStore.ts` for new configuration structure
 - Enhanced state management for indicators
 - Improved cleanup methods
+
+#### 1 Hour
 
 ---
 
@@ -77,11 +99,16 @@
 - Mobile responsiveness improvements
 - Swiper component updates
 
+#### 3 Hours
+---
+
 #### Navigation and Layout
 - App.vue updates for new configuration structure
 - ComparisonMap enhancements
 - MapPage improvements
 - Landing page updates
+
+#### 2 Hours
 
 ---
 
@@ -92,11 +119,15 @@
 - Fixed TypeScript linting errors across multiple files
 - Better type safety throughout the codebase
 
+#### 1 Hour
+---
+
 #### Configuration Management
 - Moved shared configuration fields to main.json
 - Simplified indicator configs by removing redundant fields
 - Better separation of concerns between main.json and category configs
 
+#### 2 Hours
 ---
 
 ### Bug Fixes
@@ -109,6 +140,7 @@
 - Fixed grandchild bug in social cultural config
 - Fixed mask behind line in timeline visualization
 
+#### 5 Hours
 ---
 
 ### Documentation
@@ -118,5 +150,6 @@
 - Moved documentation files to docs/ directory
 - Removed outdated documentation
 
+#### 1 Hour
 ---
 
