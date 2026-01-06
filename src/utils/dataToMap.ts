@@ -395,7 +395,6 @@ export class DataToMap {
       )
     );
     if (isNaN(+min)) {
-      console.log(min)
       console.warn(year, prop, "isNaN", min);
       return Number.MAX_SAFE_INTEGER;
     }
@@ -429,7 +428,6 @@ export class DataToMap {
       )
     );
     if (isNaN(max)) {
-      console.log(max)
       console.warn(year, prop, "isNaN", max);
       return Number.MAX_SAFE_INTEGER;
     }
@@ -443,11 +441,9 @@ export class DataToMap {
   getMin(prop: string) {
     let min = Number.MAX_SAFE_INTEGER;
     const years = this.getAllYears();
-    console.log(years);
     for (let yearIdx = 0; yearIdx < years.length; yearIdx++) {
       const year = years[yearIdx] as number;
       const yearValue = this.getMinForYear(prop, +year as number);
-      console.log(year, yearValue);
       if (yearValue !== null && yearValue < min && !isNaN(yearValue)) {
         min = yearValue as number;
       }

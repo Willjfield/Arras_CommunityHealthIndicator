@@ -5,14 +5,18 @@
     <ColorLegend
       v-if="leftIndicatorLevelStore.getCurrentIndicator() && leftIndicatorLevelStore.getCurrentIndicator()?.geolevel === 'area'"
       :selectedIndicator="leftIndicatorLevelStore.getCurrentIndicator()" side="left" />
-    <PointLegend v-else-if="leftIndicatorLevelStore.getCurrentIndicator() && leftIndicatorLevelStore.getCurrentIndicator()?.geolevel === 'point'" :selected-indicator="leftIndicatorLevelStore.getCurrentIndicator()" side="left" />
+    <PointLegend
+      v-else-if="leftIndicatorLevelStore.getCurrentIndicator() && leftIndicatorLevelStore.getCurrentIndicator()?.geolevel === 'point'"
+      :selected-indicator="leftIndicatorLevelStore.getCurrentIndicator()" side="left" />
     <div ref="mapContainerRight" class="map-container right"> </div>
     <TimelineVisualization side="right" />
     <ColorLegend
       v-if="rightIndicatorLevelStore.getCurrentIndicator() && rightIndicatorLevelStore.getCurrentIndicator()?.geolevel === 'area'"
       :selectedIndicator="rightIndicatorLevelStore.getCurrentIndicator()" side="right" />
-    <PointLegend v-else-if="rightIndicatorLevelStore.getCurrentIndicator() && rightIndicatorLevelStore.getCurrentIndicator()?.geolevel === 'point'" :selected-indicator="rightIndicatorLevelStore.getCurrentIndicator()" side="right" />
-    </div>
+    <PointLegend
+      v-else-if="rightIndicatorLevelStore.getCurrentIndicator() && rightIndicatorLevelStore.getCurrentIndicator()?.geolevel === 'point'"
+      :selected-indicator="rightIndicatorLevelStore.getCurrentIndicator()" side="right" />
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -30,6 +34,7 @@ import type { Emitter } from 'mitt'
 import createArcGISStyle from '../utils/createArcGISStyle'
 import { createMapRequestTransform } from '../utils/mapRequestTransform'
 import { MIN_ZOOM_ON_LOCATION, LOCATION_FLY_DURATION_MS, RIGHT_PADDING_RATIO } from '../constants'
+import type { LngLatBoundsLike } from 'maplibre-gl'
 
 const mapContainerLeft = ref<HTMLElement>()
 let leftMap: maplibregl.Map | null = null
@@ -78,7 +83,7 @@ watch(() => themeLevelStore.currentThemeShortName, async (newThemeShortName, old
       const defaultForRight = currentThemeIndicators.find(
         (i: any) => 'right'.includes(i.default as string)
       )
-      
+
       // Reinitialize indicators
       if (defaultForLeft) {
         await leftIndicatorLevelStore.setIndicatorFromIndicatorShortName(defaultForLeft.short_name, emitter)
@@ -89,8 +94,10 @@ watch(() => themeLevelStore.currentThemeShortName, async (newThemeShortName, old
     }
   }
 })
-
-onBeforeMount(() => { })
+let hasHash = false
+onBeforeMount(() => {
+  hasHash = Boolean(window?.location?.hash && window.location.hash !== '')
+})
 onMounted(async () => {
   // Ensure the container is properly initialized
   const sitePath = inject('sitePath') as string;
@@ -124,15 +131,15 @@ onMounted(async () => {
       canvasContextAttributes: { antialias: true },
       transformRequest
     })
-    .addControl(new maplibregl.NavigationControl({
+      .addControl(new maplibregl.NavigationControl({
         visualizePitch: true,
         visualizeRoll: true,
         showZoom: true,
         showCompass: true
-    }))
-    .addControl(new maplibregl.AttributionControl({
+      }))
+      .addControl(new maplibregl.AttributionControl({
         compact: true
-    }),'top-right');
+      }), 'top-right');
 
     rightIndicatorLevelStore.initializeMap(rightMap, emitter)
   }
@@ -140,6 +147,26 @@ onMounted(async () => {
   if (leftMap && rightMap) {
     const position = orientation.value === 'top-bottom' ? ['bottom', 'left'] : ['top', 'horiz-center'] as any
     _compare = new Compare(leftMap, rightMap, comparisonContainer, { orientation: orientation.value, type: props._type, position });
+    // bbox as [west, south, east, north] using LngLatBoundsLike
+    let bbox = new maplibregl.LngLatBounds([-81.63527368320112, 34.24556219498636], [-78.89220264452729, 35.22169720245361]) as LngLatBoundsLike;
+
+    if (!hasHash) {
+      leftMap.fitBounds(bbox, {
+        padding: { top: 10, bottom: 25, left: 15, right: 5 },
+        animate: false
+      });
+      rightMap.fitBounds(bbox, {
+        padding: { top: 10, bottom: 25, left: 15, right: 5 },
+        animate: false
+      });
+    }
+    // rightMap.on('moveend', () => {
+    //   console.log(rightMap.getBounds());
+    // });
+    // leftMap.on('moveend', () => {
+    //   console.log(leftMap.getBounds());
+    // });
+
     _compare.onceBoth('load', () => {
       const loadingEl = document.getElementById('loading');
       if (loadingEl && loadingEl.style) {
@@ -176,7 +203,7 @@ const handleLocationSelected = (data: { coordinates: [number, number], text: str
         right: window.innerWidth * RIGHT_PADDING_RATIO
       }
     });
-    
+
     leftMap.once('moveend', () => {
       rightMap?.flyTo({
         center: [lng, lat],
@@ -292,21 +319,24 @@ onUnmounted(() => {
   bottom: 150px;
 }
 
-  .maplibregl-ctrl-top-right {
-    right: 50%;
-    left: unset;
-  }
+.maplibregl-ctrl-top-right {
+  right: 50%;
+  left: unset;
+}
 
-  .slider .maplibregl-ctrl-top-right {
-    right: 5px;
-    left: unset;
-  }
-  .maplibregl-ctrl-group button+button{
-    border-radius: 0;
-  }
+.slider .maplibregl-ctrl-top-right {
+  right: 5px;
+  left: unset;
+}
+
+.maplibregl-ctrl-group button+button {
+  border-radius: 0;
+}
+
 .orientation-top-bottom .maplibregl-ctrl-bottom-right {
   bottom: 100px;
 }
+
 .map-container {
   position: absolute;
   top: 0;
@@ -400,20 +430,18 @@ onUnmounted(() => {
 #comparison-container.orientation-top-bottom.sideBySide .map-container.right {
   border-top: 1px solid black;
 }
+
 #comparison-container.orientation-top-bottom .maplibregl-ctrl-bottom-right {
   bottom: 120px;
 }
-.orientation-top-bottom
-.timeline-visualization-container.left
-.timeline-header{
+
+.orientation-top-bottom .timeline-visualization-container.left .timeline-header {
   right: 0px;
   top: 0px;
 
 }
 
-.orientation-top-bottom 
-.timeline-visualization-container.left 
-.timeline-visualization{
+.orientation-top-bottom .timeline-visualization-container.left .timeline-visualization {
   top: 50%;
   bottom: auto;
   transform: translateY(-100%);
@@ -422,32 +450,28 @@ onUnmounted(() => {
   zoom: .7;
 }
 
-.orientation-top-bottom 
-.timeline-visualization-container 
-.timeline-header{
+.orientation-top-bottom .timeline-visualization-container .timeline-header {
   right: 0px;
   top: 50%;
   left: unset;
   width: 100%;
   flex-direction: row-reverse;
 }
-.orientation-top-bottom 
-.indicator-select{
+
+.orientation-top-bottom .indicator-select {
   margin: unset;
   width: 100%;
-   
+
 }
 
-.orientation-top-bottom 
-.timeline-visualization-container.right 
-.timeline-visualization{
+.orientation-top-bottom .timeline-visualization-container.right .timeline-visualization {
   zoom: .7;
   left: unset;
   right: 5px;
   bottom: 5px !important;
 }
 
-.maplibregl-compare-type-toggle.top{
+.maplibregl-compare-type-toggle.top {
   top: 42px !important;
 }
 </style>

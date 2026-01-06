@@ -125,7 +125,6 @@ const legendTitle = computed(() => {
   const titleColumn = props.selectedIndicator?.legend?.['title-column'] as 'count' | 'pop' | 'pct' | undefined;
   const minValue = indicatorLevelStore.getMinValue(titleColumn as 'count' | 'pop' | 'pct') ?? 0;
   const maxValue = indicatorLevelStore.getMaxValue(titleColumn as 'count' | 'pop' | 'pct') ?? 0;
-  console.log(minValue, maxValue);
   const midValue = ((minValue + maxValue) / 2).toFixed(0);
 
   if (titleTemplate) {

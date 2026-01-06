@@ -8,7 +8,7 @@
                 </v-card-title>
             </v-card>
             <LocationSearch />
-            <ComparisonMap :_center="[-80.46, 34.652]" :_zoom="8.57" :_type="'sideBySide'" />
+            <ComparisonMap :_center="[-80.17, 34.652]" :_zoom="8.57" :_type="'sideBySide'" />
         </v-container>
     </v-main>
 </template>

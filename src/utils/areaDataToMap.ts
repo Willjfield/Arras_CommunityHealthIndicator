@@ -45,7 +45,6 @@ export class AreaDataToMap extends DataToMap {
           delete properties[key];
         }
       });
-      console.log(properties);
       if (properties) {
         return {
           type: "Feature",
