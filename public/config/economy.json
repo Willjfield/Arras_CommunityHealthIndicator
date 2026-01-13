@@ -13,10 +13,10 @@
         "filterOut": []
       },
       "popup": {
-        "columns": ["pct", "count"],
+        "columns": ["pct", "count", "pop"],
         "format": {
           "title": "{{pct}}% of adults",
-          "subtitle": "{{count}} adults"
+          "subtitle": "{{count}} out of {{pop}} adults"
         }
       },
       "legend":{
@@ -84,10 +84,10 @@
         "filterOut": []
       },
       "popup": {
-        "columns": ["pct", "count"],
+        "columns": ["pct", "count", "pop"],
         "format": {
           "title": "{{pct}}% of households",
-          "subtitle": "{{count}} households total"
+          "subtitle": "{{count}} out of {{pop}} households"
         }
       },
       "legend":{
@@ -108,10 +108,10 @@
         "filterOut": []
       },
       "popup": {
-        "columns": ["pct", "count"],
+        "columns": ["pct", "count", "pop"],
         "format": {
           "title": "{{pct}}% of adults",
-          "subtitle": "{{count}} adults"
+          "subtitle": "{{count}} out of {{pop}} adults"
         }
       },
       "legend":{
@@ -135,10 +135,10 @@
         "filterOut": []
       },
       "popup": {
-        "columns": ["pct", "count"],
+        "columns": ["pct", "count", "pop"],
         "format": {
           "title": "{{pct}}% of workers",
-          "subtitle": "{{count}} workers"
+          "subtitle": "{{count}} out of {{pop}} workers"
         }
       },
       "legend":{
@@ -162,10 +162,10 @@
         "filterOut": []
       },
       "popup": {
-        "columns": ["pct", "count"],
+        "columns": ["pct", "count", "pop"],
         "format": {
           "title": "{{pct}}% of residents",
-          "subtitle": "{{count}} residents"
+          "subtitle": "{{count}} out of {{pop}} residents"
         }
       },
       "legend":{
@@ -189,10 +189,10 @@
         "filterOut": []
       },
       "popup": {
-        "columns": ["pct", "count"],
+        "columns": ["pct", "count", "pop"],
         "format": {
           "title": "{{pct}}% of workforce",
-          "subtitle": "{{count}} workers"
+          "subtitle": "{{count}} out of {{pop}} workers"
         }
       },
       "legend":{
@@ -216,10 +216,10 @@
         "filterOut": []
       },
       "popup": {
-        "columns": ["pct", "count"],
+        "columns": ["pct", "count", "pop"],
         "format": {
           "title": "{{pct}}% of residents",
-          "subtitle": "{{count}} residents"
+          "subtitle": "{{count}} out of {{pop}} residents"
         }
       },
       "legend":{
@@ -243,10 +243,10 @@
         "filterOut": []
       },
       "popup": {
-        "columns": ["pct", "count"],
+        "columns": ["pct", "count", "pop"],
         "format": {
           "title": "{{pct}}% of housing units",
-          "subtitle": "{{count}} housing units"
+          "subtitle": "{{count}} out of {{pop}} housing units"
         }
       },
       "legend":{

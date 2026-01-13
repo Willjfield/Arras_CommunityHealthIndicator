@@ -42,3 +42,15 @@ children in pov - is it finished?
 Housing burdened - check 2023 count - seems to be percent * 100
 
 overall - transparent where there's no value, popups should be grayed out, children in pov finished?
+---------------------
+popups - subtitle "count out of pop"
+
+education/hs grad rate: no pop?
+education/k ready: no pop?
+economy/Children in Concentrated Poverty: This isn't in the economy folder
+economy/vehicles available: This is in the economy folder but we're not using it?
+health/Low Birth Weight: no pop?
+soc.cult/Grandparent Responsibility: no pop?
+soc.cult/Social Associations per 10,000 people: no pop?
+
+new indicators for soc/cult and env

@@ -40,10 +40,10 @@
         "filterOut": []
       },
       "popup": {
-        "columns": ["pct", "count"],
+        "columns": ["pct", "count", "pop"],
         "format": {
           "title": "{{pct}}%",
-          "subtitle": "{{count}} working age adults"
+          "subtitle": "{{count}} out of {{pop}} working age adults"
         }
       },
       "legend":{

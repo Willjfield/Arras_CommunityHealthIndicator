@@ -13,10 +13,10 @@
         "filterOut": []
       },
       "popup": {
-        "columns": ["pct"],
+        "columns": ["pct", "count", "pop"],
         "format": {
           "title": "{{pct}}% of 3 and 4 year olds",
-          "subtitle": null
+          "subtitle": "{{count}} out of {{pop}} children"
         }
       },
       "legend":{
@@ -37,10 +37,10 @@
         "filterOut": []
       },
       "popup": {
-        "columns": ["pct", "count"],
+        "columns": ["pct", "count", "pop"],
         "format": {
           "title": "{{pct}}% of families",
-          "subtitle": "({{count}} total)"
+          "subtitle": "{{count}} out of {{pop}} families"
         }
       },
       "legend":{
@@ -300,10 +300,10 @@
         "filterOut": []
       },
       "popup": {
-        "columns": ["pct","count"],
+        "columns": ["pct","count","pop"],
         "format": {
           "title": "{{pct}}% of children",
-          "subtitle": "{{count}} children"
+          "subtitle": "{{count}} out of {{pop}} children"
         }
       },
       "legend":{

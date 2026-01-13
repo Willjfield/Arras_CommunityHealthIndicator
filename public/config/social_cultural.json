@@ -119,6 +119,54 @@
         "title-column": "pct",
         "title": "{{pct}}% of households"
       }
+    },
+    {
+      "title": "Voter Turnout",
+      "short_title": "Voter Turnout",
+      "geotype": "county",
+      "default": false,
+      "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vT7fphbAk3DI-8pEddwSfbxmeTuL9f868w-qTeyL9687ms1oYyYKj1_J7YVp-_7-LMmhxn9394BVzUL/pub?gid=0&single=true&output=csv",
+      "short_name": "voter_turnout",
+      "timeline": {
+        "yearValuePrefix": "pct_",
+        "yearValueShortFormat": "{{value}}%",
+        "filterOut": []
+      },
+      "popup": {
+        "columns": ["count","pop","pct"],
+        "format": {
+          "title": "{{pct}}% of voters",
+          "subtitle": "{{count}} out of {{pop}} voters"
+        }
+      },
+      "legend":{
+        "title-column": "pct",
+        "title": "{{pct}}% of voters"
+      }
+    },
+    {
+      "title": "Social Association Participation per 10,000 Residents ",
+      "short_title": "Social Association Participation",
+      "geotype": "county",
+      "default": false,
+      "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vT7fphbAk3DI-8pEddwSfbxmeTuL9f868w-qTeyL9687ms1oYyYKj1_J7YVp-_7-LMmhxn9394BVzUL/pub?gid=0&single=true&output=csv",
+      "short_name": "voter_turnout",
+      "timeline": {
+        "yearValuePrefix": "pct_",
+        "yearValueShortFormat": "{{value}}%",
+        "filterOut": []
+      },
+      "popup": {
+        "columns": ["count","pct"],
+        "format": {
+          "title": "{{pct}} per 10,000 residents",
+          "subtitle": "{{count}} out of 10,000 residents"
+        }
+      },
+      "legend":{
+        "title-column": "pct",
+        "title": "{{pct}} per 10,000 residents"
+      }
     }
   ]
 }
