@@ -18,39 +18,7 @@ Learn more about the recommended Project Setup and IDE Support in the [Vue Docs 
 -- Basemap and Location services now use an API key created with the Arras ESRI account. Should fall into the free tier but they should be aware of it.
 
 
-BUG when I select median household income the year selector disappears
-BUG See - disconnected youth
 
-County label
-(new) can the maps be positioned a bit higher on the page so they are centered?
-place names over place shape
-Add theme title
-load maps on 2023
-popup formatting (size)
-
-(is no data pulling legend to zero?) and timeline responsive to dataset range
-pre-K enrollment update
-
-Cohort_ is size of points
-Percent - should be color
---------------------
-multiplied by 100
-vehicles?
-rm - unemployment
----------------------
-children in pov - is it finished?
-Housing burdened - check 2023 count - seems to be percent * 100
-
-overall - transparent where there's no value, popups should be grayed out, children in pov finished?
----------------------
-popups - subtitle "count out of pop"
-
-education/hs grad rate: no pop?
-education/k ready: no pop?
 economy/Children in Concentrated Poverty: This isn't in the economy folder
 economy/vehicles available: This is in the economy folder but we're not using it?
-health/Low Birth Weight: no pop?
-soc.cult/Grandparent Responsibility: no pop?
-soc.cult/Social Associations per 10,000 people: no pop?
 
-new indicators for soc/cult and env

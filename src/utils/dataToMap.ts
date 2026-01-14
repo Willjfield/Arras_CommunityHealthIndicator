@@ -398,11 +398,11 @@ export class DataToMap {
       console.warn(year, prop, "isNaN", min);
       return Number.MAX_SAFE_INTEGER;
     }
-    if (prop === "pct") {
-      if (min < 0) {
-        return 0;
-      }
-    }
+    // if (prop === "pct") {
+    //   if (min < 0) {
+    //     return 0;
+    //   }
+    // }
     return min;
   }
   getMaxForYear(prop: string, year: number | null) {
@@ -431,11 +431,11 @@ export class DataToMap {
       console.warn(year, prop, "isNaN", max);
       return Number.MAX_SAFE_INTEGER;
     }
-    if (prop === "pct") {
-      if (max > 100) {
-        return 100;
-      }
-    }
+    // if (prop === "pct") {
+    //   if (max > 100) {
+    //     return 100;
+    //   }
+    // }
     return max;
   }
   getMin(prop: string) {
@@ -480,6 +480,7 @@ export class DataToMap {
           ? year.startsWith(yearValuePrefix)
           : YEAR_PATTERN.test(year) && !isNaN(Number(year))
     );
+    //console.log(years);
 
     let minValue = Number.MAX_SAFE_INTEGER;
     let maxValue = 0;
@@ -513,7 +514,6 @@ export class DataToMap {
         maxValue = thisYearMaxValue;
       }
     }
-
     // Apply multipliers to provide visual padding
     return {
       minValue: Math.floor(minValue * MIN_MULTIPLIER),

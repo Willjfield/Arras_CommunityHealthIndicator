@@ -42,8 +42,8 @@ const legendTitle = computed(() => {
 
   if (titleTemplate) {
     return {
-      min: titleTemplate.replace(`{{${titleColumn}}}`, minValue.toLocaleString()),
-      max: titleTemplate.replace(`{{${titleColumn}}}`, maxValue.toLocaleString())
+      min: titleTemplate.replace(`{{${titleColumn}}}`, (+minValue).toLocaleString()),
+      max: titleTemplate.replace(`{{${titleColumn}}}`, (+maxValue).toLocaleString())
     }
   }
   return {

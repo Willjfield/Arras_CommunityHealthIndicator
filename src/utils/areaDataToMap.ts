@@ -184,7 +184,7 @@ export class AreaDataToMap extends DataToMap {
     if (!map) return false;
     const data = this.data;
     const fillColor = this.getGradientExpression();
-    
+    console.log(fillColor);
     if (!fillColor) {
       console.error("Failed to generate gradient expression");
       return false;

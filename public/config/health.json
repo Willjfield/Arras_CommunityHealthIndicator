@@ -190,6 +190,90 @@
         "color": "pct"
       }
 
+    },
+    {
+      "title": "Visits to doctor for routine checkup within the past year among adults aged ≥18 years",
+      "short_title": "Doctor Visits",
+      "geotype": "tract",
+      "default": false,
+      "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vSnJkFJHxwHVr8YseJRFPdIzYbvWY9G5Rgzo2Izrg1Tg2s_tVYSV5E38dgz-Fl4CFwcCIFxPv9F_o1N/pub?gid=0&single=true&output=csv",
+      "short_name": "doctor-visits",
+      "timeline": {
+        "yearValuePrefix": "pct_",
+        "yearValueShortFormat": "{{value}}%",
+        "filterOut": []
+      },
+      "popup": {
+        "columns": ["pct", "count", "pop"],
+        "format": {
+          "title": "{{pct}}% of adults",
+          "subtitle": "{{count}} out of {{pop}} adults"
+        }
+      },
+      "legend":{
+        "title-column":"pct",
+        "title": "{{pct}}% of adults"
+      },
+      "map":{
+        "color": "pct"
+      }
+
+    },
+    {
+      "title": "Population to primary care provider ratio",      
+      "short_title": "Primary Care Provider Ratio",
+      "geotype": "county",
+      "default": false,
+      "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vSGdqqgaN6wAWaicLjxM5A1da7trVXWYXxavwHMs03056hZgognkNQ8ykvlxlB92BrBv1TXzSLlMsDH/pub?gid=1437757701&single=true&output=csv",
+      "short_name": "primary-care-provider-ratio",
+      "timeline": {
+        "yearValuePrefix": "pct_",
+        "yearValueShortFormat": "{{value}}%",
+        "filterOut": []
+      },
+      "popup": {
+        "columns": ["pct", "count", "pop"],
+        "format": {
+          "title": "{{pct}}% of residents",
+          "subtitle": "{{count}} out of {{pop}} residents"
+        }
+      },
+      "legend":{
+        "title-column":"pct",
+        "title": "{{pct}}% of residents"
+      },
+      "map":{
+        "color": "pct"
+      }
+
+    },
+    {
+      "title": "Population to mental health care provider ratio",      
+      "short_title": "Mental Health Care Provider Ratio",
+      "geotype": "county",
+      "default": false,
+      "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vTVCNz20UXGQSJynxm2JeMA8JBmNGd9plBDL-YYR-N8XCKXPwOvpwkYYE-aZG1m1hxmKdr98ZNYKRtP/pub?gid=737318173&single=true&output=csv",
+      "short_name": "mental-health-care-provider-ratio",
+      "timeline": {
+        "yearValuePrefix": "pct_",
+        "yearValueShortFormat": "{{value}}%",
+        "filterOut": []
+      },
+      "popup": {
+        "columns": ["pct", "count", "pop"],
+        "format": {
+          "title": "{{pct}}% of residents",
+          "subtitle": "{{count}} out of {{pop}} residents"
+        }
+      },
+      "legend":{
+        "title-column":"pct",
+        "title": "{{pct}}% of residents"
+      },
+      "map":{
+        "color": "pct"
+      }
+
     }
   ]
 }

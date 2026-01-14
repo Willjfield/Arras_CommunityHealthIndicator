@@ -79,7 +79,18 @@ const availableYears = computed(() => {
   if (!raw_data) return []
 
   const headerShortNames = raw_data.headerShortNames
-  return Array.from(new Set(headerShortNames.map((year: string) => Number(year.replace(indicator?.timeline?.yearValuePrefix || '', '')))))
+  return Array.from(
+    new Set(
+      headerShortNames
+      .map(
+        (year: string) => Number(
+          year.replace(indicator?.timeline?.yearValuePrefix || '', '')
+        )
+      )
+      .filter((year: number) => year !== null && year !== undefined && !isNaN(year))
+      .sort((a: number, b: number) => a - b)
+    )
+  )
 })
 
 const timelineValueFormat = computed(() => {
