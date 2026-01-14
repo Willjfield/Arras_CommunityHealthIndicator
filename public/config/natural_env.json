@@ -1,0 +1,53 @@
+{
+  "indicators": [
+    {
+      "title": "Acres of Protected Land",
+      "short_title": "Protected Land",
+      "geotype": "protected",
+      "default": "left",
+      "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vTnq8Ae0o31UFOqO9ubmedo1zmYJAsUh4dFhx4PaLRQjX9ks4-Tq8muSC2Wv5yBLxG5CBplDASxEJdm/pub?gid=162120824&single=true&output=csv",
+      "short_name": "protected_land",
+      "timeline": {
+        "yearValuePrefix": "count_",
+        "yearValueShortFormat": "{{value}}%",
+        "filterOut": []
+      },
+      "popup": {
+        "columns": ["count"],
+        "format": {
+          "title": "{{count}} acres of protected land",
+          "subtitle": null
+        }
+      },
+      "legend":{
+        "title-column":"count",
+        "title": "{{count}} acres of protected land"
+      }
+    },
+    {
+      "title": "Percent of Ozone Action Days per Year",      
+      "short_title": "Outdoor Pollution",
+      "geotype": "county",
+      "default": "right",
+      "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vSGdqqgaN6wAWaicLjxM5A1da7trVXWYXxavwHMs03056hZgognkNQ8ykvlxlB92BrBv1TXzSLlMsDH/pub?gid=1437757701&single=true&output=csv",
+      "short_name": "pollution",
+      "timeline": {
+        "yearValuePrefix": "pct_",
+        "yearValueShortFormat": "{{value}}%",
+        "filterOut": []
+      },
+      "popup": {
+        "columns": ["pct"],
+        "format": {
+          "title": "{{pct}}% of days",
+          "subtitle": null
+        }
+      },
+      "legend":{
+        "title-column":"pct",
+        "title": "{{pct}}% of residents"
+      }
+
+    }
+  ]
+}

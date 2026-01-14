@@ -192,6 +192,12 @@ export class AreaDataToMap extends DataToMap {
     
     map.setPaintProperty(data.layers.main, "fill-color", fillColor);
     map.setLayoutProperty(data.layers.main, "visibility", "visible");
+    if (data.layers.supplementary) {
+      data.layers.supplementary.forEach((layer: string) => {
+        console.log(layer);
+        map.setLayoutProperty(layer, "visibility", "visible");
+      });
+    }
     return true;
   }
 

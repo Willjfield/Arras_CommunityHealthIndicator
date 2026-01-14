@@ -28,6 +28,7 @@ export function createDataToMapWorker(
     }
     
     switch (indicator?.geolevel) {
+        case 'protected':
         case 'area':
             return new AreaDataToMap(indicator, map, side, emitter, arrasBranding, sitePath);
         case 'point':

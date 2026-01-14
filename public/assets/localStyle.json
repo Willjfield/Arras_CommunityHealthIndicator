@@ -22,6 +22,10 @@
       "type": "geojson",
       "data": "ChestLanTractsHarmonized.geojson"
     },
+    "protected-source":{
+      "type": "geojson",
+      "data": "/Acres_of_protected_lands_clipped.geojson"
+    },
     "counties-source": {"type": "geojson", "data": "SC_counties.geojson"},
     "points-source": {
       "type": "geojson",
@@ -4759,6 +4763,17 @@
         "text-halo-blur": 1,
         "text-halo-color": "#F7F7F7",
         "text-halo-width": 1
+      }
+    },
+    {
+      "id": "protected-outline",
+      "type": "line",
+      "source": "protected-source",
+      "layout": {
+        "visibility": "none"
+      },
+      "paint": {
+        "line-color": "#f00"
       }
     },
     {

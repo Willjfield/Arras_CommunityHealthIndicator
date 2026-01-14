@@ -70,6 +70,8 @@
       "title": "Natural Environment",
       "query_str": "nat_env",
       "icon": "assets/theme_icons/nature_green.png",
+      "enabled":true,
+      "config": "/config/natural_env.json",
       "style": {
         "colors": {
           "icon": "green",
@@ -140,6 +142,40 @@
         "main": "point-data",
         "circle": false
       }
+    },
+    "protected":{
+      "geolevel": "area",
+      "source_name": "counties-source",
+      "layers": {
+        "main": "counties-data",
+        "supplementary":["protected-outline"]
+      }
+    }
+  },
+  "data_sources":{
+    "census": {
+      "text": "ACS & Census",
+      "url": "https://www.census.gov"
+    },
+    "hsra": {
+      "text": "HRSA Data Warehouse",
+      "url": "https://data.hrsa.gov/topics/health-workforce/nchwa/ahrf"
+    },
+    "cdc": {
+      "text": "CDC",
+      "url": "https://www.cdc.gov"
+    },
+    "sc_public_health": {
+      "text": "SC Public Health",
+      "url": "https://apps.dhec.sc.gov/Health/SCAN_BDP/tables/death2table.aspx"
+    },
+    "sc_depofed":{
+      "text": "SC Department of Education",
+      "url": "https://ed.sc.gov/data/report-cards/state-report-cards/"
+    },
+    "kids_count": {
+      "text": "Kids Count",
+      "url": "https://datacenter.aecf.org/data/tables/2899-babies-born-with-low-birthweight-by-race"
     }
   }
 }
