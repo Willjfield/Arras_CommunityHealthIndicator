@@ -218,7 +218,7 @@
     {
       "title": "Population to primary care provider ratio",
       "data_source":"hsra",
-      "short_title": "Primary Care Provider Ratio",
+      "short_title": "Primary Care Providers",
       "geotype": "county",
       "default": false,
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vSGdqqgaN6wAWaicLjxM5A1da7trVXWYXxavwHMs03056hZgognkNQ8ykvlxlB92BrBv1TXzSLlMsDH/pub?gid=1437757701&single=true&output=csv",
@@ -244,7 +244,7 @@
     },
     {
       "title": "Population to mental health care provider ratio",
-      "short_title": "Mental Health Care Provider Ratio",
+      "short_title": "Mental Health Providers",
       "geotype": "county",
       "default": false,
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vTVCNz20UXGQSJynxm2JeMA8JBmNGd9plBDL-YYR-N8XCKXPwOvpwkYYE-aZG1m1hxmKdr98ZNYKRtP/pub?gid=737318173&single=true&output=csv",
