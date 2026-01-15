@@ -11,6 +11,10 @@ export interface IndicatorConfig {
         text: string;
         url: string;
     };
+    extra_layers?: {
+        html?: string | null;
+    };
+
     timeline: any;
     popup: any;
     title: string;

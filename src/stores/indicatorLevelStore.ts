@@ -102,7 +102,11 @@ const indicatorLevelStore = (storeName: 'left' | 'right') => {
         ) || null
         
         if (indicator) {
+            
             currentIndicator.value = indicator
+            if(!indicator.google_sheets_data){
+                return false;
+            }
 
             // Clean up existing worker
             if (worker) {
