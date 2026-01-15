@@ -13,14 +13,13 @@
         "filterOut": []
       },
       "popup": {
-        "columns": ["pct", "count", "pop"],
         "format": {
           "title": "{{pct}}% of adults",
           "subtitle": "{{count}} out of {{pop}} adults"
         }
       },
-      "legend":{
-        "title-column":"pct",
+      "legend": {
+        "title-column": "pct",
         "title": "{{pct}}% of adults"
       }
     },
@@ -28,7 +27,7 @@
       "title": "Children in Concentrated Poverty",
       "short_title": "Children in Poverty",
       "geotype": "tract",
-      "default": "right",
+      "default": false,
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vR9zeolHtawv9gwC_vD12fwM_GuujMxXi8KVJoF3PqSONsdw3LvX2sZRZOnji09mBVopP1I0tDXOMN6/pub?gid=646151606&single=true&output=csv",
       "short_name": "concentrated_poverty",
       "timeline": {
@@ -37,14 +36,13 @@
         "filterOut": []
       },
       "popup": {
-        "columns": ["pct"],
         "format": {
           "title": "{{pct}}% of children",
           "subtitle": null
         }
       },
-      "legend":{
-        "title-column":"pct",
+      "legend": {
+        "title-column": "pct",
         "title": "{{pct}}% of children"
       }
     },
@@ -61,13 +59,12 @@
         "filterOut": []
       },
       "popup": {
-        "columns": ["count"],
         "format": {
           "title": "${{count}}"
         }
       },
-      "legend":{
-        "title-column":"count",
+      "legend": {
+        "title-column": "count",
         "title": "${{count}} median household income"
       }
     },
@@ -84,14 +81,13 @@
         "filterOut": []
       },
       "popup": {
-        "columns": ["pct", "count", "pop"],
         "format": {
           "title": "{{pct}}% of households",
           "subtitle": "{{count}} out of {{pop}} households"
         }
       },
-      "legend":{
-        "title-column":"pct",
+      "legend": {
+        "title-column": "pct",
         "title": "{{pct}}% of households"
       }
     },
@@ -108,17 +104,16 @@
         "filterOut": []
       },
       "popup": {
-        "columns": ["pct", "count", "pop"],
         "format": {
           "title": "{{pct}}% of adults",
           "subtitle": "{{count}} out of {{pop}} adults"
         }
       },
-      "legend":{
-        "title-column":"pct",
+      "legend": {
+        "title-column": "pct",
         "title": "{{pct}}% of adults"
       },
-      "map":{
+      "map": {
         "color": "pct"
       }
     },
@@ -135,17 +130,16 @@
         "filterOut": []
       },
       "popup": {
-        "columns": ["pct", "count", "pop"],
         "format": {
           "title": "{{pct}}% of workers",
           "subtitle": "{{count}} out of {{pop}} workers"
         }
       },
-      "legend":{
-        "title-column":"pct",
+      "legend": {
+        "title-column": "pct",
         "title": "{{pct}}% of workers"
       },
-      "map":{
+      "map": {
         "color": "pct"
       }
     },
@@ -153,7 +147,7 @@
       "title": "Percent of people living in poverty",
       "short_title": "Poverty Rate",
       "geotype": "tract",
-      "default": false,
+      "default": "right",
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRnru_GVIY34kQpl2sYDTCXMFWT_GGtaq6qU9YGKbTIwXdiqI63GdfhVUmzSaDaHUz9pFreEcWXRHJ3/pub?gid=1994802547&single=true&output=csv",
       "short_name": "people_in_pov",
       "timeline": {
@@ -162,17 +156,16 @@
         "filterOut": []
       },
       "popup": {
-        "columns": ["pct", "count", "pop"],
         "format": {
           "title": "{{pct}}% of residents",
           "subtitle": "{{count}} out of {{pop}} residents"
         }
       },
-      "legend":{
-        "title-column":"pct",
+      "legend": {
+        "title-column": "pct",
         "title": "{{pct}}% of residents"
       },
-      "map":{
+      "map": {
         "color": "pct"
       }
     },
@@ -189,17 +182,16 @@
         "filterOut": []
       },
       "popup": {
-        "columns": ["pct", "count", "pop"],
         "format": {
           "title": "{{pct}}% of workforce",
           "subtitle": "{{count}} out of {{pop}} workers"
         }
       },
-      "legend":{
-        "title-column":"pct",
+      "legend": {
+        "title-column": "pct",
         "title": "{{pct}}% of workforce"
       },
-      "map":{
+      "map": {
         "color": "pct"
       }
     },
@@ -216,17 +208,16 @@
         "filterOut": []
       },
       "popup": {
-        "columns": ["pct", "count", "pop"],
         "format": {
           "title": "{{pct}}% of residents",
           "subtitle": "{{count}} out of {{pop}} residents"
         }
       },
-      "legend":{
-        "title-column":"pct",
+      "legend": {
+        "title-column": "pct",
         "title": "{{pct}}% of residents"
       },
-      "map":{
+      "map": {
         "color": "pct"
       }
     },
@@ -243,17 +234,42 @@
         "filterOut": []
       },
       "popup": {
-        "columns": ["pct", "count", "pop"],
         "format": {
           "title": "{{pct}}% of housing units",
           "subtitle": "{{count}} out of {{pop}} housing units"
         }
       },
-      "legend":{
-        "title-column":"pct",
+      "legend": {
+        "title-column": "pct",
         "title": "{{pct}}% of housing units"
       },
-      "map":{
+      "map": {
+        "color": "pct"
+      }
+    },
+    {
+      "title": "Households with no vehicle available",
+      "short_title": "Vehicles Available",
+      "geotype": "tract",
+      "default": false,
+      "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vTGKDlQUqjd1dhm5DsfWiGlktvYsWXFQqFInKPnVssJGP_ohAE0aPKXLxleOUSfWqa-Jq9X5EGYWedB/pub?gid=66299098&single=true&output=csv",
+      "short_name": "vehicles_available",
+      "timeline": {
+        "yearValuePrefix": "pct_",
+        "yearValueShortFormat": "{{value}}%",
+        "filterOut": []
+      },
+      "popup": {
+        "format": {
+          "title": "{{pct}}% of households",
+          "subtitle": "{{count}} out of {{pop}} households"
+        }
+      },
+      "legend": {
+        "title-column": "pct",
+        "title": "{{pct}}% of households"
+      },
+      "map": {
         "color": "pct"
       }
     }

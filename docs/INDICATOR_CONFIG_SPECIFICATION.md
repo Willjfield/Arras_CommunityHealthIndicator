@@ -130,14 +130,12 @@ The following properties MUST be present in every indicator object:
 - **Type**: Object
 - **Description**: Configuration for popup display when clicking/hovering features
 - **Required Properties**:
-  - `columns` (array) - REQUIRED. Array of column types to display: `["pct"]`, `["count"]`, `["pop"]`, or combinations
   - `format` (object) - REQUIRED. Format strings for popup display
     - `title` (string) - REQUIRED. Title format string using placeholders like `{{pct}}`, `{{count}}`, `{{pop}}`
     - `subtitle` (string | null) - OPTIONAL. Subtitle format string, or `null` if no subtitle
 - **Example**:
   ```json
   {
-    "columns": ["pct", "count"],
     "format": {
       "title": "{{pct}}% of adults",
       "subtitle": "{{count}} adults"
@@ -254,7 +252,6 @@ While property order does not affect functionality, the following order is RECOM
     "filterOut": []
   },
   "popup": {
-    "columns": ["pct", "count"],
     "format": {
       "title": "{{pct}}% of adults",
       "subtitle": "{{count}} adults"
@@ -291,7 +288,6 @@ While property order does not affect functionality, the following order is RECOM
     "filterOut": []
   },
   "popup": {
-    "columns": ["pct", "count", "pop"],
     "format": {
       "title": "{{pct}}% of students",
       "subtitle": "{{count}} out of {{pop}} students"
@@ -321,7 +317,6 @@ When creating a new indicator configuration, verify:
 - [ ] `short_name` is unique and URL-safe
 - [ ] `layers.main` is a valid layer identifier
 - [ ] `timeline.filterOut` is an array
-- [ ] `popup.columns` contains valid column types
 - [ ] `legend` has either `title` or `title-column`
 - [ ] All format strings use valid placeholders
 - [ ] `map.size` is only present for point-based indicators
