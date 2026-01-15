@@ -1,7 +1,7 @@
 {
   "indicators": [
     {
-      "title": "Current Smokers Among Adults",
+      "title": "Current cigarette smoking among adults",
       "data_source":"cdc",
       "short_title": "Smokers",
       "geotype": "tract",
@@ -28,9 +28,9 @@
       }
     },
     {
-      "title": "Working Age Adults with No Health Insurance",
+      "title": "Percentage of working-age adults (ages 19 to 64) who have no health insurance coverage",
       "data_source":"census",
-      "short_title": "Health Insurance Coverage",
+      "short_title": "Health Insurance",
       "geotype": "tract",
       "default": "right",
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vTVxPi4GgcloW3FKCIEwM--UA9HhKQjNOGxEoTQC1quZEmlEF-5V9GXIvepoImUQ2c8QXfkmyB79MjS/pub?gid=534592488&single=true&output=csv",
@@ -55,7 +55,7 @@
       }
     },
     {
-      "title": "Food Insecurity",
+      "title": "Food insecurity crude prevalence (%)",
       "data_source":"cdc",
       "short_title": "Food Insecurity",
       "geotype": "tract",
@@ -82,7 +82,7 @@
       }
     },
     {
-      "title": "Heart Disease Mortality Rate",
+      "title": "Heart disease mortality rate",
       "data_source":"sc_public_health",
       "short_title": "Heart Disease Mortality",
       "geotype": "tract",
@@ -109,7 +109,7 @@
       }
     },
     {
-      "title": "Percent of Births with Low Birth Weight",
+      "title": "Percent of babies born with low birth rate",
       "data_source":"kids_count",
       "short_title": "Low Birth Weight",
       "geotype": "county",
@@ -135,7 +135,7 @@
       }
     },
     {
-      "title": "Malignant Neoplasm Morality",
+      "title": "Cancer (malignant neoplasms) mortality rate",
       "data_source":"sc_public_health",
       "short_title": "Cancer Mortality",
       "geotype": "county",
@@ -162,7 +162,7 @@
       }
     },
     {
-      "title": "Percent of Adults with Mental Health Distress",
+      "title": "Prevalence of frequent mental distress among adults",
       "data_source":"cdc",
       "short_title": "Mental Health Distress",
       "geotype": "tract",
@@ -191,7 +191,7 @@
     {
       "title": "Visits to doctor for routine checkup within the past year among adults aged ≥18 years",
       "data_source":"cdc",
-      "short_title": "Doctor Visits",
+      "short_title": "Routine Checkups",
       "geotype": "tract",
       "default": false,
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vSnJkFJHxwHVr8YseJRFPdIzYbvWY9G5Rgzo2Izrg1Tg2s_tVYSV5E38dgz-Fl4CFwcCIFxPv9F_o1N/pub?gid=0&single=true&output=csv",
