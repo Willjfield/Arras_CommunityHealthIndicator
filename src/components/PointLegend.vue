@@ -30,7 +30,7 @@
               </td>
               <td style="text-align: center;">
                 <span class="mid-label">
-                  {{ legendTitle.mid ?? '' }}
+                  {{ legendTitle.mid.toLocaleString() ?? '' }}
                 </span>
               </td>
               <td style="text-align: right;">
@@ -60,17 +60,20 @@
             </tr>
 
             <tr class="legend-labels">
-              <td style="text-align: left;"><span class="min-label">{{ secondaryTitle?.min }}</span>
+              <td style="text-align: left;"><span class="min-label">{{ secondaryTitle?.min.toLocaleString() }}</span>
               </td>
-              <td style="text-align: center;"><span class="mid-label">{{ secondaryTitle?.mid }}</span></td>
-              <td style="text-align: right;"><span class="max-label">{{ secondaryTitle?.max }}</span>
+              <td style="text-align: center;"><span class="mid-label">{{ secondaryTitle?.mid.toLocaleString() }}</span></td>
+              <td style="text-align: right;"><span class="max-label">{{ secondaryTitle?.max.toLocaleString() }}</span>
               </td>
             </tr>
           </tbody>
 
         </table>
+        <div class="data-source">Data Source: <a :href="source?.url" target="_blank">{{ source?.text }} <v-icon icon="mdi-open-in-new" size="12" /></a></div>
       </div>
+      
     </div>
+   
   </div>
 </template>
 
@@ -94,7 +97,9 @@ const indicatorLevelStore = useIndicatorLevelStore(props.side as 'left' | 'right
 // const titleColumn = computed(() => {
 //   return props.selectedIndicator?.legend?.['title-column'] as 'count' | 'pop' | 'pct' | undefined;
 // })
+const mainConfig = inject('mainConfig') as any;
 
+const source = computed(() => mainConfig?.data_sources?.[props.selectedIndicator?.data_source as string] as any);
 const secondaryTitleColumn = computed(() => {
   return props.selectedIndicator?.legend?.['secondary-title-column'] as 'count' | 'pop' | 'pct' | undefined;
 })
@@ -103,7 +108,7 @@ const secondaryTitle = computed(() => {
   const titleTemplate = props.selectedIndicator?.legend?.['secondary-title'] as string | undefined;
   const minValue = indicatorLevelStore.getMinValue(secondaryTitleColumn.value as 'count' | 'pop' | 'pct') ?? 0;
   const maxValue = indicatorLevelStore.getMaxValue(secondaryTitleColumn.value as 'count' | 'pop' | 'pct') ?? 0;
-  const midValue = ((minValue + maxValue) / 2).toFixed(0);
+  const midValue = ((minValue + maxValue) / 2).toFixed(0).toLocaleString();
 
   if (titleTemplate) {
     return {
@@ -125,7 +130,8 @@ const legendTitle = computed(() => {
   const titleColumn = props.selectedIndicator?.legend?.['title-column'] as 'count' | 'pop' | 'pct' | undefined;
   const minValue = indicatorLevelStore.getMinValue(titleColumn as 'count' | 'pop' | 'pct') ?? 0;
   const maxValue = indicatorLevelStore.getMaxValue(titleColumn as 'count' | 'pop' | 'pct') ?? 0;
-  const midValue = ((minValue + maxValue) / 2).toFixed(0);
+  const midValue = +(((minValue + maxValue) / 2).toFixed(0)).toLocaleString();
+
 
   if (titleTemplate) {
     return {
@@ -292,5 +298,13 @@ const minColor = computed(() => {
   margin: 0;
   width: 33%;
   text-align: center;
+}
+
+.data-source {
+  font-size: 12px;
+  color: #6b7280;
+  font-weight: bold;
+  margin-top: 4px;
+  font-style: italic;
 }
 </style>

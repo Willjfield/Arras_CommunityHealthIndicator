@@ -2,6 +2,7 @@
   "indicators": [
     {
       "title": "Current Smokers Among Adults",
+      "data_source":"cdc",
       "short_title": "Smokers",
       "geotype": "tract",
       "default": "left",
@@ -13,22 +14,22 @@
         "filterOut": []
       },
       "popup": {
-        "columns": ["pct", "count", "pop"],
         "format": {
           "title": "{{pct}}% of adults",
           "subtitle": "{{count}} out of {{pop}} adults"
         }
       },
-      "legend":{
-        "title-column":"pct",
+      "legend": {
+        "title-column": "pct",
         "title": "{{pct}}% of adults"
       },
-      "map":{
+      "map": {
         "color": "pct"
       }
     },
     {
       "title": "Working Age Adults with No Health Insurance",
+      "data_source":"census",
       "short_title": "Health Insurance Coverage",
       "geotype": "tract",
       "default": "right",
@@ -40,22 +41,22 @@
         "filterOut": []
       },
       "popup": {
-        "columns": ["pct", "count", "pop"],
         "format": {
           "title": "{{pct}}%",
           "subtitle": "{{count}} out of {{pop}} working age adults"
         }
       },
-      "legend":{
-        "title-column":"pct",
+      "legend": {
+        "title-column": "pct",
         "title": "{{pct}}% of working age adults"
       },
-      "map":{
+      "map": {
         "color": "pct"
       }
     },
     {
       "title": "Food Insecurity",
+      "data_source":"cdc",
       "short_title": "Food Insecurity",
       "geotype": "tract",
       "default": false,
@@ -67,23 +68,22 @@
         "filterOut": []
       },
       "popup": {
-        "columns": ["pct", "count", "pop"],
         "format": {
           "title": "{{pct}}% of residents",
           "subtitle": "{{count}} out of {{pop}} residents"
         }
       },
-      "legend":{
-        "title-column":"pct",
+      "legend": {
+        "title-column": "pct",
         "title": "{{pct}}% of residents"
       },
-      "map":{
+      "map": {
         "color": "pct"
       }
-
     },
     {
       "title": "Heart Disease Mortality Rate",
+      "data_source":"sc_public_health",
       "short_title": "Heart Disease Mortality",
       "geotype": "tract",
       "default": false,
@@ -95,23 +95,22 @@
         "filterOut": []
       },
       "popup": {
-        "columns": ["pop", "count"],
         "format": {
           "title": "{{pop}} per 100k",
           "subtitle": "{{count}} residents total"
         }
       },
-      "legend":{
-        "title-column":"pop",
+      "legend": {
+        "title-column": "pop",
         "title": "{{pop}} per 100,000 residents"
       },
-      "map":{
+      "map": {
         "color": "pop"
       }
-
     },
     {
       "title": "Percent of Births with Low Birth Weight",
+      "data_source":"kids_count",
       "short_title": "Low Birth Weight",
       "geotype": "county",
       "default": false,
@@ -123,21 +122,21 @@
         "filterOut": []
       },
       "popup": {
-        "columns": ["pct"],
         "format": {
           "title": "{{pct}}% of births"
         }
       },
-      "legend":{
-        "title-column":"pct",
+      "legend": {
+        "title-column": "pct",
         "title": "{{pct}}% of births"
       },
-      "map":{
+      "map": {
         "color": "pct"
       }
     },
     {
       "title": "Malignant Neoplasm Morality",
+      "data_source":"sc_public_health",
       "short_title": "Cancer Mortality",
       "geotype": "county",
       "default": false,
@@ -149,22 +148,22 @@
         "filterOut": []
       },
       "popup": {
-        "columns": ["pop", "count"],
         "format": {
           "title": "{{pop}} per 100k",
           "subtitle": "{{count}} residents total"
         }
       },
-      "legend":{
-        "title-column":"pop",
+      "legend": {
+        "title-column": "pop",
         "title": "{{pop}} per 100,000 residents"
       },
-      "map":{
+      "map": {
         "color": "pop"
       }
     },
     {
       "title": "Percent of Adults with Mental Health Distress",
+      "data_source":"cdc",
       "short_title": "Mental Health Distress",
       "geotype": "tract",
       "default": false,
@@ -176,23 +175,22 @@
         "filterOut": []
       },
       "popup": {
-        "columns": ["pct", "count", "pop"],
         "format": {
           "title": "{{pct}}% of adults",
           "subtitle": "{{count}} out of {{pop}} adults"
         }
       },
-      "legend":{
-        "title-column":"pct",
+      "legend": {
+        "title-column": "pct",
         "title": "{{pct}}% of adults"
       },
-      "map":{
+      "map": {
         "color": "pct"
       }
-
     },
     {
       "title": "Visits to doctor for routine checkup within the past year among adults aged ≥18 years",
+      "data_source":"cdc",
       "short_title": "Doctor Visits",
       "geotype": "tract",
       "default": false,
@@ -204,23 +202,22 @@
         "filterOut": []
       },
       "popup": {
-        "columns": ["pct", "count", "pop"],
         "format": {
           "title": "{{pct}}% of adults",
           "subtitle": "{{count}} out of {{pop}} adults"
         }
       },
-      "legend":{
-        "title-column":"pct",
+      "legend": {
+        "title-column": "pct",
         "title": "{{pct}}% of adults"
       },
-      "map":{
+      "map": {
         "color": "pct"
       }
-
     },
     {
-      "title": "Population to primary care provider ratio",      
+      "title": "Population to primary care provider ratio",
+      "data_source":"hsra",
       "short_title": "Primary Care Provider Ratio",
       "geotype": "county",
       "default": false,
@@ -232,48 +229,45 @@
         "filterOut": []
       },
       "popup": {
-        "columns": ["pct", "count", "pop"],
         "format": {
           "title": "{{pct}}% of residents",
           "subtitle": "{{count}} out of {{pop}} residents"
         }
       },
-      "legend":{
-        "title-column":"pct",
+      "legend": {
+        "title-column": "pct",
         "title": "{{pct}}% of residents"
       },
-      "map":{
+      "map": {
         "color": "pct"
       }
-
     },
     {
-      "title": "Population to mental health care provider ratio",      
+      "title": "Population to mental health care provider ratio",
       "short_title": "Mental Health Care Provider Ratio",
       "geotype": "county",
       "default": false,
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vTVCNz20UXGQSJynxm2JeMA8JBmNGd9plBDL-YYR-N8XCKXPwOvpwkYYE-aZG1m1hxmKdr98ZNYKRtP/pub?gid=737318173&single=true&output=csv",
       "short_name": "mental-health-care-provider-ratio",
+      "data_source":"hsra",
       "timeline": {
         "yearValuePrefix": "pct_",
         "yearValueShortFormat": "{{value}}%",
         "filterOut": []
       },
       "popup": {
-        "columns": ["pct", "count", "pop"],
         "format": {
           "title": "{{pct}}% of residents",
           "subtitle": "{{count}} out of {{pop}} residents"
         }
       },
-      "legend":{
-        "title-column":"pct",
+      "legend": {
+        "title-column": "pct",
         "title": "{{pct}}% of residents"
       },
-      "map":{
+      "map": {
         "color": "pct"
       }
-
     }
   ]
 }

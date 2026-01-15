@@ -14,7 +14,10 @@
           <span class="min-label">{{ legendTitle.min }}</span>
           <span class="max-label">{{ legendTitle.max }}</span>
         </div>
+        <div class="data-source">Data Source: <a :href="source?.url" target="_blank">{{ source?.text }} <v-icon icon="mdi-open-in-new" size="12" /></a></div>
+
       </div>
+
     </div>
   </div>
 </template>
@@ -33,7 +36,8 @@ interface Props {
 const props = defineProps<Props>()
 
 const indicatorLevelStore = useIndicatorLevelStore(props.side)
-
+const mainConfig = inject('mainConfig') as any;
+const source = computed(() => mainConfig?.data_sources?.[props.selectedIndicator?.data_source as string] as any);
 const legendTitle = computed(() => {
   const titleTemplate = props.selectedIndicator?.legend?.title as string | undefined;
   const titleColumn = props.selectedIndicator?.legend?.['title-column'] as 'count' | 'pop' | 'pct' | undefined;
@@ -142,5 +146,13 @@ const maxColor = computed(() => {
   border: 1px solid #e5e7eb;
   border-radius: 5px;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.data-source {
+  font-size: 12px;
+  color: #6b7280;
+  font-weight: bold;
+  margin-top: 4px;
+  font-style: italic;
 }
 </style>

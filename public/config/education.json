@@ -2,9 +2,10 @@
   "indicators": [
     {
       "title": "Percent of 3 and 4 Year Olds enrolled in Pre-K (both public and private schools)",
+     "data_source":"census",
       "short_title": "Pre-K Enrollment",
       "geotype": "tract",
-      "default": "left",
+      "default": "right",
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vSygEfL4IXNKghq9ZCxT2_eIivEdHBXiddv-_Pb2U44ltaoSd8Qjgeu3m18JAJVK-VNHeDNXSMr25V1/pub?gid=1483288023&single=true&output=csv",
       "short_name": "prek",
       "timeline": {
@@ -13,23 +14,23 @@
         "filterOut": []
       },
       "popup": {
-        "columns": ["pct", "count", "pop"],
         "format": {
           "title": "{{pct}}% of 3 and 4 year olds",
           "subtitle": "{{count}} out of {{pop}} children"
         }
       },
-      "legend":{
+      "legend": {
         "title-column": "pct",
         "title": "{{pct}}% of 3 and 4 year olds"
       }
     },
     {
       "title": "Out of all families with children, the percent whose income in the past 12 months is below the federal poverty level",
+     "data_source":"census",
       "short_title": "Child Poverty",
-      "default": false,
+      "default": "left",
       "geotype": "tract",
-      "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRT9sRzNbN3RA9jfOSwV8VWN8-QCyd60ejnfQhNSS8MQkGn8u-BSXbIxkzwAFtE6CzVfv5Jr8nzMs7T/pub?gid=622872564&single=true&output=csv",      
+      "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRT9sRzNbN3RA9jfOSwV8VWN8-QCyd60ejnfQhNSS8MQkGn8u-BSXbIxkzwAFtE6CzVfv5Jr8nzMs7T/pub?gid=622872564&single=true&output=csv",
       "short_name": "poverty",
       "timeline": {
         "yearValuePrefix": "pct_",
@@ -37,23 +38,22 @@
         "filterOut": []
       },
       "popup": {
-        "columns": ["pct", "count", "pop"],
         "format": {
           "title": "{{pct}}% of families",
           "subtitle": "{{count}} out of {{pop}} families"
         }
       },
-      "legend":{
+      "legend": {
         "title-column": "pct",
         "title": "{{pct}}% of families"
       }
-
     },
     {
       "title": "Childcare Center Capacity",
+     "data_source":"abc_qual",
       "short_title": "Childcare Capacity",
       "geotype": "facility",
-      "default": "right",
+      "default": false,
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vSMz-sXo5YL08yptNOf64atoW_IT7F1ATHxMAQSWLHkmBZ7_60Fdf7wTGMYrDS-p_YlHsFwy9PZMwKQ/pub?gid=1305246607&single=true&output=csv",
       "short_name": "childcare",
       "timeline": {
@@ -62,23 +62,23 @@
         "filterOut": ["statewide"]
       },
       "popup": {
-        "columns": ["count"],
         "format": {
           "title": "{{count}} children",
           "subtitle": null
         }
       },
-      "legend":{
-        "title-column":"count",
+      "legend": {
+        "title-column": "count",
         "title": "{{count}} children"
       },
-      "map":{
-        "size":"count",
+      "map": {
+        "size": "count",
         "color": null
       }
     },
     {
       "title": "3rd Grade Math Readiness (% of students meeting or exceeding expectations)",
+     "data_source":"sc_depofed",
       "short_title": "3rd Grade Math Ready",
       "geotype": "school",
       "default": false,
@@ -90,25 +90,25 @@
         "filterOut": []
       },
       "popup": {
-        "columns": ["pct","count","pop"],
         "format": {
           "title": "{{pct}}% of students",
           "subtitle": "{{count}} out of {{pop}} students"
         }
       },
-      "legend":{
-        "title-column":"pop",
+      "legend": {
+        "title-column": "pop",
         "title": "{{pop}} students tested",
-        "secondary-title-column":"pct",
+        "secondary-title-column": "pct",
         "secondary-title": "{{pct}}% of students ready"
       },
-      "map":{
-        "size":"pop",
+      "map": {
+        "size": "pop",
         "color": "pct"
       }
     },
     {
       "title": "3rd Grade ELA Readiness (% of students meeting or exceeding expectations)",
+     "data_source":"sc_depofed",
       "short_title": "3rd Grade ELA Ready",
       "geotype": "school",
       "default": false,
@@ -120,25 +120,25 @@
         "filterOut": []
       },
       "popup": {
-        "columns": ["pct","count","pop"],
         "format": {
           "title": "{{pct}}% of students",
           "subtitle": "{{count}} out of {{pop}} students"
         }
       },
-      "map":{
-        "size":"pop",
+      "map": {
+        "size": "pop",
         "color": "pct"
       },
-      "legend":{
-        "title-column":"pop",
+      "legend": {
+        "title-column": "pop",
         "title": "{{pop}} students tested",
-        "secondary-title-column":"pct",
+        "secondary-title-column": "pct",
         "secondary-title": "{{pct}}% of students ready"
       }
     },
     {
       "title": "8th Grade Math Readiness (% of students meeting or exceeding expectations)",
+     "data_source":"sc_depofed",
       "short_title": "8th Grade Math Ready",
       "geotype": "school",
       "default": false,
@@ -150,25 +150,25 @@
         "filterOut": []
       },
       "popup": {
-        "columns": ["pct","count","pop"],
         "format": {
           "title": "{{pct}}% of students",
           "subtitle": "{{count}} out of {{pop}} students"
         }
       },
-      "map":{
-        "size":"pop",
+      "map": {
+        "size": "pop",
         "color": "pct"
       },
-      "legend":{
-        "title-column":"pop",
+      "legend": {
+        "title-column": "pop",
         "title": "{{pop}} students tested",
-        "secondary-title-column":"pct",
+        "secondary-title-column": "pct",
         "secondary-title": "{{pct}}% of students ready"
       }
     },
     {
       "title": "8th Grade ELA Readiness (% of students meeting or exceeding expectations)",
+     "data_source":"sc_depofed",
       "short_title": "8th Grade ELA Ready",
       "geotype": "school",
       "default": false,
@@ -180,30 +180,29 @@
         "filterOut": []
       },
       "popup": {
-        "columns": ["pct","count","pop"],
         "format": {
           "title": "{{pct}}% of students",
           "subtitle": "{{count}} out of {{pop}} students"
         }
       },
-      "legend":{
-        "title-column":"pop",
+      "legend": {
+        "title-column": "pop",
         "title": "{{pop}} students tested",
-        "secondary-title-column":"pct",
+        "secondary-title-column": "pct",
         "secondary-title": "{{pct}}% of students ready"
       },
-      "map":{
-        "size":"pop",
+      "map": {
+        "size": "pop",
         "color": "pct"
       }
-
     },
     {
       "title": "High School Graduation Rate (4-year cohort)",
-      "short_title": "HS Grad. Rate", 
+     "data_source":"sc_depofed",
+      "short_title": "HS Grad. Rate",
       "geotype": "school",
       "default": false,
-      "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vQRMExRmu74MTZeJpvkmWPtITx0-Dgb3T6PF2ZtWGrQBcH2bd0GM89lkbPPW-xfRT59ThohYoNdWTD3/pub?gid=54733314&single=true&output=csv", 
+      "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vQRMExRmu74MTZeJpvkmWPtITx0-Dgb3T6PF2ZtWGrQBcH2bd0GM89lkbPPW-xfRT59ThohYoNdWTD3/pub?gid=54733314&single=true&output=csv",
       "short_name": "highSchoolCompletion",
       "timeline": {
         "yearValuePrefix": "pct_",
@@ -211,24 +210,24 @@
         "filterOut": []
       },
       "popup": {
-        "columns": ["pct","pop"],
         "format": {
           "title": "{{pop}} students enrolled"
         }
       },
-      "legend":{
-        "title-column":"pop",
+      "legend": {
+        "title-column": "pop",
         "title": "{{pop}} students enrolled",
-        "secondary-title-column":"pct",
+        "secondary-title-column": "pct",
         "secondary-title": "{{pct}}% of students graduated"
       },
-      "map":{
-        "size":"pop",
+      "map": {
+        "size": "pop",
         "color": "pct"
       }
     },
     {
       "title": "High School Career Readiness (% of students in graduating cohort that were career ready)",
+     "data_source":"sc_depofed",
       "short_title": "HS Career Ready",
       "geotype": "school",
       "default": false,
@@ -240,25 +239,25 @@
         "filterOut": []
       },
       "popup": {
-        "columns": ["pct","count","pop"],
         "format": {
           "title": "{{pct}}% of students",
           "subtitle": "{{count}} out of {{pop}} enrolled"
         }
       },
-      "legend":{
-        "title-column":"pop",
+      "legend": {
+        "title-column": "pop",
         "title": "{{pop}} students enrolled",
-        "secondary-title-column":"pct",
+        "secondary-title-column": "pct",
         "secondary-title": "{{pct}}% of students ready"
       },
-      "map":{
-        "size":"pop",
+      "map": {
+        "size": "pop",
         "color": "pct"
       }
     },
     {
       "title": "High School College Readiness (% of students in graduating cohort that were college ready)",
+     "data_source":"sc_depofed",
       "short_title": "HS College Ready",
       "geotype": "school",
       "default": false,
@@ -270,25 +269,25 @@
         "filterOut": []
       },
       "popup": {
-        "columns": ["pct","count","pop"],
         "format": {
           "title": "{{pct}}% of students",
           "subtitle": "{{count}} out of {{pop}} enrolled"
         }
       },
-      "legend":{
-        "title-column":"pop",
+      "legend": {
+        "title-column": "pop",
         "title": "{{pop}} students enrolled",
-        "secondary-title-column":"pct",
+        "secondary-title-column": "pct",
         "secondary-title": "{{pct}}% of students ready"
       },
-      "map":{
-        "size":"pop",
+      "map": {
+        "size": "pop",
         "color": "pct"
       }
     },
     {
-      "title":"Disconnected Youth (16 to 18 year olds not in school nor employed)",
+      "title": "Disconnected Youth (16 to 18 year olds not in school nor employed)",
+     "data_source":"census",
       "short_title": "Disconnected Youth",
       "geotype": "tract",
       "default": false,
@@ -300,19 +299,19 @@
         "filterOut": []
       },
       "popup": {
-        "columns": ["pct","count","pop"],
         "format": {
           "title": "{{pct}}% of children",
           "subtitle": "{{count}} out of {{pop}} children"
         }
       },
-      "legend":{
+      "legend": {
         "title-column": "pct",
         "title": "{{pct}}% of children"
       }
     },
     {
       "title": "Kindergarten Readiness",
+     "data_source":"sc_depofed",
       "short_title": "K Ready",
       "geotype": "school",
       "default": false,
@@ -324,16 +323,15 @@
         "filterOut": []
       },
       "popup": {
-        "columns": ["pct"],
         "format": {
           "title": "{{pct}}% of students"
         }
       },
-      "legend":{
-        "secondary-title-column":"pct",
+      "legend": {
+        "secondary-title-column": "pct",
         "secondary-title": "{{pct}}% of students"
       },
-      "map":{
+      "map": {
         "color": "pct"
       }
     }

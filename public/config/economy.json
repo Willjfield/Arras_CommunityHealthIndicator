@@ -2,6 +2,7 @@
   "indicators": [
     {
       "title": "Adults with Bachelor's Degree or Higher",
+      "data_source":"census",
       "short_title": "Adult Bachelor's Degree",
       "geotype": "tract",
       "default": "left",
@@ -25,6 +26,7 @@
     },
     {
       "title": "Children in Concentrated Poverty",
+      "data_source":"census",
       "short_title": "Children in Poverty",
       "geotype": "tract",
       "default": false,
@@ -48,6 +50,7 @@
     },
     {
       "title": "Median Household Income",
+      "data_source":"census",
       "short_title": "Median Income",
       "geotype": "tract",
       "default": false,
@@ -70,6 +73,7 @@
     },
     {
       "title": "Housing cost burdened households (30% or more of income)",
+      "data_source":"census",
       "short_title": "Housing Cost Burden",
       "geotype": "tract",
       "default": false,
@@ -93,6 +97,7 @@
     },
     {
       "title": "% adults (ages 25+) with a high school diploma or equivalent",
+      "data_source":"census",
       "short_title": "HS Diploma",
       "geotype": "tract",
       "default": false,
@@ -119,6 +124,7 @@
     },
     {
       "title": "Workers with long commutes (45 minutes or more)",
+      "data_source":"census",
       "short_title": "Long Commutes",
       "geotype": "tract",
       "default": false,
@@ -145,6 +151,7 @@
     },
     {
       "title": "Percent of people living in poverty",
+      "data_source":"census",
       "short_title": "Poverty Rate",
       "geotype": "tract",
       "default": "right",
@@ -171,6 +178,7 @@
     },
     {
       "title": "Working population (civilians in workforce) living below the poverty line",
+      "data_source":"census",
       "short_title": "Workforce in Poverty",
       "geotype": "tract",
       "default": false,
@@ -197,6 +205,7 @@
     },
     {
       "title": "Unemployment Rate",
+      "data_source":"census",
       "short_title": "Unemployment",
       "geotype": "tract",
       "default": false,
@@ -223,6 +232,7 @@
     },
     {
       "title": "Substandard housing units",
+      "data_source":"census",
       "short_title": "Substandard Housing",
       "geotype": "tract",
       "default": false,
@@ -249,6 +259,7 @@
     },
     {
       "title": "Households with no vehicle available",
+      "data_source":"census",
       "short_title": "Vehicles Available",
       "geotype": "tract",
       "default": false,

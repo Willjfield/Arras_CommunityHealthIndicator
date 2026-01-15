@@ -7,6 +7,10 @@ export interface IndicatorConfig {
         size?: string;
         color?: string | null;
     };
+    data_source: {
+        text: string;
+        url: string;
+    };
     timeline: any;
     popup: any;
     title: string;

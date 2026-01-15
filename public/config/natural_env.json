@@ -2,6 +2,7 @@
   "indicators": [
     {
       "title": "Acres of Protected Land",
+      "data_source": "sc_conserv_bank",
       "short_title": "Protected Land",
       "geotype": "protected",
       "default": "left",
@@ -13,22 +14,22 @@
         "filterOut": []
       },
       "popup": {
-        "columns": ["count"],
         "format": {
           "title": "{{count}} acres of protected land",
           "subtitle": null
         }
       },
-      "legend":{
-        "title-column":"count",
+      "legend": {
+        "title-column": "count",
         "title": "{{count}} acres of protected land"
       }
     },
     {
-      "title": "Percent of Ozone Action Days per Year",      
+      "title": "Percent of Ozone Action Days per Year",
       "short_title": "Outdoor Pollution",
       "geotype": "county",
       "default": "right",
+      "data_source": "county_health_rankings",
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vSGdqqgaN6wAWaicLjxM5A1da7trVXWYXxavwHMs03056hZgognkNQ8ykvlxlB92BrBv1TXzSLlMsDH/pub?gid=1437757701&single=true&output=csv",
       "short_name": "pollution",
       "timeline": {
@@ -37,17 +38,38 @@
         "filterOut": []
       },
       "popup": {
-        "columns": ["pct"],
         "format": {
           "title": "{{pct}}% of days",
           "subtitle": null
         }
       },
-      "legend":{
-        "title-column":"pct",
+      "legend": {
+        "title-column": "pct",
         "title": "{{pct}}% of residents"
       }
-
+    },{
+      "title": "Dollars Awarded to Protected Land",
+      "data_source": "sc_conserv_bank",
+      "short_title": "Protected Land Funding",
+      "geotype": "facility",
+      "default": "sc_dep_conserv",
+      "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vSdmuURhWtn7eBRfF8mZB85n7cNV2VZ7oycQLSOdpF_RW26RqZFlwf0iUhMMuO3vAtndpbMUCF29dMb/pub?gid=1089528394&single=true&output=csv",
+      "short_name": "protected_land_awards",
+      "timeline": {
+        "yearValuePrefix": "count_",
+        "yearValueShortFormat": "{{value}}%",
+        "filterOut": []
+      },
+      "popup": {
+        "format": {
+          "title": "${{count}}",
+          "subtitle": null
+        }
+      },
+      "legend": {
+        "title-column": "count",
+        "title": "${{count}}"
+      }
     }
   ]
 }

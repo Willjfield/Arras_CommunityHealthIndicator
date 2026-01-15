@@ -160,9 +160,11 @@ export class DataToMap {
   hideLayers() {
     if (!this.map) return;
     if (this.data.layers.main) {
+      //console.log('off ', this.data.layers.main);
       this.map.setLayoutProperty(this.data.layers.main, "visibility", "none");
     }
     if (this.data.layers.outline) {
+      //console.log('off outline', this.data.layers.outline);
       this.map.setLayoutProperty(
         this.data.layers.outline,
         "visibility",
@@ -170,6 +172,7 @@ export class DataToMap {
       );
     }
     if (this.data.layers.circle) {
+      //console.log('off circle', this.data.layers.circle);
       this.map.setLayoutProperty(this.data.layers.circle, "visibility", "none");
     }
   }
@@ -410,6 +413,7 @@ export class DataToMap {
     let filteredData = data.filter(
       (feature: any) => feature.geoid !== null && feature.geoid !== undefined && feature[prop + "_" + (year || this.year)] !== null && feature[prop + "_" + (year || this.year)] !== undefined
     );
+   
     if (prop === "pop" || prop === "count") {
       filteredData = filteredData.filter(
         (feature: any) =>

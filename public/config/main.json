@@ -169,6 +169,10 @@
       "text": "SC Public Health",
       "url": "https://apps.dhec.sc.gov/Health/SCAN_BDP/tables/death2table.aspx"
     },
+    "brfss":{
+      "text": "BRFSS",
+      "url":"https://dph.sc.gov/health-wellness/south-carolina-health-compass-dashboards/health-compass-dashboard-communities"
+    },
     "sc_depofed":{
       "text": "SC Department of Education",
       "url": "https://ed.sc.gov/data/report-cards/state-report-cards/"
@@ -176,6 +180,18 @@
     "kids_count": {
       "text": "Kids Count",
       "url": "https://datacenter.aecf.org/data/tables/2899-babies-born-with-low-birthweight-by-race"
+    },
+    "abc_qual":{
+      "text": "ABC Quality",
+      "url":"https://abcquality.org"
+    },
+    "sc_conserv_bank":{
+      "text": "SC Conservation Bank",
+      "url": "https://www.sccbank.sc.gov/"
+    },
+    "county_health_rankings":{
+      "text": "County Health Rankings",
+      "url": "https://www.countyhealthrankings.org/health-data/south-carolina/chester"
     }
   }
 }

@@ -198,6 +198,7 @@ export class PointDataToMap extends DataToMap {
         };
       }),
     };
+    console.log(geojson);
     return geojson;
   }
 }
