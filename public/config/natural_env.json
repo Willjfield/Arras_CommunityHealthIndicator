@@ -28,8 +28,8 @@
       }
     },
     {
-      "title": "Percent of Ozone Action Days per Year",
-      "short_title": "Outdoor Pollution",
+      "title": "Average daily density of fine particulate matter (PM2.5)",
+      "short_title": "Air pollution rate",
       "geotype": "protected",
       "default": "right",
       "data_source": "county_health_rankings",
@@ -54,9 +54,9 @@
         }
       }
     },{
-      "title": "Dollars Awarded to Protected Land",
+      "title": "Awards given by the SC Conservation Bank",
       "data_source": "sc_conserv_bank",
-      "short_title": "Protected Land Funding",
+      "short_title": "Conservation Funding",
       "geotype": "facility",
       "default": "sc_dep_conserv",
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vSdmuURhWtn7eBRfF8mZB85n7cNV2VZ7oycQLSOdpF_RW26RqZFlwf0iUhMMuO3vAtndpbMUCF29dMb/pub?gid=1089528394&single=true&output=csv",
