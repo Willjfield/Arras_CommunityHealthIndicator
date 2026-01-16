@@ -25,13 +25,13 @@
       }
     },
     {
-      "title": "Percent of families with children living in "concentrated poverty"--areas where the poverty rate is over 40%",
+      "title": "Percent of families with children living in 'concentrated poverty'-—areas where the poverty rate is over 40%",
       "data_source":"census",
       "short_title": "Children in Poverty",
       "geotype": "tract",
       "default": false,
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vR9zeolHtawv9gwC_vD12fwM_GuujMxXi8KVJoF3PqSONsdw3LvX2sZRZOnji09mBVopP1I0tDXOMN6/pub?gid=646151606&single=true&output=csv",
-      "short_name": "Concentrated Poverty",
+      "short_name": "concentrated_poverty",
       "timeline": {
         "yearValuePrefix": "pct_",
         "yearValueShortFormat": "{{value}}%",

@@ -28,11 +28,12 @@ await Promise.all(activeCategories.map(async (config: any) => {
 
 const geoConfigs = mainConfig.geo;
 const catKeys = Object.keys(categoryConfigs);
-
+console.log(catKeys);
+console.log(categoryConfigs)
 for(let k=0; k<catKeys.length; k++){
     const key = catKeys[k];
     const indicators = categoryConfigs[key].indicators;
-
+    console.log(indicators);
     for(let i=0; i<indicators.length; i++){
         let indicator = indicators[i];
         const geotype = indicator.geotype;

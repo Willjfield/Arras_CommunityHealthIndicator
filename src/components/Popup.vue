@@ -88,7 +88,7 @@ onMounted(() => {
 const currentIndicator = computed(() => indicatorStore.getCurrentIndicator())
 const moreInfo = computed(() => {
     if (!props.properties.more_info) return '';
-    const splits = props.properties.more_info.split('\\n');
+    const splits = decodeURIComponent(props.properties.more_info).split('\n');
     return splits.join('<br/>');
 })
 //TODO: Probably don't need keyMapping...

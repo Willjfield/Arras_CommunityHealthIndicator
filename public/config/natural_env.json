@@ -22,7 +22,7 @@
       "legend": {
         "title-column": "count",
         "title": "{{count}} acres of protected land",
-        "extra_layers":{
+        "extra_layers": {
           "html": "<span class='protected-lands-outline'>Protected Lands<span class='protected-lands-swatch'></span></span>"
         }
       }
@@ -49,11 +49,12 @@
       "legend": {
         "title-column": "pct",
         "title": "{{pct}}% of residents",
-        "extra_layers":{
+        "extra_layers": {
           "html": "<span class='protected-lands-outline'>Protected Lands<span class='protected-lands-swatch'></span></span>"
         }
       }
-    },{
+    },
+    {
       "title": "Awards given by the SC Conservation Bank",
       "data_source": "sc_conserv_bank",
       "short_title": "Conservation Funding",
@@ -75,7 +76,7 @@
       "legend": {
         "title-column": "count",
         "title": "${{count}}",
-        "extra_layers":{
+        "extra_layers": {
           "html": "<span class='protected-lands-outline'>Protected Lands<span class='protected-lands-swatch'></span></span>"
         }
       }
