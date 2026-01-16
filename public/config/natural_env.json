@@ -30,7 +30,7 @@
     {
       "title": "Percent of Ozone Action Days per Year",
       "short_title": "Outdoor Pollution",
-      "geotype": "county",
+      "geotype": "protected",
       "default": "right",
       "data_source": "county_health_rankings",
       "google_sheets_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vSGdqqgaN6wAWaicLjxM5A1da7trVXWYXxavwHMs03056hZgognkNQ8ykvlxlB92BrBv1TXzSLlMsDH/pub?gid=1437757701&single=true&output=csv",

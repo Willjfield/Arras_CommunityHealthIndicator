@@ -93,8 +93,10 @@ watch(router.currentRoute, (newRoute, oldRoute) => {
     window.location.href = '/'
     return
   }
+
     if(newRoute.name === 'map' && oldRoute?.name === 'map') {
-      window.location.reload()
+      window.location.replace(newRoute.fullPath)
+      //window.location.reload()
       //window.location.replace(newRoute.fullPath)
     }
 }, { immediate: true })
