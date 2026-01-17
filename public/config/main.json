@@ -147,8 +147,7 @@
       "geolevel": "area",
       "source_name": "counties-source",
       "layers": {
-        "main": "counties-data",
-        "supplementary":["protected-outline"]
+        "main": "counties-data"
       }
     }
   },

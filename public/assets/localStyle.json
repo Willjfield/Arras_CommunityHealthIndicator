@@ -4766,7 +4766,7 @@
       }
     },
     {
-      "id": "protected-outline",
+      "id": "protected_outline",
       "type": "line",
       "source": "protected-source",
       "layout": {

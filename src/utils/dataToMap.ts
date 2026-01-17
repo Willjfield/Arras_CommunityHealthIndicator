@@ -171,6 +171,9 @@ export class DataToMap {
         "none"
       );
     }
+    if (this.data.legend?.extra_layers?.layer_name) {
+      this.map.setLayoutProperty(this.data.legend?.extra_layers?.layer_name, "visibility", "none");
+    }
     if (this.data.layers.circle) {
       //console.log('off circle', this.data.layers.circle);
       this.map.setLayoutProperty(this.data.layers.circle, "visibility", "none");
@@ -357,6 +360,9 @@ export class DataToMap {
         "visibility",
         "visible"
       );
+    }
+    if (this.map && this.data.legend?.extra_layers?.layer_name) {
+      this.map.setLayoutProperty(this.data.legend?.extra_layers?.layer_name, "visibility", "visible");
     }
     return true;
   }

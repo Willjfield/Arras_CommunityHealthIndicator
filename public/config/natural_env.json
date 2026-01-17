@@ -23,6 +23,7 @@
         "title-column": "count",
         "title": "{{count}} acres of protected land",
         "extra_layers": {
+          "layer_name": "protected_outline",
           "html": "<span class='protected-lands-outline'>Protected Lands<span class='protected-lands-swatch'></span></span>"
         }
       }
@@ -48,10 +49,7 @@
       },
       "legend": {
         "title-column": "pct",
-        "title": "{{pct}}% of residents",
-        "extra_layers": {
-          "html": "<span class='protected-lands-outline'>Protected Lands<span class='protected-lands-swatch'></span></span>"
-        }
+        "title": "{{pct}}% of residents"
       }
     },
     {
@@ -75,10 +73,7 @@
       },
       "legend": {
         "title-column": "count",
-        "title": "${{count}}",
-        "extra_layers": {
-          "html": "<span class='protected-lands-outline'>Protected Lands<span class='protected-lands-swatch'></span></span>"
-        }
+        "title": "${{count}}"
       }
     }
   ]

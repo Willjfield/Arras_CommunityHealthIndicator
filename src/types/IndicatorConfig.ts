@@ -12,6 +12,7 @@ export interface IndicatorConfig {
         url: string;
     };
     extra_layers?: {
+        layer_name?: string;
         html?: string | null;
     };
 

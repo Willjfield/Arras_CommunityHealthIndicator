@@ -211,7 +211,8 @@
       },
       "popup": {
         "format": {
-          "title": "{{pop}} students enrolled"
+          "title": "{{pop}} students enrolled",
+          "subtitle": "{{count}} out of {{pop}} students"
         }
       },
       "legend": {
