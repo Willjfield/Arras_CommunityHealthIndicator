@@ -15,7 +15,7 @@
       },
       "popup": {
         "format": {
-          "title": "{{count}} children",
+          "title": "{{count}} grandparents",
           "subtitle": null
         }
       },
