@@ -3,6 +3,13 @@ export interface Icon {
     filename?: string;
 }
 export interface IndicatorConfig {
+    legend?: {
+        extra_layers?: {
+            layer_name?: string;
+            html?: string | null;
+        };
+        [key: string]: any;
+    };
     map?: {
         size?: string;
         color?: string | null;
